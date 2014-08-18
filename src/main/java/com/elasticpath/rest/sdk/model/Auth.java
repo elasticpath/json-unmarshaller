@@ -1,9 +1,7 @@
-package com.elasticpath.rest.sdk;
+package com.elasticpath.rest.sdk.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Auth {
 
 	@JsonProperty("access_token")
