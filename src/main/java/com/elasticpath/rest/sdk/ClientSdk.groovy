@@ -6,6 +6,8 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE
 import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.Form
 
+import groovy.json.JsonOutput
+
 import com.elasticpath.rest.sdk.model.Auth
 import com.elasticpath.rest.sdk.model.Linkable
 
@@ -15,8 +17,6 @@ class ClientSdk {
 
 		def accessToken = auth()
 
-		println accessToken
-
 		def response = ClientBuilder.newClient()
 				.register(JacksonProvider)
 				.target('http://localhost:9080/cortex/root/mobee')
@@ -25,7 +25,14 @@ class ClientSdk {
 				.get()
 
 		def linkable = response.readEntity(Linkable)
-		println linkable.links.asCollection().rel
+
+		def response2 = ClientBuilder.newClient()
+				.register(JacksonProvider)
+				.target(linkable.links[0].href)
+				.request(APPLICATION_JSON_TYPE)
+				.header('Authorization', "Bearer $accessToken")
+				.get()
+		println JsonOutput.prettyPrint(response2.readEntity(String))
 	}
 
 	static auth() {
