@@ -5,10 +5,10 @@ import static javax.ws.rs.client.Entity.form
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE
 
 import javax.ws.rs.core.Form
-import javax.ws.rs.core.Response
 import javax.ws.rs.core.UriBuilder
 
 import com.elasticpath.rest.sdk.model.Auth
+import com.elasticpath.rest.sdk.model.Link
 import com.elasticpath.rest.sdk.model.Linkable
 
 class ClientSdk {
@@ -26,24 +26,40 @@ class ClientSdk {
 
 		def href = serverPath.path('root')
 				.path(scope)
-		Response response = get(href, accessToken)
-		def linkable = response.readEntity(Linkable)
 
-		def href2 = UriBuilder.fromPath(linkable.links[0].href)
-		def response2 = get(href2, accessToken)
-		println response2.readEntity(Linkable).links.asCollection().rel
+		def root = get(href, accessToken)
+		trace(root)
+
+		def cart = get(root.links[0], accessToken)
+		trace(cart)
+
+		def lineItems = get(cart.links[0], accessToken)
+		trace(lineItems)
 	}
 
-	static Response get(UriBuilder href, String accessToken) {
+	static void trace(Linkable linkable) {
+		println linkable.links.asCollection().rel
+	}
+
+	static def get(UriBuilder href, String accessToken) {
+
 		newClient()
 				.register(JacksonProvider)
 				.target(href)
 				.request(APPLICATION_JSON_TYPE)
 				.header('Authorization', "Bearer $accessToken")
 				.get()
+				.readEntity(Linkable)
 	}
 
-	static auth(String scope, UriBuilder path) {
+	static def get(Link link, String accessToken) {
+
+		def target = UriBuilder.fromPath(link.href)
+
+		get(target, accessToken)
+	}
+
+	static auth(String scope, UriBuilder target) {
 		Form auth = new Form()
 				.param('grant_type', 'password')
 				.param('username', 'ben.boxer@elasticpath.com')
@@ -53,7 +69,7 @@ class ClientSdk {
 
 		def response = newClient()
 				.register(JacksonProvider)
-				.target(path)
+				.target(target)
 				.request(APPLICATION_JSON_TYPE)
 				.post(form(auth))
 
