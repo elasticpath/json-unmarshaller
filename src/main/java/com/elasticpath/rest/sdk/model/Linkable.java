@@ -4,4 +4,5 @@ public class Linkable {
 
 	public Iterable<Link> links;
 
+	public Self self;
 }

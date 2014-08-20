@@ -7,6 +7,10 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE
 import javax.ws.rs.core.Form
 import javax.ws.rs.core.UriBuilder
 
+import groovy.json.JsonOutput
+
+import com.google.common.base.Joiner
+
 import com.elasticpath.rest.sdk.model.Auth
 import com.elasticpath.rest.sdk.model.Link
 import com.elasticpath.rest.sdk.model.Linkable
@@ -35,6 +39,24 @@ class ClientSdk {
 
 		def lineItems = get(cart.links[0], accessToken)
 		trace(lineItems)
+
+		zoom(root, ['searches', 'keywordsearchform'], accessToken)
+	}
+
+	static def zoom(Linkable root, Iterable<String> zooms, String accessToken) {
+
+		def target = UriBuilder.fromPath(root.self.href)
+				.queryParam('zoom', Joiner.on(':').join(zooms))
+
+		def zoom = newClient()
+				.register(JacksonProvider)
+				.target(target)
+				.request(APPLICATION_JSON_TYPE)
+				.header('Authorization', "Bearer $accessToken")
+				.get()
+				.readEntity(String)
+
+		println JsonOutput.prettyPrint(zoom)
 	}
 
 	static void trace(Linkable linkable) {
