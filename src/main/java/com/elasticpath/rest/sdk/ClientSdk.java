@@ -7,6 +7,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static javax.ws.rs.core.UriBuilder.fromPath;
 
 import javax.ws.rs.core.Form;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
@@ -18,6 +19,8 @@ import com.elasticpath.rest.sdk.model.Link;
 import com.elasticpath.rest.sdk.model.Linkable;
 
 public class ClientSdk {
+
+	public static final MediaType TYPE = APPLICATION_JSON_TYPE;
 
 	public void zoom(Linkable root,
 					 Iterable<String> zooms,
@@ -52,24 +55,18 @@ public class ClientSdk {
 		return newClient()
 				.register(JacksonProvider.class)
 				.target(target)
-				.request(APPLICATION_JSON_TYPE)
+				.request(TYPE)
 				.header(authToken.getHeaderName(), authToken.getHeaderValue())
 				.get();
 	}
 
-	public AuthToken auth(String scope,
-						  UriBuilder target) {
-		Form auth = new Form()
-				.param("grant_type", "password")
-				.param("username", "ben.boxer@elasticpath.com")
-				.param("password", "password")
-				.param("role", "REGISTERED")
-				.param("scope", scope);
+	public AuthToken auth(UriBuilder target,
+						  Form auth) {
 
 		Response response = newClient()
 				.register(JacksonProvider.class)
 				.target(target)
-				.request(APPLICATION_JSON_TYPE)
+				.request(TYPE)
 				.post(form(auth));
 
 		String accessToken = response.readEntity(Auth.class)
