@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk;
+package com.elasticpath.rest.sdk.debug;
 
 import static com.google.common.collect.Iterables.transform;
 import static groovy.json.JsonOutput.prettyPrint;

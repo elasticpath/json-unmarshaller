@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk;
+package com.elasticpath.rest.sdk.config;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;

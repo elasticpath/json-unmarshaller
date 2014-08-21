@@ -1,8 +1,7 @@
 package com.elasticpath.rest.sdk;
 
-import static com.elasticpath.rest.sdk.Debug.trace;
+import static com.elasticpath.rest.sdk.debug.Debug.trace;
 import static com.google.common.collect.Iterables.find;
-import static java.util.Arrays.asList;
 import static javax.ws.rs.core.UriBuilder.fromUri;
 
 import javax.ws.rs.core.Form;
@@ -10,6 +9,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import com.elasticpath.rest.sdk.model.AuthToken;
 import com.elasticpath.rest.sdk.model.Linkable;
+import com.elasticpath.rest.sdk.totals.TotalZoom;
 
 public class Main {
 
@@ -30,19 +30,21 @@ public class Main {
 						.param("scope", scope)
 		);
 
-		UriBuilder href = serverPath.path("root")
-				.path(scope);
+		String href = serverPath.path("root")
+				.path(scope)
+				.toString();
 
-		Linkable root = clientSdk.getLinkable(href, authToken);
+		Linkable root = clientSdk.get(href, authToken, Linkable.class);
 		trace(root);
 
-		Linkable cart = clientSdk.getLinkable(find(root.links, l -> "defaultcart".equals(l.rel)), authToken);
+		Linkable cart = clientSdk.get(find(root.links, l -> "defaultcart".equals(l.rel)).href, authToken, Linkable.class);
 		trace(cart);
 
-		Linkable lineItems = clientSdk.getLinkable(find(cart.links, l -> "lineitems".equals(l.rel)), authToken);
+		Linkable lineItems = clientSdk.get(find(cart.links, l -> "lineitems".equals(l.rel)).href, authToken, Linkable.class);
 		trace(lineItems);
 
-		clientSdk.zoom(root, asList("searches", "keywordsearchform"), authToken);
+		TotalZoom totalZoom = clientSdk.get(root.self.href, authToken, TotalZoom.class);
+		System.out.println(totalZoom);
 	}
 
 	public static UriBuilder cortexUri() {
