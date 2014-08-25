@@ -15,3 +15,16 @@ The [TotalZoom](src/main/java/com/elasticpath/rest/sdk/totals/TotalZoom.java) cl
 * Multiple @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java) can be present, representing multiple zooms executed in one query
 * Each field can be flattened from the zoom result by using @[JPath](src/main/java/com/elasticpath/rest/sdk/annotations/JPath.java). This uses JsonPath [syntax](http://goessner.net/articles/JsonPath/)
 * Zoom deserialization is handled automagically by a [ZoomReaderInterceptor](src/main/java/com/elasticpath/rest/sdk/zoom/ZoomReaderInterceptor.java), which plugs into JAX-RS. We can tell JAX-RS we are requesting a class that is annotated with @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java), and it handles the rest
+
+#JAX-RS
+Some notes.
+
+While using the fluent pattern, the actual remote call is done in two (broadly speaking) stages.
+* First the read to the remote url, which can be preceded by ClientRequest/ResponseFilters
+  * This has only url data and POST data
+  * The ability to modify or read the target oject type is not available here
+* Second the deserialization given the raw streams which can be surrounded by Reader/WriterInterceptors
+
+Useful links
+* https://jersey.java.net/documentation/latest/user-guide.html#client
+* https://jersey.java.net/documentation/latest/filters-and-interceptors.html
