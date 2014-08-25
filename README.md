@@ -13,4 +13,5 @@ The classes under /model are used for Jackson deserialization examples. They are
 The [TotalZoom](src/main/java/com/elasticpath/rest/sdk/totals/TotalZoom.java) class shows an example of flattening a zoom object using [JsonPath](http://code.google.com/p/json-path/) on the string returned by JAX-RS, and some annotation processing.
 * Each @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java) contains a list, where each element represents a different step of a single zoom
 * Multiple @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java) can be present, representing multiple zooms executed in one query
-* Each field can be flattened from the zoom result by using @[JPath](src/main/java/com/elasticpath/rest/sdk/annotations/JPath.java). This uses JsonPath [syntax](http://goessner.net/articles/JsonPath/).
+* Each field can be flattened from the zoom result by using @[JPath](src/main/java/com/elasticpath/rest/sdk/annotations/JPath.java). This uses JsonPath [syntax](http://goessner.net/articles/JsonPath/)
+* Zoom deserialization is handled automagically by a [ZoomReaderInterceptor](src/main/java/com/elasticpath/rest/sdk/zoom/ZoomReaderInterceptor.java), which plugs into JAX-RS. We can tell JAX-RS we are requesting a class that is annotated with @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java), and it handles the rest

@@ -15,15 +15,11 @@ import com.google.common.base.Joiner;
 import com.elasticpath.rest.sdk.annotations.Zoom;
 import com.elasticpath.rest.sdk.annotations.Zooms;
 import com.elasticpath.rest.sdk.config.JacksonProvider;
-import com.elasticpath.rest.sdk.debug.Logger;
 import com.elasticpath.rest.sdk.model.Auth;
 import com.elasticpath.rest.sdk.model.AuthToken;
-import com.elasticpath.rest.sdk.zoom.ZoomResultBuilder;
+import com.elasticpath.rest.sdk.zoom.ZoomReaderInterceptor;
 
 public class ClientSdk {
-
-	private Logger logger = new Logger();
-	private ZoomResultBuilder zoomResultBuilder = new ZoomResultBuilder();
 
 	public <T> T get(String targetUrl,
 					 AuthToken authToken,
@@ -43,11 +39,7 @@ public class ClientSdk {
 
 		String targetUrl = buildZoomUrl(href, zoomQuery);
 
-		String jsonResult = httpGet(targetUrl, authToken, String.class);
-
-		logger.prettyTrace(jsonResult);
-
-		return zoomResultBuilder.parseZoomResult(resultClass, jsonResult);
+		return httpGet(targetUrl, authToken, resultClass);
 	}
 
 	private <T> String buildZoomQuery(Class<T> resultClass) {
@@ -79,6 +71,7 @@ public class ClientSdk {
 						  Class<T> resultClass) {
 		return newClient()
 				.register(JacksonProvider.class)
+				.register(ZoomReaderInterceptor.class)
 				.target(targetUrl)
 				.request(APPLICATION_JSON_TYPE)
 				.header(authToken.getHeaderName(), authToken.getHeaderValue())
