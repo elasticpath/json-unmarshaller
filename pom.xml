@@ -16,38 +16,36 @@
 		<url>http://www.elasticpath.com</url>
 	</organization>
 
-	<properties>
-		<!--Groovy-->
-		<groovy-all.version>2.2.2</groovy-all.version>
-		<groovy-eclipse-batch.version>2.3.4-01</groovy-eclipse-batch.version>
-		<groovy-eclipse-compiler.version>2.8.0-01</groovy-eclipse-compiler.version>
-	</properties>
-
 	<dependencies>
+		<!--JAX-RS api-->
 		<dependency>
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>2.0.1</version>
 		</dependency>
 
+		<!--JAX-RS with Jersey implementation-->
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>2.11</version>
 		</dependency>
 
+		<!--Jersey-Jackson binding-->
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
 			<version>2.11</version>
 		</dependency>
 
+		<!--JsonPath for Zoom deserialization-->
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
 			<version>0.9.1</version>
 		</dependency>
 
+		<!--Jackson annotations for specific deserialization config-->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
@@ -57,57 +55,21 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>18.0-rc1</version>
+			<version>18.0-rc2</version>
 		</dependency>
 
+		<!--Only used for lazy reflections toString() implementations-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.3.2</version>
 		</dependency>
 
+		<!--Groovy is used for almost nothing. Pretty printing of xml for logging only. Can find alternative solution.-->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<version>2.4.0-beta-2</version>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.1</version>
-					<executions>
-						<execution>
-							<!-- Override only the testCompile execution, as javac is still the desired compiler for production code -->
-							<id>default-testCompile</id>
-							<configuration>
-								<!-- Groovy compilation doesn't seem to be compatible with -Werror and -Xlint:all -->
-								<compilerArgs combine.self="override"/>
-								<compilerId>groovy-eclipse-compiler</compilerId>
-							</configuration>
-						</execution>
-					</executions>
-					<configuration>
-						<source>1.8</source>
-						<target>1.8</target>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>org.codehaus.groovy</groupId>
-							<artifactId>groovy-eclipse-compiler</artifactId>
-							<version>${groovy-eclipse-compiler.version}</version>
-						</dependency>
-						<dependency>
-							<groupId>org.codehaus.groovy</groupId>
-							<artifactId>groovy-eclipse-batch</artifactId>
-							<version>${groovy-eclipse-batch.version}</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-	</build>
 </project>
