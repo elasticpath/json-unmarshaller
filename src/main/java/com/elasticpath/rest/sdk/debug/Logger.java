@@ -6,14 +6,14 @@ import static java.lang.System.out;
 
 import com.elasticpath.rest.sdk.model.Linkable;
 
-public class Debug {
+public class Logger {
 
-	public static void trace(Linkable linkable) {
+	public void trace(Linkable linkable) {
 
 		out.println(transform(linkable.links, link -> link.rel));
 	}
 
-	static void prettyTrace(String zoom) {
+	public void prettyTrace(String zoom) {
 		out.println(prettyPrint(zoom));
 	}
 }

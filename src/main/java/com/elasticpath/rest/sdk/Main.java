@@ -1,12 +1,12 @@
 package com.elasticpath.rest.sdk;
 
-import static com.elasticpath.rest.sdk.debug.Debug.trace;
 import static com.google.common.collect.Iterables.find;
 import static javax.ws.rs.core.UriBuilder.fromUri;
 
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.UriBuilder;
 
+import com.elasticpath.rest.sdk.debug.Logger;
 import com.elasticpath.rest.sdk.model.AuthToken;
 import com.elasticpath.rest.sdk.model.Linkable;
 import com.elasticpath.rest.sdk.totals.TotalZoom;
@@ -14,6 +14,7 @@ import com.elasticpath.rest.sdk.totals.TotalZoom;
 public class Main {
 
 	private ClientSdk clientSdk = new ClientSdk();
+	private Logger logger = new Logger();
 
 	private void run() {
 
@@ -35,16 +36,17 @@ public class Main {
 				.toString();
 
 		Linkable root = clientSdk.get(href, authToken, Linkable.class);
-		trace(root);
+		logger.trace(root);
 
 		Linkable cart = clientSdk.get(find(root.links, l -> "defaultcart".equals(l.rel)).href, authToken, Linkable.class);
-		trace(cart);
+		logger.trace(cart);
 
 		Linkable lineItems = clientSdk.get(find(cart.links, l -> "lineitems".equals(l.rel)).href, authToken, Linkable.class);
-		trace(lineItems);
+		logger.trace(lineItems);
 
 		TotalZoom totalZoom = clientSdk.get(root.self.href, authToken, TotalZoom.class);
-		System.out.println(totalZoom);
+		System.out
+				.println(totalZoom);
 	}
 
 	public static UriBuilder cortexUri() {
