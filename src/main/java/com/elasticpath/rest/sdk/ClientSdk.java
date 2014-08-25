@@ -80,19 +80,19 @@ public class ClientSdk {
 	private <T> T parseZoomResult(Class<T> resultClass,
 								  String jsonResult) {
 		ReadContext jsonContext = JsonPath.parse(jsonResult);
-		T resultObject;
 		try {
-			resultObject = resultClass.newInstance();
+			T resultObject = resultClass.newInstance();
 
 			for (Field field : resultClass.getDeclaredFields()) {
 				JPath annotation = field.getAnnotation(JPath.class);
 				Object read = jsonContext.read(annotation.value());
 				field.set(resultObject, String.valueOf(read));
 			}
+
+			return resultObject;
 		} catch (IllegalAccessException | InstantiationException e) {
 			throw new IllegalArgumentException(e);
 		}
-		return resultObject;
 	}
 
 	private <T> T httpGet(String targetUrl,
