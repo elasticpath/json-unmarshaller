@@ -16,6 +16,17 @@ The [TotalZoom](src/main/java/com/elasticpath/rest/sdk/totals/TotalZoom.java) cl
 * Each field can be flattened from the zoom result by using @[JPath](src/main/java/com/elasticpath/rest/sdk/annotations/JPath.java). This uses JsonPath [syntax](http://goessner.net/articles/JsonPath/)
 * Zoom deserialization is handled automagically by a [ZoomReaderInterceptor](src/main/java/com/elasticpath/rest/sdk/zoom/ZoomReaderInterceptor.java), which plugs into JAX-RS. We can tell JAX-RS we are requesting a class that is annotated with @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java), and it handles the rest
 
+#Authentication
+##OAuth2
+* Post username/password to oauth service
+* Receive an access token, that gets added to the header of every subsequent request
+This may differ from other authentication implementations. This can be less manual and more configurable through JAX-RS filters/interceptors
+* [OAuthReaderInterceptor](src/main/java/com/elasticpath/rest/sdk/oauth/OAuthReaderInterceptor.java) reads and stores the user's access token
+* [OAuthTokenService](src/main/java/com/elasticpath/rest/sdk/oauth/OAuthTokenService.java) stores the token with a thread local. Presently in AEM, we use cookies, so this service would be replaced by the storage/retrieval of a cookie
+* [OAuthRequestFilter](src/main/java/com/elasticpath/rest/sdk/oauth/OAuthRequestFilter.java) uses the same service to read the token and add it to the header of every request
+* With an alternate authentication mechanism, we can provide different features that can be registered with JAX-RS, making the client SDK solution agnostic
+* The interface is also simplified by not passing tokens around manually
+
 #JAX-RS
 Some notes.
 

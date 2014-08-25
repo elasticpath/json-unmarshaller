@@ -15,14 +15,14 @@ import com.google.common.base.Joiner;
 import com.elasticpath.rest.sdk.annotations.Zoom;
 import com.elasticpath.rest.sdk.annotations.Zooms;
 import com.elasticpath.rest.sdk.config.JacksonProvider;
-import com.elasticpath.rest.sdk.model.Auth;
-import com.elasticpath.rest.sdk.model.AuthToken;
+import com.elasticpath.rest.sdk.oauth.OAuthReaderInterceptor;
+import com.elasticpath.rest.sdk.oauth.OAuthRequestFilter;
+import com.elasticpath.rest.sdk.oauth.model.OAuthToken;
 import com.elasticpath.rest.sdk.zoom.ZoomReaderInterceptor;
 
 public class ClientSdk {
 
 	public <T> T get(String baseUrl,
-					 AuthToken authToken,
 					 Class<T> resultClass) {
 		String targetUrl = baseUrl;
 
@@ -32,7 +32,7 @@ public class ClientSdk {
 			targetUrl = buildZoomUrl(targetUrl, zoomQuery);
 		}
 
-		return httpGet(targetUrl, authToken, resultClass);
+		return httpGet(targetUrl, resultClass);
 	}
 
 	private <T> String buildZoomQuery(Class<T> resultClass) {
@@ -60,28 +60,26 @@ public class ClientSdk {
 	}
 
 	private <T> T httpGet(String targetUrl,
-						  AuthToken authToken,
 						  Class<T> resultClass) {
 		return newClient()
 				.register(JacksonProvider.class)
 				.register(ZoomReaderInterceptor.class)
+				.register(OAuthRequestFilter.class)
 				.target(targetUrl)
 				.request(APPLICATION_JSON_TYPE)
-				.header(authToken.getHeaderName(), authToken.getHeaderValue())
 				.get()
 				.readEntity(resultClass);
 	}
 
-	public AuthToken auth(UriBuilder targetUrl,
-						  Form auth) {
+	public void auth(UriBuilder targetUrl,
+					 Form auth) {
 
-		Auth accessToken = newClient()
+		newClient()
 				.register(JacksonProvider.class)
+				.register(OAuthReaderInterceptor.class)
 				.target(targetUrl)
 				.request(APPLICATION_JSON_TYPE)
 				.post(form(auth))
-				.readEntity(Auth.class);
-
-		return new AuthToken(accessToken.getAccessToken());
+				.readEntity(OAuthToken.class);
 	}
 }

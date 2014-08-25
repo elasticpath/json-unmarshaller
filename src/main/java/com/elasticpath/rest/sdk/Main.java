@@ -7,7 +7,6 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.UriBuilder;
 
 import com.elasticpath.rest.sdk.debug.Logger;
-import com.elasticpath.rest.sdk.model.AuthToken;
 import com.elasticpath.rest.sdk.model.Linkable;
 import com.elasticpath.rest.sdk.totals.TotalZoom;
 
@@ -20,7 +19,7 @@ public class Main {
 
 		String scope = "mobee";
 		UriBuilder serverPath = cortexUri();
-		AuthToken authToken = clientSdk.auth(serverPath.clone()
+		clientSdk.auth(serverPath.clone()
 				.path("oauth2")
 				.path("tokens"),
 				new Form()
@@ -35,16 +34,16 @@ public class Main {
 				.path(scope)
 				.toString();
 
-		Linkable root = clientSdk.get(href, authToken, Linkable.class);
+		Linkable root = clientSdk.get(href, Linkable.class);
 		logger.trace("root rels", root);
 
-		Linkable cart = clientSdk.get(find(root.links, l -> "defaultcart".equals(l.rel)).href, authToken, Linkable.class);
+		Linkable cart = clientSdk.get(find(root.links, l -> "defaultcart".equals(l.rel)).href, Linkable.class);
 		logger.trace("cart rels", cart);
 
-		Linkable lineItems = clientSdk.get(find(cart.links, l -> "lineitems".equals(l.rel)).href, authToken, Linkable.class);
+		Linkable lineItems = clientSdk.get(find(cart.links, l -> "lineitems".equals(l.rel)).href, Linkable.class);
 		logger.trace("lineItem rels", lineItems);
 
-		TotalZoom totalZoom = clientSdk.get(root.self.href, authToken, TotalZoom.class);
+		TotalZoom totalZoom = clientSdk.get(root.self.href, TotalZoom.class);
 		logger.trace("flattened total zoom output", totalZoom);
 	}
 
