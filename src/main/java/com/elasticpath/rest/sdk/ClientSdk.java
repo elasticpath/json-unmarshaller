@@ -7,26 +7,23 @@ import static javax.ws.rs.client.Entity.form;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static javax.ws.rs.core.UriBuilder.fromPath;
 
-import java.lang.reflect.Field;
-
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.UriBuilder;
 
 import com.google.common.base.Joiner;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.ReadContext;
 
-import com.elasticpath.rest.sdk.annotations.JPath;
 import com.elasticpath.rest.sdk.annotations.Zoom;
 import com.elasticpath.rest.sdk.annotations.Zooms;
 import com.elasticpath.rest.sdk.config.JacksonProvider;
 import com.elasticpath.rest.sdk.debug.Logger;
 import com.elasticpath.rest.sdk.model.Auth;
 import com.elasticpath.rest.sdk.model.AuthToken;
+import com.elasticpath.rest.sdk.zoom.ZoomResultBuilder;
 
 public class ClientSdk {
 
 	private Logger logger = new Logger();
+	private ZoomResultBuilder zoomResultBuilder = new ZoomResultBuilder();
 
 	public <T> T get(String targetUrl,
 					 AuthToken authToken,
@@ -50,7 +47,7 @@ public class ClientSdk {
 
 		logger.prettyTrace(jsonResult);
 
-		return parseZoomResult(resultClass, jsonResult);
+		return zoomResultBuilder.parseZoomResult(resultClass, jsonResult);
 	}
 
 	private <T> String buildZoomQuery(Class<T> resultClass) {
@@ -75,24 +72,6 @@ public class ClientSdk {
 		return fromPath(href)
 				.queryParam("zoom", zoomQuery)
 				.toString();
-	}
-
-	private <T> T parseZoomResult(Class<T> resultClass,
-								  String jsonResult) {
-		ReadContext jsonContext = JsonPath.parse(jsonResult);
-		try {
-			T resultObject = resultClass.newInstance();
-
-			for (Field field : resultClass.getDeclaredFields()) {
-				JPath annotation = field.getAnnotation(JPath.class);
-				Object read = jsonContext.read(annotation.value());
-				field.set(resultObject, String.valueOf(read));
-			}
-
-			return resultObject;
-		} catch (IllegalAccessException | InstantiationException e) {
-			throw new IllegalArgumentException(e);
-		}
 	}
 
 	private <T> T httpGet(String targetUrl,
