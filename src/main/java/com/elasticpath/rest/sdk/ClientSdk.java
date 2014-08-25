@@ -4,7 +4,6 @@ import static com.google.common.collect.Iterables.transform;
 import static java.util.Arrays.asList;
 import static javax.ws.rs.client.ClientBuilder.newClient;
 import static javax.ws.rs.client.Entity.form;
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static javax.ws.rs.core.UriBuilder.fromPath;
 
 import javax.ws.rs.core.Form;
@@ -66,7 +65,7 @@ public class ClientSdk {
 				.register(ZoomReaderInterceptor.class)
 				.register(OAuthRequestFilter.class)
 				.target(targetUrl)
-				.request(APPLICATION_JSON_TYPE)
+				.request()
 				.get()
 				.readEntity(resultClass);
 	}
@@ -78,7 +77,7 @@ public class ClientSdk {
 				.register(JacksonProvider.class)
 				.register(OAuthReaderInterceptor.class)
 				.target(targetUrl)
-				.request(APPLICATION_JSON_TYPE)
+				.request()
 				.post(form(auth))
 				.readEntity(OAuthToken.class);
 	}
