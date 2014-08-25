@@ -5,8 +5,8 @@ import static javax.ws.rs.client.ClientBuilder.newClient;
 import javax.ws.rs.client.Client;
 
 import com.elasticpath.rest.sdk.config.JacksonProvider;
-import com.elasticpath.rest.sdk.oauth.OAuthReaderInterceptor;
-import com.elasticpath.rest.sdk.oauth.OAuthRequestFilter;
+import com.elasticpath.rest.sdk.oauth.OAuth2ReaderInterceptor;
+import com.elasticpath.rest.sdk.oauth.OAuth2RequestFilter;
 import com.elasticpath.rest.sdk.zoom.ZoomReaderInterceptor;
 
 public class CortexClient {
@@ -15,12 +15,12 @@ public class CortexClient {
 		return newClient()
 				.register(JacksonProvider.class)
 				.register(ZoomReaderInterceptor.class)
-				.register(OAuthRequestFilter.class);
+				.register(OAuth2RequestFilter.class);
 	}
 
 	public Client newAuthClient() {
 		return newClient()
 				.register(JacksonProvider.class)
-				.register(OAuthReaderInterceptor.class);
+				.register(OAuth2ReaderInterceptor.class);
 	}
 }

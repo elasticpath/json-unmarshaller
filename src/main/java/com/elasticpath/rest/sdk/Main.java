@@ -8,13 +8,14 @@ import javax.ws.rs.core.UriBuilder;
 
 import com.elasticpath.rest.sdk.debug.Logger;
 import com.elasticpath.rest.sdk.model.Linkable;
+import com.elasticpath.rest.sdk.oauth.OAuth2AuthorizationService;
 import com.elasticpath.rest.sdk.totals.TotalZoom;
 
 public class Main {
 
 	private Logger logger = new Logger();
 
-	private AuthService authService = new AuthService();
+	private OAuth2AuthorizationService oAuth2AuthorizationService = new OAuth2AuthorizationService();
 	private CortexUrlBuilder cortexUrlBuilder = new CortexUrlBuilder();
 	private CortexClient cortexClient = new CortexClient();
 
@@ -22,7 +23,7 @@ public class Main {
 
 		String scope = "mobee";
 		UriBuilder serverUrl = serverUrl();
-		authService.auth(serverUrl.clone()
+		oAuth2AuthorizationService.auth(serverUrl.clone()
 				.path("oauth2")
 				.path("tokens"),
 				new Form()

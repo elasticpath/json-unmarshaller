@@ -2,14 +2,14 @@ package com.elasticpath.rest.sdk.oauth.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class OAuthToken {
+public class OAuth2Token {
 
 	private String headerName;
 
 	@JsonProperty("access_token")
 	private String headerValue;
 
-	public OAuthToken() {
+	public OAuth2Token() {
 		this.headerName = "Authorization";
 	}
 

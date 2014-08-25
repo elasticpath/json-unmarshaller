@@ -6,16 +6,16 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
-import com.elasticpath.rest.sdk.oauth.model.OAuthToken;
+import com.elasticpath.rest.sdk.oauth.model.OAuth2Token;
 
-public class OAuthReaderInterceptor implements ReaderInterceptor {
+public class OAuth2ReaderInterceptor implements ReaderInterceptor {
 
-	private OAuthTokenService tokenService = new OAuthTokenService();
+	private OAuth2TokenService tokenService = new OAuth2TokenService();
 
 	@Override
 	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
 
-		OAuthToken oAuthHeaderToken = (OAuthToken) context.proceed();
+		OAuth2Token oAuthHeaderToken = (OAuth2Token) context.proceed();
 
 		tokenService.auth(oAuthHeaderToken);
 
