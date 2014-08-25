@@ -1,5 +1,6 @@
 package com.elasticpath.rest.sdk;
 
+import static com.google.common.collect.Lists.newArrayList;
 import static javax.ws.rs.client.ClientBuilder.newClient;
 import static javax.ws.rs.client.Entity.form;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
@@ -8,8 +9,6 @@ import static javax.ws.rs.core.UriBuilder.fromPath;
 import java.lang.reflect.Field;
 
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
 import com.google.common.base.Joiner;
@@ -24,35 +23,47 @@ import com.elasticpath.rest.sdk.model.AuthToken;
 
 public class ClientSdk {
 
-	public static final MediaType TYPE = APPLICATION_JSON_TYPE;
-
-	public <T> T get(String target,
+	public <T> T get(String targetUrl,
 					 AuthToken authToken,
 					 Class<T> resultClass) {
 
 		if (resultClass.isAnnotationPresent(Zoom.class)) {
-			T resultObject = zoom(target, authToken, resultClass);
-			return resultObject;
+			return zoom(targetUrl, authToken, resultClass);
 		}
 
-		return getDetailed(target, authToken, resultClass);
+		return httpGet(targetUrl, authToken, resultClass);
 	}
 
 	private <T> T zoom(String href,
 					   AuthToken authToken,
 					   Class<T> resultClass) {
-		String[] zoom = resultClass.getAnnotation(Zoom.class)
-				.value();
+		Iterable<String> zoomSteps = parseZoomSteps(resultClass);
 
-		String target = fromPath(href)
+		String targetUrl = buildZoomUrl(href, zoomSteps);
+
+		String jsonResult = httpGet(targetUrl, authToken, String.class);
+
+		return parseZoomResult(resultClass, jsonResult);
+	}
+
+	private <T> Iterable<String> parseZoomSteps(Class<T> resultClass) {
+		return newArrayList(
+				resultClass.getAnnotation(Zoom.class)
+						.value()
+		);
+	}
+
+	private String buildZoomUrl(String href,
+								Iterable<String> zoomSteps) {
+		return fromPath(href)
 				.queryParam("zoom", Joiner.on(":")
-						.join(zoom))
+						.join(zoomSteps))
 				.toString();
+	}
 
-		String json = getDetailed(target, authToken, String.class);
-
-		ReadContext jsonContext = JsonPath.parse(json);
-
+	private <T> T parseZoomResult(Class<T> resultClass,
+								  String jsonResult) {
+		ReadContext jsonContext = JsonPath.parse(jsonResult);
 		T resultObject;
 		try {
 			resultObject = resultClass.newInstance();
@@ -68,30 +79,28 @@ public class ClientSdk {
 		return resultObject;
 	}
 
-	private <T> T getDetailed(String target,
-							  AuthToken authToken,
-							  Class<T> resultClass) {
+	private <T> T httpGet(String targetUrl,
+						  AuthToken authToken,
+						  Class<T> resultClass) {
 		return newClient()
 				.register(JacksonProvider.class)
-				.target(target)
-				.request(TYPE)
+				.target(targetUrl)
+				.request(APPLICATION_JSON_TYPE)
 				.header(authToken.getHeaderName(), authToken.getHeaderValue())
 				.get()
 				.readEntity(resultClass);
 	}
 
-	public AuthToken auth(UriBuilder target,
+	public AuthToken auth(UriBuilder targetUrl,
 						  Form auth) {
 
-		Response response = newClient()
+		Auth accessToken = newClient()
 				.register(JacksonProvider.class)
-				.target(target)
-				.request(TYPE)
-				.post(form(auth));
+				.target(targetUrl)
+				.request(APPLICATION_JSON_TYPE)
+				.post(form(auth))
+				.readEntity(Auth.class);
 
-		String accessToken = response.readEntity(Auth.class)
-				.getAccessToken();
-
-		return new AuthToken(accessToken);
+		return new AuthToken(accessToken.getAccessToken());
 	}
 }
