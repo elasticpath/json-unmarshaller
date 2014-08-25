@@ -2,7 +2,6 @@ package com.elasticpath.rest.sdk;
 
 import static com.google.common.collect.Iterables.transform;
 import static java.util.Arrays.asList;
-import static javax.ws.rs.client.ClientBuilder.newClient;
 import static javax.ws.rs.client.Entity.form;
 import static javax.ws.rs.core.UriBuilder.fromPath;
 
@@ -13,13 +12,11 @@ import com.google.common.base.Joiner;
 
 import com.elasticpath.rest.sdk.annotations.Zoom;
 import com.elasticpath.rest.sdk.annotations.Zooms;
-import com.elasticpath.rest.sdk.config.JacksonProvider;
-import com.elasticpath.rest.sdk.oauth.OAuthReaderInterceptor;
-import com.elasticpath.rest.sdk.oauth.OAuthRequestFilter;
 import com.elasticpath.rest.sdk.oauth.model.OAuthToken;
-import com.elasticpath.rest.sdk.zoom.ZoomReaderInterceptor;
 
 public class ClientSdk {
+
+	private CortexClient cortexClient = new CortexClient();
 
 	public <T> T get(String baseUrl,
 					 Class<T> resultClass) {
@@ -60,10 +57,8 @@ public class ClientSdk {
 
 	private <T> T httpGet(String targetUrl,
 						  Class<T> resultClass) {
-		return newClient()
-				.register(JacksonProvider.class)
-				.register(ZoomReaderInterceptor.class)
-				.register(OAuthRequestFilter.class)
+
+		return cortexClient.newCortexClient()
 				.target(targetUrl)
 				.request()
 				.get()
@@ -73,9 +68,7 @@ public class ClientSdk {
 	public void auth(UriBuilder targetUrl,
 					 Form auth) {
 
-		newClient()
-				.register(JacksonProvider.class)
-				.register(OAuthReaderInterceptor.class)
+		cortexClient.newAuthClient()
 				.target(targetUrl)
 				.request()
 				.post(form(auth))
