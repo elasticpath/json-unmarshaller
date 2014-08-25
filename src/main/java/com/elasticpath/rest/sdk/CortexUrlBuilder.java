@@ -2,24 +2,17 @@ package com.elasticpath.rest.sdk;
 
 import static com.google.common.collect.Iterables.transform;
 import static java.util.Arrays.asList;
-import static javax.ws.rs.client.Entity.form;
 import static javax.ws.rs.core.UriBuilder.fromPath;
-
-import javax.ws.rs.core.Form;
-import javax.ws.rs.core.UriBuilder;
 
 import com.google.common.base.Joiner;
 
 import com.elasticpath.rest.sdk.annotations.Zoom;
 import com.elasticpath.rest.sdk.annotations.Zooms;
-import com.elasticpath.rest.sdk.oauth.model.OAuthToken;
 
-public class ClientSdk {
+public class CortexUrlBuilder {
 
-	private CortexClient cortexClient = new CortexClient();
-
-	public <T> T get(String baseUrl,
-					 Class<T> resultClass) {
+	public String get(String baseUrl,
+					  Class<?> resultClass) {
 		String targetUrl = baseUrl;
 
 		if (resultClass.isAnnotationPresent(Zooms.class)) {
@@ -28,10 +21,10 @@ public class ClientSdk {
 			targetUrl = buildZoomUrl(targetUrl, zoomQuery);
 		}
 
-		return httpGet(targetUrl, resultClass);
+		return targetUrl;
 	}
 
-	private <T> String buildZoomQuery(Class<T> resultClass) {
+	private String buildZoomQuery(Class<?> resultClass) {
 
 		Iterable<Zoom> rawZooms = asList(
 				resultClass.getAnnotation(Zooms.class)
@@ -53,25 +46,5 @@ public class ClientSdk {
 		return fromPath(href)
 				.queryParam("zoom", zoomQuery)
 				.toString();
-	}
-
-	private <T> T httpGet(String targetUrl,
-						  Class<T> resultClass) {
-
-		return cortexClient.newCortexClient()
-				.target(targetUrl)
-				.request()
-				.get()
-				.readEntity(resultClass);
-	}
-
-	public void auth(UriBuilder targetUrl,
-					 Form auth) {
-
-		cortexClient.newAuthClient()
-				.target(targetUrl)
-				.request()
-				.post(form(auth))
-				.readEntity(OAuthToken.class);
 	}
 }

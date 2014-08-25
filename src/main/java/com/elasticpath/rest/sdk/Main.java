@@ -12,14 +12,17 @@ import com.elasticpath.rest.sdk.totals.TotalZoom;
 
 public class Main {
 
-	private ClientSdk clientSdk = new ClientSdk();
 	private Logger logger = new Logger();
+
+	private AuthService authService = new AuthService();
+	private CortexUrlBuilder cortexUrlBuilder = new CortexUrlBuilder();
+	private CortexClient cortexClient = new CortexClient();
 
 	private void run() {
 
 		String scope = "mobee";
-		UriBuilder serverPath = cortexUri();
-		clientSdk.auth(serverPath.clone()
+		UriBuilder serverUrl = serverUrl();
+		authService.auth(serverUrl.clone()
 				.path("oauth2")
 				.path("tokens"),
 				new Form()
@@ -30,24 +33,37 @@ public class Main {
 						.param("scope", scope)
 		);
 
-		String href = serverPath.path("root")
+		String rootResourceUrl = serverUrl.path("root")
 				.path(scope)
 				.toString();
 
-		Linkable root = clientSdk.get(href, Linkable.class);
+		String rootUrl = cortexUrlBuilder.get(rootResourceUrl, Linkable.class);
+		Linkable root = getLinkable(rootUrl, Linkable.class);
 		logger.trace("root rels", root);
 
-		Linkable cart = clientSdk.get(find(root.links, l -> "defaultcart".equals(l.rel)).href, Linkable.class);
+		String cartUrl = cortexUrlBuilder.get(find(root.links, l -> "defaultcart".equals(l.rel)).href, Linkable.class);
+		Linkable cart = getLinkable(cartUrl, Linkable.class);
 		logger.trace("cart rels", cart);
 
-		Linkable lineItems = clientSdk.get(find(cart.links, l -> "lineitems".equals(l.rel)).href, Linkable.class);
+		String lineItemsUrl = cortexUrlBuilder.get(find(cart.links, l -> "lineitems".equals(l.rel)).href, Linkable.class);
+		Linkable lineItems = getLinkable(lineItemsUrl, Linkable.class);
 		logger.trace("lineItem rels", lineItems);
 
-		TotalZoom totalZoom = clientSdk.get(root.self.href, TotalZoom.class);
+		String totalZoomUrl = cortexUrlBuilder.get(root.self.href, TotalZoom.class);
+		TotalZoom totalZoom = getLinkable(totalZoomUrl, TotalZoom.class);
 		logger.trace("flattened total zoom output", totalZoom);
 	}
 
-	public static UriBuilder cortexUri() {
+	private <T> T getLinkable(String targetUrl,
+							  Class<T> entityType) {
+		return cortexClient.newCortexClient()
+				.target(targetUrl)
+				.request()
+				.get()
+				.readEntity(entityType);
+	}
+
+	public static UriBuilder serverUrl() {
 		return fromUri("")
 				.scheme("http")
 				.host("localhost")
