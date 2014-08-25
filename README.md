@@ -3,9 +3,9 @@ java-client-sdk
 
 (a spike of) a Java client sdk, utilizing JAX-RS and Jackson
 
-Primary api is the [ClientSdk](src/main/java/com/elasticpath/rest/sdk/ClientSdk.java) class.
+The [Main](src/main/java/com/elasticpath/rest/sdk/Main.java) class is a Java console executable (runnable from an IDE) that represents a sample client of the JavaSDK.
 
-There is a frontend Java console app in the [Main](src/main/java/com/elasticpath/rest/sdk/Main.java)  class which can be run from an ide.
+Commit e66cadd22477cffc191e9a5c291ca601ac080d8a onwards represents a shift from using our own SDK interface (which was basically a facade on JAX-RS) to requiring our clients to call JAX-RS directly. This is supported by our custom filters/interceptors for OAuth and Zoom listed below. This may seem like a step backwards in lines of code, but means that we as EP do not have to mirror every change in the JAX-RS api in our facade. Instead, we are just extending the existing client framework provided by JAX-RS and enriching it with Cortex-specific functionality.
 
 The classes under /model are used for Jackson deserialization examples. They are basic, automatic, and done quickly/hackily. For instance, using public fields. Can just use getters/setters in the future.
 
