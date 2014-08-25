@@ -21,23 +21,16 @@ import com.elasticpath.rest.sdk.zoom.ZoomReaderInterceptor;
 
 public class ClientSdk {
 
-	public <T> T get(String targetUrl,
+	public <T> T get(String baseUrl,
 					 AuthToken authToken,
 					 Class<T> resultClass) {
+		String targetUrl = baseUrl;
 
 		if (resultClass.isAnnotationPresent(Zooms.class)) {
-			return zoom(targetUrl, authToken, resultClass);
+			String zoomQuery = buildZoomQuery(resultClass);
+
+			targetUrl = buildZoomUrl(targetUrl, zoomQuery);
 		}
-
-		return httpGet(targetUrl, authToken, resultClass);
-	}
-
-	private <T> T zoom(String href,
-					   AuthToken authToken,
-					   Class<T> resultClass) {
-		String zoomQuery = buildZoomQuery(resultClass);
-
-		String targetUrl = buildZoomUrl(href, zoomQuery);
 
 		return httpGet(targetUrl, authToken, resultClass);
 	}
