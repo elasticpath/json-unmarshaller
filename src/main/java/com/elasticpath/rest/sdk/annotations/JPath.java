@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Target({ANNOTATION_TYPE, FIELD, METHOD, PARAMETER})
 @Retention(RUNTIME)
-public @interface Json {
+public @interface JPath {
 
 	public String value();
 }

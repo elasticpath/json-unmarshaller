@@ -16,7 +16,7 @@ import com.google.common.base.Joiner;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 
-import com.elasticpath.rest.sdk.annotations.Json;
+import com.elasticpath.rest.sdk.annotations.JPath;
 import com.elasticpath.rest.sdk.annotations.Zoom;
 import com.elasticpath.rest.sdk.annotations.Zooms;
 import com.elasticpath.rest.sdk.config.JacksonProvider;
@@ -85,7 +85,7 @@ public class ClientSdk {
 			resultObject = resultClass.newInstance();
 
 			for (Field field : resultClass.getDeclaredFields()) {
-				Json annotation = field.getAnnotation(Json.class);
+				JPath annotation = field.getAnnotation(JPath.class);
 				Object read = jsonContext.read(annotation.value());
 				field.set(resultObject, String.valueOf(read));
 			}
