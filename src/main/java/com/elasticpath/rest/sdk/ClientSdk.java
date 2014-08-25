@@ -1,6 +1,7 @@
 package com.elasticpath.rest.sdk;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Iterables.transform;
+import static java.util.Arrays.asList;
 import static javax.ws.rs.client.ClientBuilder.newClient;
 import static javax.ws.rs.client.Entity.form;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
@@ -17,17 +18,21 @@ import com.jayway.jsonpath.ReadContext;
 
 import com.elasticpath.rest.sdk.annotations.Json;
 import com.elasticpath.rest.sdk.annotations.Zoom;
+import com.elasticpath.rest.sdk.annotations.Zooms;
 import com.elasticpath.rest.sdk.config.JacksonProvider;
+import com.elasticpath.rest.sdk.debug.Logger;
 import com.elasticpath.rest.sdk.model.Auth;
 import com.elasticpath.rest.sdk.model.AuthToken;
 
 public class ClientSdk {
 
+	private Logger logger = new Logger();
+
 	public <T> T get(String targetUrl,
 					 AuthToken authToken,
 					 Class<T> resultClass) {
 
-		if (resultClass.isAnnotationPresent(Zoom.class)) {
+		if (resultClass.isAnnotationPresent(Zooms.class)) {
 			return zoom(targetUrl, authToken, resultClass);
 		}
 
@@ -37,27 +42,38 @@ public class ClientSdk {
 	private <T> T zoom(String href,
 					   AuthToken authToken,
 					   Class<T> resultClass) {
-		Iterable<String> zoomSteps = parseZoomSteps(resultClass);
+		String zoomQuery = buildZoomQuery(resultClass);
 
-		String targetUrl = buildZoomUrl(href, zoomSteps);
+		String targetUrl = buildZoomUrl(href, zoomQuery);
 
 		String jsonResult = httpGet(targetUrl, authToken, String.class);
+
+		logger.prettyTrace(jsonResult);
 
 		return parseZoomResult(resultClass, jsonResult);
 	}
 
-	private <T> Iterable<String> parseZoomSteps(Class<T> resultClass) {
-		return newArrayList(
-				resultClass.getAnnotation(Zoom.class)
+	private <T> String buildZoomQuery(Class<T> resultClass) {
+
+		Iterable<Zoom> rawZooms = asList(
+				resultClass.getAnnotation(Zooms.class)
 						.value()
 		);
+
+		Iterable<String> joinedZooms = transform(
+				rawZooms,
+				z -> Joiner.on(":")
+						.join(z.value())
+		);
+
+		return Joiner.on(",")
+				.join(joinedZooms);
 	}
 
 	private String buildZoomUrl(String href,
-								Iterable<String> zoomSteps) {
+								String zoomQuery) {
 		return fromPath(href)
-				.queryParam("zoom", Joiner.on(":")
-						.join(zoomSteps))
+				.queryParam("zoom", zoomQuery)
 				.toString();
 	}
 

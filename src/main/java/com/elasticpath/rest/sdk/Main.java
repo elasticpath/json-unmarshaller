@@ -36,17 +36,16 @@ public class Main {
 				.toString();
 
 		Linkable root = clientSdk.get(href, authToken, Linkable.class);
-		logger.trace(root);
+		logger.trace("root rels", root);
 
 		Linkable cart = clientSdk.get(find(root.links, l -> "defaultcart".equals(l.rel)).href, authToken, Linkable.class);
-		logger.trace(cart);
+		logger.trace("cart rels", cart);
 
 		Linkable lineItems = clientSdk.get(find(cart.links, l -> "lineitems".equals(l.rel)).href, authToken, Linkable.class);
-		logger.trace(lineItems);
+		logger.trace("lineItem rels", lineItems);
 
 		TotalZoom totalZoom = clientSdk.get(root.self.href, authToken, TotalZoom.class);
-		System.out
-				.println(totalZoom);
+		logger.trace("flattened total zoom output", totalZoom);
 	}
 
 	public static UriBuilder cortexUri() {
