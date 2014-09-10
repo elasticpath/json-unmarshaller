@@ -2,17 +2,19 @@ package com.elasticpath.rest.sdk.oauth;
 
 import com.elasticpath.rest.sdk.oauth.model.OAuth2Token;
 
-public class OAuth2TokenService {
+public class DefaultOAuth2TokenService implements OAuth2TokenService {
 
 	private static final ThreadLocal<OAuth2Token> token = new ThreadLocal<>();
 
+	@Override
 	public OAuth2Token getToken() {
-		return OAuth2TokenService.token
+		return DefaultOAuth2TokenService.token
 				.get();
 	}
 
-	public void auth(OAuth2Token authToken) {
-		OAuth2TokenService.token
+	@Override
+	public void storeToken(OAuth2Token authToken) {
+		DefaultOAuth2TokenService.token
 				.set(authToken);
 	}
 }

@@ -7,20 +7,21 @@ import javax.ws.rs.client.Client;
 import com.elasticpath.rest.sdk.config.JacksonProvider;
 import com.elasticpath.rest.sdk.oauth.OAuth2ReaderInterceptor;
 import com.elasticpath.rest.sdk.oauth.OAuth2RequestFilter;
+import com.elasticpath.rest.sdk.oauth.OAuth2TokenService;
 import com.elasticpath.rest.sdk.zoom.ZoomReaderInterceptor;
 
 public class CortexClient {
 
-	public Client newCortexClient() {
+	public Client newCortexClient(OAuth2TokenService tokenService) {
 		return newClient()
 				.register(JacksonProvider.class)
 				.register(ZoomReaderInterceptor.class)
-				.register(OAuth2RequestFilter.class);
+				.register(new OAuth2RequestFilter(tokenService));
 	}
 
-	public Client newAuthClient() {
+	public Client newAuthClient(OAuth2TokenService tokenService) {
 		return newClient()
 				.register(JacksonProvider.class)
-				.register(OAuth2ReaderInterceptor.class);
+				.register(new OAuth2ReaderInterceptor(tokenService));
 	}
 }

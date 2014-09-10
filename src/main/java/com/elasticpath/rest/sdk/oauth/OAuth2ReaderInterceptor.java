@@ -10,14 +10,18 @@ import com.elasticpath.rest.sdk.oauth.model.OAuth2Token;
 
 public class OAuth2ReaderInterceptor implements ReaderInterceptor {
 
-	private OAuth2TokenService tokenService = new OAuth2TokenService();
+	private final OAuth2TokenService tokenService;
+
+	public OAuth2ReaderInterceptor(final OAuth2TokenService tokenService) {
+		this.tokenService = tokenService;
+	}
 
 	@Override
 	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
 
 		OAuth2Token oAuthHeaderToken = (OAuth2Token) context.proceed();
 
-		tokenService.auth(oAuthHeaderToken);
+		tokenService.storeToken(oAuthHeaderToken);
 
 		return oAuthHeaderToken;
 	}

@@ -9,8 +9,6 @@ import javax.ws.rs.ext.ReaderInterceptorContext;
 import com.elasticpath.rest.sdk.annotations.Zoom;
 import com.elasticpath.rest.sdk.annotations.Zooms;
 import com.elasticpath.rest.sdk.debug.Logger;
-import com.elasticpath.rest.sdk.totals.TotalZoom;
-import com.elasticpath.rest.sdk.zoom.ZoomResultBuilder;
 
 public class ZoomReaderInterceptor implements ReaderInterceptor {
 
@@ -22,12 +20,13 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 
 		String jsonResult;
 		if (isSingleZoom(context.getType()) || isMultiZoom(context.getType())) {
+			Class<?> unmarshalledType = context.getType();
 			context.setType(String.class);
 
 			jsonResult = (String) context.proceed();
 			logger.prettyTrace(jsonResult);
 
-			return zoomResultBuilder.parseZoomResult(TotalZoom.class, jsonResult);
+			return zoomResultBuilder.parseZoomResult(unmarshalledType, jsonResult);
 		}
 
 		return context.proceed();

@@ -21,7 +21,7 @@ public class OAuth2Token {
 		return headerValue;
 	}
 
-	void setHeaderValue(String accessToken) {
-		this.headerValue = "Bearer " + accessToken;
+	public void setHeaderValue(String accessToken) {
+		this.headerValue = accessToken;
 	}
 }

@@ -7,7 +7,6 @@ import com.elasticpath.rest.sdk.annotations.JPath;
 import com.elasticpath.rest.sdk.annotations.Zoom;
 
 @Zoom({"defaultcart", "total"})
-@Zoom({"defaultcart", "discount"})
 public class TotalZoom {
 
 	@JPath("$._defaultcart[0]._discount[0].discount[0].amount")

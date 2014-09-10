@@ -9,7 +9,11 @@ import com.elasticpath.rest.sdk.oauth.model.OAuth2Token;
 
 public class OAuth2RequestFilter implements ClientRequestFilter {
 
-	private final OAuth2TokenService tokenService = new OAuth2TokenService();
+	private final OAuth2TokenService tokenService;
+
+	public OAuth2RequestFilter(final OAuth2TokenService tokenService) {
+		this.tokenService = tokenService;
+	}
 
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {

@@ -12,13 +12,13 @@ public class OAuth2AuthorizationService {
 
 	private CortexClient cortexClient = new CortexClient();
 
-	public void auth(UriBuilder targetUrl,
+	public OAuth2Token auth(UriBuilder targetUrl,
 					 Form auth) {
 
-		cortexClient.newAuthClient()
-				.target(targetUrl)
-				.request()
-				.post(form(auth))
-				.readEntity(OAuth2Token.class);
+		return cortexClient.newAuthClient(new DefaultOAuth2TokenService())
+											  .target(targetUrl)
+											  .request()
+											  .post(form(auth))
+											  .readEntity(OAuth2Token.class);
 	}
 }
