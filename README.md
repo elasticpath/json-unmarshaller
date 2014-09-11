@@ -9,6 +9,13 @@ Commit e66cadd22477cffc191e9a5c291ca601ac080d8a onwards represents a shift from 
 
 The classes under /model are used for Jackson deserialization examples. They are basic, automatic, and done quickly/hackily. For instance, using public fields. Can just use getters/setters in the future.
 
+#Todo
+* DI
+* OSGI-ify
+* Error handling (e.g. what happens if a JPath zoom does not exist?)
+* Tests
+* Better Jackson/JPath integration
+
 #Zoom
 The [TotalZoom](src/main/java/com/elasticpath/rest/sdk/totals/TotalZoom.java) class shows an example of flattening a zoom object using [JsonPath](http://code.google.com/p/json-path/) on the string returned by JAX-RS, and some annotation processing.
 * Each @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java) contains a list, where each element represents a different step of a single zoom

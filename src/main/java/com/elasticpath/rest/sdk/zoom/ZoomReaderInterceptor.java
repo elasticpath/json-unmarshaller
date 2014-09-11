@@ -33,12 +33,10 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 	}
 
 	private boolean isSingleZoom(Class<?> type) {
-		return type
-				.isAnnotationPresent(Zoom.class);
+		return type.isAnnotationPresent(Zoom.class);
 	}
 
 	private boolean isMultiZoom(Class<?> type) {
-		return type
-				.isAnnotationPresent(Zooms.class);
+		return type.isAnnotationPresent(Zooms.class);
 	}
 }

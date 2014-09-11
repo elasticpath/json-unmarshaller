@@ -46,7 +46,6 @@ public class ZoomResultBuilder {
 					field.set(resultObject, objectMapper.readValue(String.valueOf(read), fieldType));
 				}
 			}
-
 			return resultObject;
 		} catch (IllegalAccessException | InstantiationException e) {
 			throw new IllegalArgumentException(e);
