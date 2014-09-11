@@ -24,7 +24,7 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 			context.setType(String.class);
 
 			jsonResult = (String) context.proceed();
-			logger.prettyTrace(jsonResult);
+			logger.trace(jsonResult);
 
 			return zoomResultBuilder.parseZoomResult(unmarshalledType, jsonResult);
 		}

@@ -10,6 +10,10 @@
 	<name>EP ∷ Client SDK Spike</name>
 	<description>Elastic Path REST - Client SDK Spike</description>
 
+	<properties>
+		<org.springframework.version>3.2.11.RELEASE</org.springframework.version>
+	</properties>
+
 	<organization>
 		<name>Elastic Path Software, Inc</name>
 		<url>http://www.elasticpath.com</url>
@@ -21,6 +25,19 @@
 			<groupId>javax.ws.rs</groupId>
 			<artifactId>javax.ws.rs-api</artifactId>
 			<version>2.0.1</version>
+		</dependency>
+
+		<!--Spring-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${org.springframework.version}</version>
 		</dependency>
 
 		<!--JAX-RS with Jersey implementation-->
@@ -57,39 +74,64 @@
 			<version>18.0-rc2</version>
 		</dependency>
 
-		<!--Only used for lazy reflections toString() implementations-->
+		<!--Test-->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.3.2</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12-beta-1</version>
+			<scope>test</scope>
 		</dependency>
 
-		<!--Groovy is used for almost nothing. Pretty printing of xml for logging only. Can find alternative solution.-->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
 			<version>2.4.0-beta-2</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${org.springframework.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
+					<executions>
+						<execution>
+							<!-- Override only the testCompile execution, as javac is still the desired compiler for production code -->
+							<id>default-testCompile</id>
+							<configuration>
+								<!-- Groovy compilation doesn't seem to be compatible with -Werror and -Xlint:all -->
+								<compilerArgs combine.self="override"/>
+								<compilerId>groovy-eclipse-compiler</compilerId>
+							</configuration>
+						</execution>
+					</executions>
+					<configuration>
+						<source>1.7</source>
+						<target>1.7</target>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.codehaus.groovy</groupId>
+							<artifactId>groovy-eclipse-compiler</artifactId>
+							<version>2.9.0-01</version>
+						</dependency>
+						<dependency>
+							<groupId>org.codehaus.groovy</groupId>
+							<artifactId>groovy-eclipse-batch</artifactId>
+							<version>2.3.4-01</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>
