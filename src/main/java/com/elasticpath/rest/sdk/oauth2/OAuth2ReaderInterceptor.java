@@ -2,19 +2,21 @@ package com.elasticpath.rest.sdk.oauth2;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
 import com.elasticpath.rest.sdk.oauth2.model.OAuth2Token;
 
+@Named
+@Singleton
 public class OAuth2ReaderInterceptor implements ReaderInterceptor {
 
-	private final OAuth2TokenService tokenService;
-
-	public OAuth2ReaderInterceptor(final OAuth2TokenService tokenService) {
-		this.tokenService = tokenService;
-	}
+	@Inject
+	private OAuth2TokenService tokenService;
 
 	@Override
 	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {

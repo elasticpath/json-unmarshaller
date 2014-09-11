@@ -4,11 +4,16 @@ import static com.google.common.collect.Iterables.transform;
 import static java.lang.String.format;
 import static java.lang.System.out;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+
 import com.google.common.base.Function;
 
 import com.elasticpath.rest.sdk.model.Link;
 import com.elasticpath.rest.sdk.model.Linkable;
 
+@Named
+@Singleton
 public class Logger {
 
 	public void trace(String name,

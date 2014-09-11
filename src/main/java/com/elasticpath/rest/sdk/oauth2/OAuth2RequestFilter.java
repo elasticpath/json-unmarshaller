@@ -2,18 +2,20 @@ package com.elasticpath.rest.sdk.oauth2;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 
 import com.elasticpath.rest.sdk.oauth2.model.OAuth2Token;
 
+@Named
+@Singleton
 public class OAuth2RequestFilter implements ClientRequestFilter {
 
-	private final OAuth2TokenService tokenService;
-
-	public OAuth2RequestFilter(final OAuth2TokenService tokenService) {
-		this.tokenService = tokenService;
-	}
+	@Inject
+	private OAuth2TokenService tokenService;
 
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {

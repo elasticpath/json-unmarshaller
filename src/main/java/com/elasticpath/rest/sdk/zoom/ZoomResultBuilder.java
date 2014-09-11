@@ -1,11 +1,13 @@
 package com.elasticpath.rest.sdk.zoom;
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,9 +16,12 @@ import com.jayway.jsonpath.ReadContext;
 
 import com.elasticpath.rest.sdk.annotations.JPath;
 
+@Named
+@Singleton
 public class ZoomResultBuilder {
 
-	ObjectMapper objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES);
+	@Inject
+	private ObjectMapper objectMapper;
 
 	public <T> T parseZoomResult(Class<T> resultClass,
 								 String jsonResult) throws IOException {
@@ -37,7 +42,7 @@ public class ZoomResultBuilder {
 					Class aClass = (Class) genericType1.getActualTypeArguments()[0];
 
 					JavaType typedField = objectMapper.getTypeFactory()
-													  .constructParametricType(fieldType, aClass);
+							.constructParametricType(fieldType, aClass);
 					Object value = objectMapper.readValue(String.valueOf(read), typedField);
 					field.set(resultObject, value);
 				} else if (fieldType.isAssignableFrom(String.class)) {
