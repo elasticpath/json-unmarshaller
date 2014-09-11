@@ -5,9 +5,9 @@ import static javax.ws.rs.client.ClientBuilder.newClient;
 import javax.ws.rs.client.Client;
 
 import com.elasticpath.rest.sdk.config.JacksonProvider;
-import com.elasticpath.rest.sdk.oauth.OAuth2ReaderInterceptor;
-import com.elasticpath.rest.sdk.oauth.OAuth2RequestFilter;
-import com.elasticpath.rest.sdk.oauth.OAuth2TokenService;
+import com.elasticpath.rest.sdk.oauth2.OAuth2ReaderInterceptor;
+import com.elasticpath.rest.sdk.oauth2.OAuth2RequestFilter;
+import com.elasticpath.rest.sdk.oauth2.OAuth2TokenService;
 import com.elasticpath.rest.sdk.zoom.ZoomReaderInterceptor;
 
 public class CortexClient {

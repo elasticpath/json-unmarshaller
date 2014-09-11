@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk.oauth;
+package com.elasticpath.rest.sdk.oauth2;
 
 import java.io.IOException;
 
@@ -6,7 +6,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
-import com.elasticpath.rest.sdk.oauth.model.OAuth2Token;
+import com.elasticpath.rest.sdk.oauth2.model.OAuth2Token;
 
 public class OAuth2ReaderInterceptor implements ReaderInterceptor {
 

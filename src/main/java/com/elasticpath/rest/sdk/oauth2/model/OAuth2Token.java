@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk.oauth.model;
+package com.elasticpath.rest.sdk.oauth2.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

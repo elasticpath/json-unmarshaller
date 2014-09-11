@@ -1,6 +1,6 @@
-package com.elasticpath.rest.sdk.oauth;
+package com.elasticpath.rest.sdk.oauth2;
 
-import com.elasticpath.rest.sdk.oauth.model.OAuth2Token;
+import com.elasticpath.rest.sdk.oauth2.model.OAuth2Token;
 
 public class DefaultOAuth2TokenService implements OAuth2TokenService {
 

@@ -1,11 +1,11 @@
-package com.elasticpath.rest.sdk.oauth;
+package com.elasticpath.rest.sdk.oauth2;
 
 import java.io.IOException;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 
-import com.elasticpath.rest.sdk.oauth.model.OAuth2Token;
+import com.elasticpath.rest.sdk.oauth2.model.OAuth2Token;
 
 public class OAuth2RequestFilter implements ClientRequestFilter {
 

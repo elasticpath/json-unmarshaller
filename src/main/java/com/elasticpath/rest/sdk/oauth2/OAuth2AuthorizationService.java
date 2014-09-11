@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk.oauth;
+package com.elasticpath.rest.sdk.oauth2;
 
 import static javax.ws.rs.client.Entity.form;
 
@@ -6,7 +6,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.UriBuilder;
 
 import com.elasticpath.rest.sdk.CortexClient;
-import com.elasticpath.rest.sdk.oauth.model.OAuth2Token;
+import com.elasticpath.rest.sdk.oauth2.model.OAuth2Token;
 
 public class OAuth2AuthorizationService {
 
