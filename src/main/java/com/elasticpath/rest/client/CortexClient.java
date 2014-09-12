@@ -1,10 +1,10 @@
-package com.elasticpath.rest.clientsdk;
+package com.elasticpath.rest.client;
 
 import javax.ws.rs.client.Client;
 
 public interface CortexClient {
 
-	Client newCortexClient();
+	Client newOAuth2RestClient();
 
 	Client newAuthClient();
 }

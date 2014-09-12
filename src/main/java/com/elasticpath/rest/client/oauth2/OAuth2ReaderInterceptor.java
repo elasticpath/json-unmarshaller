@@ -1,4 +1,4 @@
-package com.elasticpath.rest.clientsdk.oauth2;
+package com.elasticpath.rest.client.oauth2;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
-import com.elasticpath.rest.clientsdk.oauth2.model.OAuth2Token;
+import com.elasticpath.rest.client.oauth2.model.OAuth2Token;
 
 @Named
 @Singleton

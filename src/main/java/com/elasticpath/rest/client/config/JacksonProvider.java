@@ -1,4 +1,4 @@
-package com.elasticpath.rest.clientsdk.config;
+package com.elasticpath.rest.client.config;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;

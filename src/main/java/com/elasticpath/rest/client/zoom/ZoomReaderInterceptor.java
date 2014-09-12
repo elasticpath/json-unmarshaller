@@ -1,4 +1,4 @@
-package com.elasticpath.rest.clientsdk.zoom;
+package com.elasticpath.rest.client.zoom;
 
 import java.io.IOException;
 
@@ -9,9 +9,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
-import com.elasticpath.rest.clientsdk.annotations.Zoom;
-import com.elasticpath.rest.clientsdk.annotations.Zooms;
-import com.elasticpath.rest.clientsdk.debug.Logger;
+import com.elasticpath.rest.client.annotations.ZoomTarget;
+import com.elasticpath.rest.client.annotations.Zooms;
+import com.elasticpath.rest.client.debug.Logger;
 
 @Named
 @Singleton
@@ -41,7 +41,7 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 	}
 
 	private boolean isSingleZoom(Class<?> type) {
-		return type.isAnnotationPresent(Zoom.class);
+		return type.isAnnotationPresent(ZoomTarget.class);
 	}
 
 	private boolean isMultiZoom(Class<?> type) {

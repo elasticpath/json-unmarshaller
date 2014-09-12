@@ -1,4 +1,4 @@
-package com.elasticpath.rest.clientsdk.annotations;
+package com.elasticpath.rest.client.annotations;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 
 @Target({ANNOTATION_TYPE, FIELD, METHOD, PARAMETER})
 @Retention(RUNTIME)
-public @interface JPath {
+public @interface JsonPath {
 
 	public String value();
 }

@@ -1,11 +1,11 @@
-package com.elasticpath.rest.clientsdk;
+package com.elasticpath.rest.client;
 
 import static java.util.Arrays.asList;
 import static javax.ws.rs.core.UriBuilder.fromPath;
 
 import com.google.common.base.Joiner;
 
-import com.elasticpath.rest.clientsdk.annotations.Zoom;
+import com.elasticpath.rest.client.annotations.ZoomTarget;
 
 public class CortexUrlBuilder {
 
@@ -13,7 +13,7 @@ public class CortexUrlBuilder {
 					  Class<?> resultClass) {
 		String targetUrl = baseUrl;
 
-		if (resultClass.isAnnotationPresent(Zoom.class)) {
+		if (resultClass.isAnnotationPresent(ZoomTarget.class)) {
 			String zoomQuery = buildZoomQuery(resultClass);
 
 			targetUrl = buildZoomUrl(targetUrl, zoomQuery);
@@ -25,7 +25,7 @@ public class CortexUrlBuilder {
 	private String buildZoomQuery(Class<?> resultClass) {
 
 		Iterable<String> rawZooms = asList(
-				resultClass.getAnnotation(Zoom.class)
+				resultClass.getAnnotation(ZoomTarget.class)
 						.value()
 		);
 

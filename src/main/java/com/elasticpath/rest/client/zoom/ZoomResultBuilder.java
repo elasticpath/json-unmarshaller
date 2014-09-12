@@ -1,4 +1,4 @@
-package com.elasticpath.rest.clientsdk.zoom;
+package com.elasticpath.rest.client.zoom;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -11,10 +11,9 @@ import javax.inject.Singleton;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 
-import com.elasticpath.rest.clientsdk.annotations.JPath;
+import com.elasticpath.rest.client.annotations.JsonPath;
 
 @Named
 @Singleton
@@ -25,12 +24,15 @@ public class ZoomResultBuilder {
 
 	public <T> T parseZoomResult(Class<T> resultClass,
 								 String jsonResult) throws IOException {
-		ReadContext jsonContext = JsonPath.parse(jsonResult);
+		ReadContext jsonContext = com.jayway
+				.jsonpath
+				.JsonPath
+				.parse(jsonResult);
 		try {
 			T resultObject = resultClass.newInstance();
 
 			for (Field field : resultClass.getDeclaredFields()) {
-				JPath annotation = field.getAnnotation(JPath.class);
+				JsonPath annotation = field.getAnnotation(JsonPath.class);
 				Object read = jsonContext.read(annotation.value());
 				Class<?> fieldType = field.getType();
 				Type genericType = field.getGenericType();

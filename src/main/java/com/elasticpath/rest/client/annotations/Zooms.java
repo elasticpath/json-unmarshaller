@@ -1,4 +1,4 @@
-package com.elasticpath.rest.clientsdk.annotations;
+package com.elasticpath.rest.client.annotations;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface Zooms {
 
-	public Zoom[] value();
+	public ZoomTarget[] value();
 }

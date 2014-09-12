@@ -1,4 +1,4 @@
-package com.elasticpath.rest.clientsdk.model;
+package com.elasticpath.rest.client.model;
 
 public class Link {
 

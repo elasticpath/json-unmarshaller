@@ -1,4 +1,4 @@
-package com.elasticpath.rest.clientsdk.debug;
+package com.elasticpath.rest.client.debug;
 
 import static com.google.common.collect.Iterables.transform;
 import static java.lang.String.format;
@@ -9,8 +9,8 @@ import javax.inject.Singleton;
 
 import com.google.common.base.Function;
 
-import com.elasticpath.rest.clientsdk.model.Link;
-import com.elasticpath.rest.clientsdk.model.Linkable;
+import com.elasticpath.rest.client.model.Link;
+import com.elasticpath.rest.client.model.Linkable;
 
 @Named
 @Singleton
