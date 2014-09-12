@@ -1,11 +1,11 @@
-package com.elasticpath.rest.sdk;
+package com.elasticpath.rest.clientsdk;
 
 import static java.util.Arrays.asList;
 import static javax.ws.rs.core.UriBuilder.fromPath;
 
 import com.google.common.base.Joiner;
 
-import com.elasticpath.rest.sdk.annotations.Zoom;
+import com.elasticpath.rest.clientsdk.annotations.Zoom;
 
 public class CortexUrlBuilder {
 

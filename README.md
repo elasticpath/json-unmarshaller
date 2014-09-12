@@ -1,7 +1,7 @@
 java-client-sdk
 ===============
 
-(a spike of) a Java client sdk, utilizing JAX-RS and Jackson
+EP Java Client sdk, utilizing JAX-RS and Jackson
 
 The [Main](src/main/java/com/elasticpath/rest/sdk/Main.java) class is a Java console executable (runnable from an IDE) that represents a sample client of the JavaSDK.
 
@@ -10,11 +10,10 @@ Commit e66cadd22477cffc191e9a5c291ca601ac080d8a onwards represents a shift from 
 The classes under /model are used for Jackson deserialization examples. They are basic, automatic, and done quickly/hackily. For instance, using public fields. Can just use getters/setters in the future.
 
 #Todo
-* DI
-* OSGI-ify
 * Error handling (e.g. what happens if a JPath zoom does not exist?)
 * Tests
 * Better Jackson/JPath integration
+* Ensure the below docs are up to date
 
 #Zoom
 The [TotalZoom](src/main/java/com/elasticpath/rest/sdk/totals/TotalZoom.java) class shows an example of flattening a zoom object using [JsonPath](http://code.google.com/p/json-path/) on the string returned by JAX-RS, and some annotation processing.

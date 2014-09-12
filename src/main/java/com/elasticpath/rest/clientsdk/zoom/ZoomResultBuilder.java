@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk.zoom;
+package com.elasticpath.rest.clientsdk.zoom;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 
-import com.elasticpath.rest.sdk.annotations.JPath;
+import com.elasticpath.rest.clientsdk.annotations.JPath;
 
 @Named
 @Singleton

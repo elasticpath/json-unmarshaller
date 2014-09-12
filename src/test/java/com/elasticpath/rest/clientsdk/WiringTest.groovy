@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk
+package com.elasticpath.rest.clientsdk
 
 import javax.inject.Inject
 
@@ -9,8 +9,7 @@ import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 import org.springframework.test.context.support.AnnotationConfigContextLoader
 
-import com.elasticpath.rest.sdk.CortexClient
-import com.elasticpath.rest.sdk.config.SdkConfiguration
+import com.elasticpath.rest.clientsdk.config.SdkConfiguration
 
 @RunWith(SpringJUnit4ClassRunner)
 @ContextConfiguration(classes = SdkConfiguration, loader = AnnotationConfigContextLoader)

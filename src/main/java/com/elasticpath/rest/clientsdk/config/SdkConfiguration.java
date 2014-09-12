@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk.config;
+package com.elasticpath.rest.clientsdk.config;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.elasticpath.rest.sdk.CortexClient;
+import com.elasticpath.rest.clientsdk.DefaultCortexClient;
 
 @Configuration
 @ComponentScan("com.elasticpath.rest")
@@ -23,12 +23,12 @@ public class SdkConfiguration {
 	}
 
 	@Bean
-	Client authClient(CortexClient cortexClient) {
+	Client authClient(DefaultCortexClient cortexClient) {
 		return cortexClient.newAuthClient();
 	}
 
 	@Bean
-	Client cortexClient(CortexClient cortexClient) {
+	Client cortexClient(DefaultCortexClient cortexClient) {
 		return cortexClient.newCortexClient();
 	}
 }

@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk;
+package com.elasticpath.rest.clientsdk;
 
 import static javax.ws.rs.client.ClientBuilder.newClient;
 
@@ -7,14 +7,14 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.ws.rs.client.Client;
 
-import com.elasticpath.rest.sdk.config.JacksonProvider;
-import com.elasticpath.rest.sdk.oauth2.OAuth2ReaderInterceptor;
-import com.elasticpath.rest.sdk.oauth2.OAuth2RequestFilter;
-import com.elasticpath.rest.sdk.zoom.ZoomReaderInterceptor;
+import com.elasticpath.rest.clientsdk.config.JacksonProvider;
+import com.elasticpath.rest.clientsdk.oauth2.OAuth2ReaderInterceptor;
+import com.elasticpath.rest.clientsdk.oauth2.OAuth2RequestFilter;
+import com.elasticpath.rest.clientsdk.zoom.ZoomReaderInterceptor;
 
 @Named
 @Singleton
-public class CortexClient {
+public class DefaultCortexClient implements CortexClient {
 
 	@Inject
 	private JacksonProvider jacksonProvider;
@@ -28,6 +28,7 @@ public class CortexClient {
 	@Inject
 	private ZoomReaderInterceptor zoomReaderInterceptor;
 
+	@Override
 	public Client newCortexClient() {
 
 		return newClient()
@@ -36,6 +37,7 @@ public class CortexClient {
 				.register(oAuth2RequestFilter);
 	}
 
+	@Override
 	public Client newAuthClient() {
 		return newClient()
 				.register(jacksonProvider)

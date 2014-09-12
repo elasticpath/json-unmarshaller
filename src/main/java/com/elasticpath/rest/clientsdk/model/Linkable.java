@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk.model;
+package com.elasticpath.rest.clientsdk.model;
 
 public class Linkable {
 

@@ -1,4 +1,4 @@
-package com.elasticpath.rest.sdk.zoom;
+package com.elasticpath.rest.clientsdk.zoom;
 
 import java.io.IOException;
 
@@ -9,9 +9,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
-import com.elasticpath.rest.sdk.annotations.Zoom;
-import com.elasticpath.rest.sdk.annotations.Zooms;
-import com.elasticpath.rest.sdk.debug.Logger;
+import com.elasticpath.rest.clientsdk.annotations.Zoom;
+import com.elasticpath.rest.clientsdk.annotations.Zooms;
+import com.elasticpath.rest.clientsdk.debug.Logger;
 
 @Named
 @Singleton
