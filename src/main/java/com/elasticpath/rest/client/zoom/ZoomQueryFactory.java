@@ -15,28 +15,31 @@ import com.elasticpath.rest.client.zoom.model.ZoomModel;
 @Singleton
 public class ZoomQueryFactory {
 
+	private final Joiner relationJoiner = Joiner.on(":");
+	private final Joiner relationPathJoiner = Joiner.on(",");
+
 	public String create(ZoomModel zoom) {
 
 		Iterable<RelationPathModel> relationPaths = zoom.getRelationPaths();
 
-		return joinZooms(
+		return joinRelationPaths(
 				transform(relationPaths, new Function<RelationPathModel, String>() {
 					public String apply(RelationPathModel relationPath) {
-						return joinRelationPaths(relationPath.getRelations());
+						return joinRelations(relationPath.getRelations());
 					}
 				})
 		);
 	}
 
-	private String joinRelationPaths(Iterable<String> relationPaths) {
+	private String joinRelations(Iterable<String> relations) {
 
-		return Joiner.on(":")
-				.join(relationPaths);
+		return relationJoiner
+				.join(relations);
 	}
 
-	private String joinZooms(Iterable<String> zooms) {
+	private String joinRelationPaths(Iterable<String> relationPaths) {
 
-		return Joiner.on(",")
-				.join(zooms);
+		return relationPathJoiner
+				.join(relationPaths);
 	}
 }
