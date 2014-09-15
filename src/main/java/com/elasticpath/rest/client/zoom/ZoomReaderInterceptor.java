@@ -22,17 +22,17 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 	@Override
 	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
 
-		String jsonResult;
-		if (zoomModelIntrospector.isZoom(context.getType())) {
-			Class<?> unmarshalledType = context.getType();
-			context.setType(String.class);
-
-			jsonResult = (String) context.proceed();
-
-			return zoomResultFactory.create(unmarshalledType, jsonResult);
+		if (!zoomModelIntrospector.isZoom(context.getType())) {
+			return context.proceed();
 		}
 
-		return context.proceed();
+		Class<?> unmarshalledType = context.getType();
+
+		context.setType(String.class);
+
+		String jsonResult = (String) context.proceed();
+
+		return zoomResultFactory.create(unmarshalledType, jsonResult);
 	}
 
 }
