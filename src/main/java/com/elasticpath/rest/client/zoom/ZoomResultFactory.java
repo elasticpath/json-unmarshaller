@@ -17,13 +17,13 @@ import com.elasticpath.rest.client.annotations.JsonPath;
 
 @Named
 @Singleton
-public class ZoomResultBuilder {
+public class ZoomResultFactory {
 
 	@Inject
 	private ObjectMapper objectMapper;
 
-	public <T> T parseZoomResult(Class<T> resultClass,
-								 String jsonResult) throws IOException {
+	public <T> T create(Class<T> resultClass,
+						String jsonResult) throws IOException {
 		ReadContext jsonContext = com.jayway
 				.jsonpath
 				.JsonPath

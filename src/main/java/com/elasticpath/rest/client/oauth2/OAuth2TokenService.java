@@ -6,6 +6,7 @@ import com.elasticpath.rest.client.oauth2.model.OAuth2Token;
  * OAuth2Token Service.
  */
 public interface OAuth2TokenService {
+
 	/**
 	 * Retrieves an Oauth2Token.
 	 *

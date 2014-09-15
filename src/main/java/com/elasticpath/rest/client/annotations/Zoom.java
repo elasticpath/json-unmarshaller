@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 
 @Target({TYPE})
 @Retention(RUNTIME)
-public @interface ZoomTarget {
+public @interface Zoom {
 
-	public String[] value();
+	public RelationPath[] value();
 }
