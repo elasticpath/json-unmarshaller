@@ -9,14 +9,9 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
-import com.elasticpath.rest.client.debug.Logger;
-
 @Named
 @Singleton
 public class ZoomReaderInterceptor implements ReaderInterceptor {
-
-	@Inject
-	private Logger logger;
 
 	@Inject
 	private ZoomModelIntrospector zoomModelIntrospector;
@@ -33,7 +28,6 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 			context.setType(String.class);
 
 			jsonResult = (String) context.proceed();
-			logger.trace(jsonResult);
 
 			return zoomResultFactory.create(unmarshalledType, jsonResult);
 		}
