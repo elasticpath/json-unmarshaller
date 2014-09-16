@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.elasticpath.rest</groupId>
-	<artifactId>java-client</artifactId>
+	<artifactId>cortex-jaxrs-client</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
-	<name>EP ∷ Java Client</name>
-	<description>Elastic Path REST - Java Client</description>
+	<name>EP ∷ Cortex jax-rs Client</name>
+	<description>Elastic Path REST - Cortex jax-rs Client</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -120,7 +120,8 @@
 						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
 						<Embed-Directory>OSGI-INF/lib</Embed-Directory>
 						<Embed-Transitive>true</Embed-Transitive>
-						<Export-Service>com.elasticpath.rest.client</Export-Service>
+						<!--<_exportcontents>javax.ws.rs.client,*</_exportcontents>-->
+						<!--<Export-Package>javax.ws.rs.client</Export-Package>-->
 						<Import-Package>
 							*
 						</Import-Package>
