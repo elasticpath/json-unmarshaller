@@ -14,7 +14,7 @@ import com.elasticpath.rest.client.oauth2.model.OAuth2Token;
 @Singleton
 public class OAuth2AuthorizationService {
 
-	private static final String AUTH_URL = "??";
+	private static final String AUTH_URL = "http://localhost:9080/cortex/oauth2/tokens";
 
 	@Inject
 	private OAuth2TokenService oAuth2TokenService;
