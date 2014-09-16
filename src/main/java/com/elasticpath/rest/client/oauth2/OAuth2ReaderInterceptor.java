@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
@@ -19,7 +18,7 @@ public class OAuth2ReaderInterceptor implements ReaderInterceptor {
 	private OAuth2TokenService tokenService;
 
 	@Override
-	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
+	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException {
 
 		OAuth2Token oAuthHeaderToken = (OAuth2Token) context.proceed();
 

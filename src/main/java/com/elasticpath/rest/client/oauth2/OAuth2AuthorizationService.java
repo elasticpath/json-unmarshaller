@@ -14,7 +14,7 @@ import com.elasticpath.rest.client.oauth2.model.OAuth2Token;
 @Singleton
 public class OAuth2AuthorizationService {
 
-	private static final String targetUrl = "??";
+	private static final String AUTH_URL = "??";
 
 	@Inject
 	private OAuth2TokenService oAuth2TokenService;
@@ -23,7 +23,7 @@ public class OAuth2AuthorizationService {
 					 Form auth) {
 
 		OAuth2Token oAuth2Token = client
-				.target(targetUrl)
+				.target(AUTH_URL)
 				.request()
 				.post(form(auth))
 				.readEntity(OAuth2Token.class);

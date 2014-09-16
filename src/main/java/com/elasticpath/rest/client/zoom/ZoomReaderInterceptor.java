@@ -5,7 +5,6 @@ import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
@@ -20,7 +19,7 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 	private ZoomResultFactory zoomResultFactory;
 
 	@Override
-	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException, WebApplicationException {
+	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException {
 
 		if (!zoomModelIntrospector.isZoom(context.getType())) {
 			return context.proceed();

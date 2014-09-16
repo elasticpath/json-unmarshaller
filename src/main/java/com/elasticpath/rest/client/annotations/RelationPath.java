@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface RelationPath {
 
-	public String[] value();
+	String[] value();
 }

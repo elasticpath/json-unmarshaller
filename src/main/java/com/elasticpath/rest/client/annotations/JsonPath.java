@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface JsonPath {
 
-	public String value();
+	String value();
 }

@@ -12,12 +12,12 @@ public interface OAuth2TokenService {
 	 *
 	 * @return the {@link com.elasticpath.rest.client.oauth2.model.OAuth2Token}
 	 */
-	public OAuth2Token getToken();
+	OAuth2Token getToken();
 
 	/**
 	 * Stores the Oauth2Token.
 	 *
 	 * @param authToken the {@link com.elasticpath.rest.client.oauth2.model.OAuth2Token}
 	 */
-	public void storeToken(OAuth2Token authToken);
+	void storeToken(OAuth2Token authToken);
 }

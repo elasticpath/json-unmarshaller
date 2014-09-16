@@ -12,17 +12,17 @@ import com.elasticpath.rest.client.oauth2.model.OAuth2Token;
 @Singleton
 public class LocalOAuth2TokenService implements OAuth2TokenService {
 
-	private static final ThreadLocal<OAuth2Token> token = new ThreadLocal<>();
+	private static final ThreadLocal<OAuth2Token> LOCAL_AUTH_TOKEN = new ThreadLocal<>();
 
 	@Override
 	public OAuth2Token getToken() {
-		return LocalOAuth2TokenService.token
+		return LocalOAuth2TokenService.LOCAL_AUTH_TOKEN
 				.get();
 	}
 
 	@Override
 	public void storeToken(OAuth2Token authToken) {
-		LocalOAuth2TokenService.token
+		LocalOAuth2TokenService.LOCAL_AUTH_TOKEN
 				.set(authToken);
 	}
 }
