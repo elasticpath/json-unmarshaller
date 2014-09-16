@@ -5,26 +5,29 @@ import static javax.ws.rs.client.Entity.form;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Form;
-import javax.ws.rs.core.UriBuilder;
 
-import com.elasticpath.rest.client.DefaultCortexClient;
 import com.elasticpath.rest.client.oauth2.model.OAuth2Token;
 
 @Named
 @Singleton
 public class OAuth2AuthorizationService {
 
+	private static final String targetUrl = "??";
+
 	@Inject
-	private DefaultCortexClient cortexClient;
+	private OAuth2TokenService oAuth2TokenService;
 
-	public OAuth2Token auth(UriBuilder targetUrl,
-							Form auth) {
+	public void auth(Client client,
+					 Form auth) {
 
-		return cortexClient.newAuthClient()
+		OAuth2Token oAuth2Token = client
 				.target(targetUrl)
 				.request()
 				.post(form(auth))
 				.readEntity(OAuth2Token.class);
+
+		oAuth2TokenService.storeToken(oAuth2Token);
 	}
 }
