@@ -78,6 +78,13 @@
 			<version>18.0</version>
 		</dependency>
 
+		<!--Logging-->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.7</version>
+		</dependency>
+
 		<!--Test-->
 		<dependency>
 			<groupId>junit</groupId>
