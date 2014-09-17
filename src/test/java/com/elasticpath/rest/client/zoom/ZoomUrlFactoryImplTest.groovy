@@ -15,7 +15,7 @@ import org.mockito.runners.MockitoJUnitRunner
 import com.elasticpath.rest.client.zoom.model.ZoomModel
 
 @RunWith(MockitoJUnitRunner)
-class ZoomUrlFactoryTest {
+class ZoomUrlFactoryImplTest {
 
 	@Mock
 	ZoomModelIntrospector zoomModelIntrospector
@@ -24,7 +24,7 @@ class ZoomUrlFactoryTest {
 	ZoomQueryFactory zoomQueryFactory
 
 	@InjectMocks
-	ZoomUrlFactory zoomUrlFactory
+	ZoomUrlFactoryImpl zoomUrlFactory
 
 	Class<?> irrelevantClass = null
 

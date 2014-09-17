@@ -16,7 +16,7 @@
 
 		<org.glassfish.jersey.version>2.12</org.glassfish.jersey.version>
 		<org.slf4j.version>1.7.7</org.slf4j.version>
-		<org.springframework.version>3.2.11.RELEASE</org.springframework.version>
+		<org.springframework.version>3.1.4.RELEASE</org.springframework.version>
 	</properties>
 
 	<organization>
@@ -43,6 +43,13 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
 			<version>${org.springframework.version}</version>
+		</dependency>
+
+		<!--Required for Spring-->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>2.2.2</version>
 		</dependency>
 
 		<!--JAX-RS with Jersey implementation-->
@@ -84,6 +91,13 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${org.slf4j.version}</version>
+		</dependency>
+
+		<!--OSGI-->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.scr.annotations</artifactId>
+			<version>1.9.8</version>
 		</dependency>
 
 		<!--Test-->
@@ -128,6 +142,20 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-scr-plugin</artifactId>
+				<version>1.20.0</version>
+				<executions>
+					<execution>
+						<id>generate-scr-scrdescriptor</id>
+						<goals>
+							<goal>scr</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>2.5.3</version>
 				<extensions>true</extensions>
@@ -138,9 +166,7 @@
 						<Embed-Transitive>true</Embed-Transitive>
 						<!--<_exportcontents>javax.ws.rs.client,*</_exportcontents>-->
 						<!--<Export-Package>javax.ws.rs.client</Export-Package>-->
-						<Import-Package>
-							*
-						</Import-Package>
+						<Import-Package>*;resolution:=optional</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
