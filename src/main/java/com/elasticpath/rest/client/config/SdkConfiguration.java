@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("com.elasticpath.rest")
+@ComponentScan("com.elasticpath.rest.client")
 public class SdkConfiguration {
 
 	@Bean
