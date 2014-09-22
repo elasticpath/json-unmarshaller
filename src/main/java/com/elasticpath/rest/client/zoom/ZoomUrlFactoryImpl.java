@@ -6,13 +6,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
-
 @Named
 @Singleton
-@Component
-@Service
 public class ZoomUrlFactoryImpl implements ZoomUrlFactory {
 
 	@Inject

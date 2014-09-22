@@ -7,17 +7,12 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.ws.rs.client.Client;
 
-import org.apache.felix.scr.annotations.Component;
-import org.apache.felix.scr.annotations.Service;
-
 import com.elasticpath.rest.client.config.JacksonProvider;
 import com.elasticpath.rest.client.oauth2.OAuth2RequestFilter;
 import com.elasticpath.rest.client.zoom.ZoomReaderInterceptor;
 
 @Named
 @Singleton
-@Component
-@Service
 public class DefaultCortexClient implements CortexClient {
 
 	@Inject

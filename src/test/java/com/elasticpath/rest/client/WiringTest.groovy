@@ -1,25 +1,23 @@
 package com.elasticpath.rest.client
 
-import javax.inject.Inject
+import static org.junit.Assert.assertNotNull
 
 import org.junit.Test
-import org.junit.runner.RunWith
 
-import org.springframework.test.context.ContextConfiguration
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
-import org.springframework.test.context.support.AnnotationConfigContextLoader
+import com.google.inject.Guice
+import com.google.inject.Injector
 
-import com.elasticpath.rest.client.config.SdkConfiguration
+import com.elasticpath.rest.client.zoom.ZoomUrlFactory
 
-@RunWith(SpringJUnit4ClassRunner)
-@ContextConfiguration(classes = SdkConfiguration, loader = AnnotationConfigContextLoader)
 class WiringTest {
 
-	@Inject
-	CortexClient cortexClient
 
 	@Test
 	void 'Wiring test'() {
-		// simply passing shows the wiring works
+		Injector injector = Guice.createInjector(new GuiceConfig());
+		CortexClient cortexClient = injector.getInstance(CortexClient.class);
+		ZoomUrlFactory zoomUrlFactory = injector.getInstance(ZoomUrlFactory.class);
+		assertNotNull(cortexClient);
+		assertNotNull(zoomUrlFactory);
 	}
 }
