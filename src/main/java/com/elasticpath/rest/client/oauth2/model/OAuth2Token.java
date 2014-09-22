@@ -13,6 +13,11 @@ public class OAuth2Token {
 		this.headerName = "Authorization";
 	}
 
+	public OAuth2Token(String token) {
+		this();
+		this.headerValue = token;
+	}
+
 	public String getHeaderName() {
 		return headerName;
 	}

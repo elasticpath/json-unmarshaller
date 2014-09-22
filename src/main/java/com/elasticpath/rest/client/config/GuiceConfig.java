@@ -1,4 +1,4 @@
-package com.elasticpath.rest.client;
+package com.elasticpath.rest.client.config;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
+import com.elasticpath.rest.client.CortexClient;
+import com.elasticpath.rest.client.DefaultCortexClient;
 import com.elasticpath.rest.client.oauth2.LocalOAuth2TokenService;
 import com.elasticpath.rest.client.oauth2.OAuth2TokenService;
 import com.elasticpath.rest.client.zoom.ZoomUrlFactory;

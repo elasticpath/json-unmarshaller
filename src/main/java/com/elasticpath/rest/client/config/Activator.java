@@ -1,6 +1,4 @@
-package com.elasticpath.rest.client;
-
-import java.util.Hashtable;
+package com.elasticpath.rest.client.config;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -8,6 +6,9 @@ import com.google.inject.Injector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import com.elasticpath.rest.client.CortexClient;
+import com.elasticpath.rest.client.oauth2.OAuth2RequestFilter;
+import com.elasticpath.rest.client.zoom.ZoomReaderInterceptor;
 import com.elasticpath.rest.client.zoom.ZoomUrlFactory;
 
 /**
@@ -27,13 +28,27 @@ public class Activator implements BundleActivator {
 	 **/
 	public void start(BundleContext context)
 	{
-		Injector injector = Guice.createInjector(new GuiceConfig());
+		Injector injector = Guice.createInjector(
+				new GuiceConfig()
+		);
 		CortexClient cortexClient = injector.getInstance(CortexClient.class);
 		ZoomUrlFactory zoomUrlFactory = injector.getInstance(ZoomUrlFactory.class);
 
-		Hashtable<String, String> props = new Hashtable<>();
-		context.registerService(CortexClient.class.getName(), cortexClient, props);
-		context.registerService(ZoomUrlFactory.class.getName(), zoomUrlFactory, props);
+		context.registerService(CortexClient.class.getName(), cortexClient, null);
+		context.registerService(ZoomUrlFactory.class.getName(), zoomUrlFactory, null);
+
+		register(context, injector, JacksonProvider.class);
+		register(context, injector, ZoomReaderInterceptor.class);
+	}
+
+	private void register(BundleContext context,
+						  Injector injector,
+						  Class<?> klass) {
+		context.registerService(
+				klass.getName(),
+				injector.getInstance(klass),
+				null
+		);
 	}
 
 	/**

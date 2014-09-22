@@ -1,5 +1,7 @@
 package com.elasticpath.rest.client.zoom;
 
+import static java.lang.String.format;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -13,14 +15,22 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.ReadContext;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.elasticpath.rest.client.annotations.JsonPath;
 
 @Named
 @Singleton
 public class ZoomResultFactory {
 
+	private static final Logger log = LoggerFactory.getLogger(ZoomResultFactory.class);
+
 	@Inject
 	private ObjectMapper objectMapper;
+
+	@Inject
+	private ZoomUrlFactory zoomUrlFactory;
 
 	public <T> T create(Class<T> resultClass,
 						String jsonResult) throws IOException {
@@ -28,6 +38,7 @@ public class ZoomResultFactory {
 				.jsonpath
 				.JsonPath
 				.parse(jsonResult);
+
 		try {
 			T resultObject = resultClass.newInstance();
 
@@ -55,6 +66,11 @@ public class ZoomResultFactory {
 			}
 			return resultObject;
 		} catch (IllegalAccessException | InstantiationException e) {
+			log.error(format(
+					"[%s] failed JsonPath parsing for zoom [%s] with error: ",
+					resultClass.getName(),
+					zoomUrlFactory.create("", resultClass)
+			), e);
 			throw new IllegalArgumentException(e);
 		}
 	}

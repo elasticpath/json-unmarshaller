@@ -7,6 +7,7 @@ import org.junit.Test
 import com.google.inject.Guice
 import com.google.inject.Injector
 
+import com.elasticpath.rest.client.config.GuiceConfig
 import com.elasticpath.rest.client.zoom.ZoomUrlFactory
 
 class WiringTest {
