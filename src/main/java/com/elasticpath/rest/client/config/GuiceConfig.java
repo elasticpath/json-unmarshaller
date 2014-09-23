@@ -8,8 +8,6 @@ import com.google.inject.Provides;
 
 import com.elasticpath.rest.client.CortexClient;
 import com.elasticpath.rest.client.DefaultCortexClient;
-import com.elasticpath.rest.client.oauth2.LocalOAuth2TokenService;
-import com.elasticpath.rest.client.oauth2.OAuth2TokenService;
 import com.elasticpath.rest.client.zoom.ZoomUrlFactory;
 import com.elasticpath.rest.client.zoom.ZoomUrlFactoryImpl;
 
@@ -21,7 +19,6 @@ public class GuiceConfig extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(CortexClient.class).to(DefaultCortexClient.class);
-		bind(OAuth2TokenService.class).to(LocalOAuth2TokenService.class);
 		bind(ZoomUrlFactory.class).to(ZoomUrlFactoryImpl.class);
 	}
 

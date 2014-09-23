@@ -4,7 +4,7 @@ import javax.ws.rs.client.Client;
 
 public interface CortexClient {
 
-	Client newOAuth2RestClient();
+	Client newOAuth2RestClientForToken(String authToken);
 
 	Client newAuthClient();
 }
