@@ -14,6 +14,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+		<com.fasterxml.jackson.version>2.4.2</com.fasterxml.jackson.version>
 		<org.glassfish.jersey.version>2.12</org.glassfish.jersey.version>
 		<org.slf4j.version>1.7.6</org.slf4j.version>
 	</properties>
@@ -63,13 +64,13 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.4.2</version>
+			<version>${com.fasterxml.jackson.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-base</artifactId>
-			<version>2.4.2</version>
+			<version>${com.fasterxml.jackson.version}</version>
 		</dependency>
 
 		<dependency>
@@ -140,10 +141,10 @@
 						<Embed-Transitive>true</Embed-Transitive>
 						<_exportcontents>
 							com.elasticpath.rest.client.*,
-							com.jayway.jsonpath.*,
-							javax.ws.rs.*,
 							com.fasterxml.jackson.annotation,
-							com.google.common.collect
+							com.google.common.collect,
+							com.jayway.jsonpath.*,
+							javax.ws.rs.*
 						</_exportcontents>
 						<Import-Package>*;resolution:=optional</Import-Package>
 					</instructions>

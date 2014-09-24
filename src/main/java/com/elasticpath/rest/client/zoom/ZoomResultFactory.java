@@ -26,7 +26,7 @@ import com.elasticpath.rest.client.annotations.JsonPath;
 @Singleton
 public class ZoomResultFactory {
 
-	private static final Logger log = LoggerFactory.getLogger(ZoomResultFactory.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ZoomResultFactory.class);
 
 	@Inject
 	private ObjectMapper objectMapper;
@@ -53,7 +53,7 @@ public class ZoomResultFactory {
 					if (field.getType().isAssignableFrom(Iterable.class)) {
 						read = new ArrayList();
 					} else {
-						log.error(e.getMessage(), e);
+						LOG.error(e.getMessage(), e);
 					}
 				}
 				Class<?> fieldType = field.getType();
@@ -77,7 +77,7 @@ public class ZoomResultFactory {
 			}
 			return resultObject;
 		} catch (IllegalAccessException | InstantiationException e) {
-			log.error(format(
+			LOG.error(format(
 					"[%s] failed JsonPath parsing for zoom [%s] with error: ",
 					resultClass.getName(),
 					zoomUrlFactory.create("", resultClass)
