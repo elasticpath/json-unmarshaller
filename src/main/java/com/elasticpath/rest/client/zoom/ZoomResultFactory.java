@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,6 +14,7 @@ import javax.inject.Singleton;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 
 import org.slf4j.Logger;
@@ -44,7 +46,16 @@ public class ZoomResultFactory {
 
 			for (Field field : resultClass.getDeclaredFields()) {
 				JsonPath annotation = field.getAnnotation(JsonPath.class);
-				Object read = jsonContext.read(annotation.value());
+				Object read = null;
+				try {
+					read = jsonContext.read(annotation.value());
+				} catch (PathNotFoundException e) {
+					if (field.getType().isAssignableFrom(Iterable.class)) {
+						read = new ArrayList();
+					} else {
+						log.error(e.getMessage(), e);
+					}
+				}
 				Class<?> fieldType = field.getType();
 				Type genericType = field.getGenericType();
 

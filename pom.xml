@@ -67,6 +67,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.fasterxml.jackson.jaxrs</groupId>
+			<artifactId>jackson-jaxrs-base</artifactId>
+			<version>2.4.2</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
@@ -76,13 +82,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${org.slf4j.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
 			<version>${org.slf4j.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -142,7 +141,9 @@
 						<_exportcontents>
 							com.elasticpath.rest.client.*,
 							com.jayway.jsonpath.*,
-							javax.ws.rs.*
+							javax.ws.rs.*,
+							com.fasterxml.jackson.annotation,
+							com.google.common.collect
 						</_exportcontents>
 						<Import-Package>*;resolution:=optional</Import-Package>
 					</instructions>
