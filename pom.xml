@@ -207,4 +207,19 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>${release.repository.url}</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>${snapshot.repository.url}</url>
+		</snapshotRepository>
+		<site>
+			<id>site</id>
+			<url>${site.url}</url>
+		</site>
+	</distributionManagement>
 </project>
