@@ -1,0 +1,176 @@
+<?xml version="1.0"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+	<mirrors>
+		<mirror>
+			<id>ep-psi</id>
+			<url>http://maven.elasticpath.com/nexus/content/groups/psi</url>
+			<mirrorOf>external:*,!aem-snapshots,!aem-releases,!ep-snapshots,!ep-releases,!adobe-non-public</mirrorOf>
+		</mirror>
+	</mirrors>
+
+	<pluginGroups>
+		<pluginGroup>com.elasticpath.tools</pluginGroup>
+	</pluginGroups>
+
+	<activeProfiles>
+		<activeProfile>build-server-repositories</activeProfile>
+		<activeProfile>ep-aem-snapshot-repositories</activeProfile>
+		<activeProfile>ep-aem-release-repositories</activeProfile>
+		<activeProfile>local-adobe-repositories</activeProfile>
+		<activeProfile>ep-developer</activeProfile>
+	</activeProfiles>
+
+	<profiles>
+		<profile>
+			<id>build-server-repositories</id>
+
+			<properties>
+				<ep.aem.nexus.url>http://10.10.2.12/nexus</ep.aem.nexus.url>
+
+				<!--                           -->
+				<!-- AEM Repository Properties -->
+				<!--                           -->
+
+				<aem.snapshots.repository.url>${ep.aem.nexus.url}/content/repositories/AEM-Snapshots/</aem.snapshots.repository.url>
+				<aem.monthly.drops.repository.url>${ep.aem.nexus.url}/content/repositories/AEM-Monthly-Drops/</aem.monthly.drops.repository.url>
+
+				<!-- By default we use the monthly drops repo for resolving all AEM releases -->
+				<aem.releases.repository.url>${aem.monthly.drops.repository.url}</aem.releases.repository.url>
+
+				<!--                          -->
+				<!-- EP Repository Properties -->
+				<!--                          -->
+
+				<stable.ep.snapshots.repository.url>${ep.aem.nexus.url}/content/groups/Stable-EP-Snapshots/</stable.ep.snapshots.repository.url>
+				<ep.monthly.drops.repository.url>${ep.aem.nexus.url}/content/groups/EP-Monthly-Drops/</ep.monthly.drops.repository.url>
+
+				<!-- By default we use the stable ep snapshots from the AEM nexus server -->
+				<ep.snapshots.repository.url>${stable.ep.snapshots.repository.url}</ep.snapshots.repository.url>
+				<!-- By default we use the monthly drops repo for resolving all EP releases -->
+				<ep.releases.repository.url>${ep.monthly.drops.repository.url}</ep.releases.repository.url>
+
+				<!--                             -->
+				<!-- Adobe Repository Properties -->
+				<!--                             -->
+
+				<local.non.public.adobe.repository.url>${ep.aem.nexus.url}/content/repositories/Adobe-Non-Public</local.non.public.adobe.repository.url>
+
+				<!--                             -->
+				<!-- Snapshot Refresh Properties -->
+				<!--                             -->
+
+				<!-- Always check for updates to AEM snapshots -->
+				<aem.snapshot.refresh.policy>always</aem.snapshot.refresh.policy>
+
+				<!-- Check for updates to EP snapshots every 4 hours -->
+				<ep.snapshot.refresh.interval>240</ep.snapshot.refresh.interval>
+				<ep.snapshot.refresh.policy>interval:${ep.snapshot.refresh.interval}</ep.snapshot.refresh.policy>
+
+				<!--                     -->
+				<!-- Deployment settings -->
+				<!--                     -->
+
+				<snapshot.repository.url>${aem.snapshots.repository.url}</snapshot.repository.url>
+				<release.repository.url>${aem.monthly.drops.repository.url}</release.repository.url>
+				<site.url/>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>ep-aem-snapshot-repositories</id>
+
+			<repositories>
+				<repository>
+					<id>aem-snapshots</id>
+					<url>${aem.snapshots.repository.url}</url>
+					<releases>
+						<enabled>false</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>${aem.snapshot.refresh.policy}</updatePolicy>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>ep-snapshots</id>
+					<url>${ep.snapshots.repository.url}</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>${ep.snapshot.refresh.policy}</updatePolicy>
+					</snapshots>
+				</repository>
+			</repositories>
+		</profile>
+
+		<profile>
+			<id>ep-aem-release-repositories</id>
+
+			<repositories>
+				<repository>
+					<id>aem-releases</id>
+					<url>${aem.releases.repository.url}</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>ep-releases</id>
+					<url>${ep.releases.repository.url}</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+		</profile>
+
+		<profile>
+			<id>local-adobe-repositories</id>
+
+			<repositories>
+				<repository>
+					<id>adobe-non-public</id>
+					<url>${local.non.public.adobe.repository.url}</url>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</repository>
+			</repositories>
+		</profile>
+
+		<profile>
+			<id>ep-developer</id>
+			<properties>
+				<ep.log.level>INFO</ep.log.level>
+				<ep.log.dir>target/logs</ep.log.dir>
+			</properties>
+		</profile>
+	</profiles>
+
+	<!-- These passwords require the ~/.m2/settings-security.xml file on Build Slaves -->
+	<!-- Follow the guide here: http://maven.apache.org/guides/mini/guide-encryption.html#How_to_encrypt_server_passwords to set your passwords in here encrypted. -->
+	<servers>
+		<server>
+			<id>snapshots</id>
+			<username>maven-deployer</username>
+			<password>{NF/4B2eF8JwH5d73ojeEc3kycLZWrSjCQHY5x0FAfQQ=}</password>
+		</server>
+		<server>
+			<id>releases</id>
+			<username>maven-deployer</username>
+			<password>{NF/4B2eF8JwH5d73ojeEc3kycLZWrSjCQHY5x0FAfQQ=}</password>
+		</server>
+	</servers>
+</settings>
