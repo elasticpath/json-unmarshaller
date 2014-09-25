@@ -37,39 +37,28 @@ public class JsonPathResultFactory {
 
 	public <T> T create(Class<T> resultClass,
 						String jsonResult) throws IOException {
+
 		ReadContext jsonContext = com.jayway
 				.jsonpath
 				.JsonPath
 				.parse(jsonResult);
-
 		try {
 			T resultObject = resultClass.newInstance();
 
 			for (Field field : resultClass.getDeclaredFields()) {
 				JsonPath annotation = field.getAnnotation(JsonPath.class);
-				Object read = null;
-				try {
-					read = jsonContext.read(annotation.value());
-				} catch (PathNotFoundException e) {
-					if (field.getType().isAssignableFrom(Iterable.class)) {
-						read = new ArrayList();
-					} else {
-						LOG.error(e.getMessage(), e);
-					}
-				}
 				Class<?> fieldType = field.getType();
+				Object read = readField(jsonContext, annotation, fieldType);
 				Type genericType = field.getGenericType();
 
 				if (fieldType.isPrimitive()) {
 					field.set(resultObject, read);
 				} else if (genericType instanceof ParameterizedType) {
-					ParameterizedType genericType1 = (ParameterizedType) genericType;
-					Class aClass = (Class) genericType1.getActualTypeArguments()[0];
+					Class actualTypeArgument = getActualTypeArgument(genericType);
 
 					JavaType typedField = objectMapper.getTypeFactory()
-							.constructParametricType(fieldType, aClass);
-					Object value = objectMapper.readValue(String.valueOf(read), typedField);
-					field.set(resultObject, value);
+							.constructParametricType(fieldType, actualTypeArgument);
+					field.set(resultObject, objectMapper.readValue(String.valueOf(read), typedField));
 				} else if (fieldType.isAssignableFrom(String.class)) {
 					field.set(resultObject, read);
 				} else {
@@ -85,5 +74,25 @@ public class JsonPathResultFactory {
 			), e);
 			throw new IllegalArgumentException(e);
 		}
+	}
+
+	private Object readField(ReadContext jsonContext,
+							 JsonPath annotation,
+							 Class<?> fieldType) {
+		Object read = null;
+		try {
+			read = jsonContext.read(annotation.value());
+		} catch (PathNotFoundException e) {
+			if (fieldType.isAssignableFrom(Iterable.class)) {
+				read = new ArrayList();
+			} else {
+				LOG.error(e.getMessage(), e);
+			}
+		}
+		return read;
+	}
+
+	private Class getActualTypeArgument(Type genericType) {
+		return (Class) ((ParameterizedType) genericType).getActualTypeArguments()[0];
 	}
 }
