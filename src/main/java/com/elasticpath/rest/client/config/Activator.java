@@ -7,6 +7,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.elasticpath.rest.client.CortexClient;
+import com.elasticpath.rest.client.deserialization.JacksonProvider;
 import com.elasticpath.rest.client.zoom.ZoomReaderInterceptor;
 import com.elasticpath.rest.client.zoom.ZoomUrlFactory;
 
