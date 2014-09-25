@@ -52,17 +52,17 @@ public class JsonPathResultFactory {
 				Type genericType = field.getGenericType();
 
 				if (fieldType.isPrimitive()) {
-					field.set(resultObject, read);
+					setField(resultObject, field, read);
 				} else if (genericType instanceof ParameterizedType) {
 					Class actualTypeArgument = getActualTypeArgument(genericType);
 
 					JavaType typedField = objectMapper.getTypeFactory()
 							.constructParametricType(fieldType, actualTypeArgument);
-					field.set(resultObject, objectMapper.readValue(String.valueOf(read), typedField));
+					setField(resultObject, field, objectMapper.readValue(String.valueOf(read), typedField));
 				} else if (fieldType.isAssignableFrom(String.class)) {
-					field.set(resultObject, read);
+					setField(resultObject, field, read);
 				} else {
-					field.set(resultObject, objectMapper.readValue(String.valueOf(read), fieldType));
+					setField(resultObject, field, objectMapper.readValue(String.valueOf(read), fieldType));
 				}
 			}
 			return resultObject;
@@ -76,6 +76,14 @@ public class JsonPathResultFactory {
 		}
 	}
 
+	private <T> void setField(T resultObject,
+							  Field field,
+							  Object value) throws IllegalAccessException, IOException {
+		field.setAccessible(true);
+		field.set(resultObject, value);
+		field.setAccessible(false);
+	}
+
 	private Object readField(ReadContext jsonContext,
 							 JsonPath annotation,
 							 Class<?> fieldType) {
@@ -83,7 +91,7 @@ public class JsonPathResultFactory {
 		try {
 			read = jsonContext.read(annotation.value());
 		} catch (PathNotFoundException e) {
-			if (fieldType.isAssignableFrom(Iterable.class)) {
+			if (Iterable.class.isAssignableFrom(fieldType)) {
 				read = new ArrayList();
 			} else {
 				LOG.error(e.getMessage(), e);
