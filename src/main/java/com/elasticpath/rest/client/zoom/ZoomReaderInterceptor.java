@@ -8,6 +8,8 @@ import javax.inject.Singleton;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
+import com.elasticpath.rest.client.deserialization.JsonPathResultFactory;
+
 @Named
 @Singleton
 public class ZoomReaderInterceptor implements ReaderInterceptor {
@@ -16,7 +18,7 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 	private ZoomModelIntrospector zoomModelIntrospector;
 
 	@Inject
-	private ZoomResultFactory zoomResultFactory;
+	private JsonPathResultFactory jsonPathResultFactory;
 
 	@Override
 	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException {
@@ -31,7 +33,7 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 
 		String jsonResult = (String) context.proceed();
 
-		return zoomResultFactory.create(unmarshalledType, jsonResult);
+		return jsonPathResultFactory.create(unmarshalledType, jsonResult);
 	}
 
 }

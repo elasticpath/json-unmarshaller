@@ -1,4 +1,4 @@
-package com.elasticpath.rest.client.zoom;
+package com.elasticpath.rest.client.deserialization;
 
 import static java.lang.String.format;
 
@@ -21,12 +21,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elasticpath.rest.client.annotations.JsonPath;
+import com.elasticpath.rest.client.zoom.ZoomUrlFactory;
 
 @Named
 @Singleton
-public class ZoomResultFactory {
+public class JsonPathResultFactory {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ZoomResultFactory.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JsonPathResultFactory.class);
 
 	@Inject
 	private ObjectMapper objectMapper;
