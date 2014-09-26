@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd">
+	<mirrors>
+		<mirror>
+			<id>elasticpath</id>
+			<!-- Use same mirror as Cortex project -->
+			<url>http://maven.elasticpath.com/nexus/content/groups/cortex-1.10.x-build-server-group</url>
+			<mirrorOf>external:*</mirrorOf>
+		</mirror>
+	</mirrors>
+
+	<!-- These passwords require the ~/.m2/settings-security.xml file on Build Slaves -->
+	<!-- Follow the guide here: http://maven.apache.org/guides/mini/guide-encryption.html#How_to_encrypt_server_passwords to set your passwords in here encrypted. -->
+	<servers>
+		<server>
+			<id>releases</id>
+			<username>maven-deployer</username>
+			<password>{NF/4B2eF8JwH5d73ojeEc3kycLZWrSjCQHY5x0FAfQQ=}</password>
+		</server>
+	</servers>
+</settings>
