@@ -16,7 +16,7 @@
 		<server>
 			<id>releases</id>
 			<username>maven-deployer</username>
-			<password>{NF/4B2eF8JwH5d73ojeEc3kycLZWrSjCQHY5x0FAfQQ=}</password>
+			<password>{1Nte6eUXvf8H/nxSUvXr76rsa4h+AaQE5S5IsN977q0=}</password>
 		</server>
 	</servers>
 </settings>
