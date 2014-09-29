@@ -94,7 +94,7 @@ public class JsonPathResultFactory {
 			if (Iterable.class.isAssignableFrom(fieldType)) {
 				read = new ArrayList();
 			} else {
-				LOG.error(e.getMessage(), e);
+				LOG.trace(e.getMessage(), e);
 			}
 		}
 		return read;
