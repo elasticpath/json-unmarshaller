@@ -34,13 +34,21 @@ This may differ from other authentication implementations. This can be less manu
 * The interface is also simplified by not passing tokens around manually
 
 #JAX-RS
-Some notes.
-
 While using the fluent pattern, the actual remote call is done in two (broadly speaking) stages.
 * First the read to the remote url, which can be preceded by ClientRequest/ResponseFilters
   * This has only url data and POST data
   * The ability to modify or read the target oject type is not available here
 * Second the deserialization given the raw streams which can be surrounded by Reader/WriterInterceptors
+
+#JsonPath
+At present we have a primitive integration with JsonPath and Jackson. The limitations are listed here.
+* An object marked with a @Zoom will be eligible for JsonPath scanning
+* Fields in this object will be scanned for @JsonPath annotations
+* These fields are set through field injection - at present setXX() methods will not be called
+* Fields which are primitives or strings will be set directly
+* Fields which are objects will defer to Jackson
+  * Within those Jackson objects, all normal Jackson annotations (from com.fasterxml.jackson.core:jacskon-annotations) will be obeyed
+  * @JsonPath cannot be used within these Jackson objects
 
 Useful links
 * https://jersey.java.net/documentation/latest/user-guide.html#client
