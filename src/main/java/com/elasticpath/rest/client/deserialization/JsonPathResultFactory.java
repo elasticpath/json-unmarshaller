@@ -1,6 +1,8 @@
 package com.elasticpath.rest.client.deserialization;
 
+import static com.google.common.collect.FluentIterable.from;
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -14,6 +16,8 @@ import javax.inject.Singleton;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Predicate;
+import com.google.common.collect.FluentIterable;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 
@@ -30,6 +34,9 @@ public class JsonPathResultFactory {
 	private static final Logger LOG = LoggerFactory.getLogger(JsonPathResultFactory.class);
 
 	@Inject
+	private ClassInstantiator classInstantiator;
+
+	@Inject
 	private ObjectMapper objectMapper;
 
 	@Inject
@@ -42,10 +49,11 @@ public class JsonPathResultFactory {
 				.jsonpath
 				.JsonPath
 				.parse(jsonResult);
-		try {
-			T resultObject = resultClass.newInstance();
 
-			for (Field field : resultClass.getDeclaredFields()) {
+		try {
+			T resultObject = classInstantiator.newInstance(resultClass);
+
+			for (Field field : getInjectableFields(resultClass)) {
 				JsonPath annotation = field.getAnnotation(JsonPath.class);
 				Class<?> fieldType = field.getType();
 				Object read = readField(jsonContext, annotation, fieldType);
@@ -74,6 +82,15 @@ public class JsonPathResultFactory {
 			), e);
 			throw new IllegalArgumentException(e);
 		}
+	}
+
+	private <T> FluentIterable<Field> getInjectableFields(Class<T> resultClass) {
+		return from(asList(resultClass.getDeclaredFields()))
+				.filter(new Predicate<Field>() {
+					public boolean apply(Field input) {
+						return input.isAnnotationPresent(JsonPath.class);
+					}
+				});
 	}
 
 	private <T> void setField(T resultObject,
