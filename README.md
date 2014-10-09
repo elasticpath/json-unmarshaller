@@ -12,7 +12,7 @@ The classes under /model are used for Jackson deserialization examples. They are
 #Todo
 * Error handling (e.g. what happens if a JPath zoom does not exist?)
 * Tests
-* Better Jackson/JPath integration
+* Better [Jackson/JsonPath](#JsonPath) integration
 * Ensure the below docs are up to date
 
 #Zoom
@@ -49,6 +49,13 @@ At present we have a primitive integration with JsonPath and Jackson. The limita
 * Fields which are objects will defer to Jackson
   * Within those Jackson objects, all normal Jackson annotations (from com.fasterxml.jackson.core:jacskon-annotations) will be obeyed
   * @JsonPath cannot be used within these Jackson objects
+
+#Example
+[IntegrationTest](src/test/java/com/elasticpath/rest/client/integration/IntegrationTest.java) shows an example of using the client in a minimal situation.
+
+This uses a mock web server sending back dummy json responses (using [WireMock](http://wiremock.org/) to simulate a real situation, making this an integration test rather than a localised unit test).
+
+This example can be used or extended to test responses in a rapid fashion.
 
 Useful links
 * https://jersey.java.net/documentation/latest/user-guide.html#client
