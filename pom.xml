@@ -150,7 +150,7 @@
 						<Embed-Transitive>true</Embed-Transitive>
 						<_exportcontents>
 							com.elasticpath.rest.client.*,
-							com.fasterxml.jackson.annotation,
+							com.fasterxml.jackson.*,
 							com.google.common.collect,
 							com.jayway.jsonpath.*,
 							javax.ws.rs.*
