@@ -9,21 +9,21 @@ Commit e66cadd22477cffc191e9a5c291ca601ac080d8a onwards represents a shift from 
 
 The classes under /model are used for Jackson deserialization examples. They are basic, automatic, and done quickly/hackily. For instance, using public fields. Can just use getters/setters in the future.
 
-#Todo
+##Todo
 * Error handling (e.g. what happens if a JPath zoom does not exist?)
 * Tests
-* Better [Jackson/JsonPath](#JsonPath) integration
+* Better [Jackson/JsonPath](#jsonpath) integration
 * Ensure the below docs are up to date
 
-#Zoom
+##Zoom
 The [TotalZoom](src/main/java/com/elasticpath/rest/sdk/totals/TotalZoom.java) class shows an example of flattening a zoom object using [JsonPath](http://code.google.com/p/json-path/) on the string returned by JAX-RS, and some annotation processing.
 * Each @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java) contains a list, where each element represents a different step of a single zoom
 * Multiple @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java) can be present, representing multiple zooms executed in one query
 * Each field can be flattened from the zoom result by using @[JPath](src/main/java/com/elasticpath/rest/sdk/annotations/JPath.java). This uses JsonPath [syntax](http://goessner.net/articles/JsonPath/)
 * Zoom deserialization is handled automagically by a [ZoomReaderInterceptor](src/main/java/com/elasticpath/rest/sdk/zoom/ZoomReaderInterceptor.java), which plugs into JAX-RS. We can tell JAX-RS we are requesting a class that is annotated with @[Zoom](src/main/java/com/elasticpath/rest/sdk/annotations/Zoom.java), and it handles the rest
 
-#Authentication
-##OAuth2
+##Authentication
+###OAuth2
 * Post username/password to oauth service
 * Receive an access token, that gets added to the header of every subsequent request
 This may differ from other authentication implementations. This can be less manual and more configurable through JAX-RS filters/interceptors
@@ -33,14 +33,14 @@ This may differ from other authentication implementations. This can be less manu
 * With an alternate authentication mechanism, we can provide different features that can be registered with JAX-RS, making the client SDK solution agnostic
 * The interface is also simplified by not passing tokens around manually
 
-#JAX-RS
+##JAX-RS
 While using the fluent pattern, the actual remote call is done in two (broadly speaking) stages.
 * First the read to the remote url, which can be preceded by ClientRequest/ResponseFilters
   * This has only url data and POST data
   * The ability to modify or read the target oject type is not available here
 * Second the deserialization given the raw streams which can be surrounded by Reader/WriterInterceptors
 
-#JsonPath
+##JsonPath
 At present we have a primitive integration with JsonPath and Jackson. The limitations are listed here.
 * An object marked with a @Zoom will be eligible for JsonPath scanning
 * Fields in this object will be scanned for @JsonPath annotations
@@ -50,7 +50,7 @@ At present we have a primitive integration with JsonPath and Jackson. The limita
   * Within those Jackson objects, all normal Jackson annotations (from com.fasterxml.jackson.core:jacskon-annotations) will be obeyed
   * @JsonPath cannot be used within these Jackson objects
 
-#Example
+##Example
 [IntegrationTest](src/test/java/com/elasticpath/rest/client/integration/IntegrationTest.java) shows an example of using the client in a minimal situation.
 
 This uses a mock web server sending back dummy json responses (using [WireMock](http://wiremock.org/) to simulate a real situation, making this an integration test rather than a localised unit test).
