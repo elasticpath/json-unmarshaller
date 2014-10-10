@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,8 +17,8 @@ import javax.inject.Singleton;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
 
@@ -53,7 +54,7 @@ public class JsonPathResultFactory {
 		try {
 			T resultObject = classInstantiator.newInstance(resultClass);
 
-			for (Field field : getInjectableFields(resultClass)) {
+			for (Field field : getInjectableFields(getSuperclassHierarchy(resultClass))) {
 				JsonPath annotation = field.getAnnotation(JsonPath.class);
 				Class<?> fieldType = field.getType();
 				Object read = readField(jsonContext, annotation, fieldType);
@@ -84,8 +85,39 @@ public class JsonPathResultFactory {
 		}
 	}
 
-	private <T> FluentIterable<Field> getInjectableFields(Class<T> resultClass) {
-		return from(asList(resultClass.getDeclaredFields()))
+	/**
+	 * Retrieves current class and all superclasses except Object.
+	 *
+	 * @param resultClass leaf class in the hierarchy to scan
+	 * @return an iterable collection of classes
+	 */
+	private Iterable<Class<?>> getSuperclassHierarchy(Class<?> resultClass) {
+
+		Collection<Class<?>> superclasses = new ArrayList<>();
+		Class<?> klass = resultClass;
+		while (!(klass.equals(Object.class))) {
+			superclasses.add(klass);
+			klass = klass.getSuperclass();
+		}
+		return superclasses;
+	}
+
+	/**
+	 * Retrieves all fields valid for injection from the given iterable of classes.
+	 * <p/>
+	 * Fields are valid if they are annotated @JsonPath.
+	 *
+	 * @param classes any iterable collection of classes
+	 * @return an iterable collection of fields
+	 */
+	private Iterable<Field> getInjectableFields(Iterable<Class<?>> classes) {
+
+		return from(classes)
+				.transformAndConcat(new Function<Class<?>, Iterable<? extends Field>>() {
+					public Iterable<? extends Field> apply(java.lang.Class<?> input) {
+						return asList(input.getDeclaredFields());
+					}
+				})
 				.filter(new Predicate<Field>() {
 					public boolean apply(Field input) {
 						return input.isAnnotationPresent(JsonPath.class);

@@ -1,16 +1,16 @@
 package com.elasticpath.rest.client.deserialization
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import static org.mockito.BDDMockito.given
-import static org.mockito.Matchers.anyString
-import static org.mockito.Mockito.spy
-import static org.mockito.Mockito.times
-import static org.mockito.Mockito.verify
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
+import com.fasterxml.jackson.databind.ObjectMapper
+
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Spy
 import org.mockito.runners.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner)
@@ -19,11 +19,14 @@ class JsonPathResultFactoryTest {
 	@Mock
 	ClassInstantiator classInstantiator
 
+	@Spy
+	ObjectMapper objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES)
+
 	@InjectMocks
 	JsonPathResultFactory factory
 
 	@Test
-	void 'Given object with non-annotated fields, '() {
+	void 'Given object with non-annotated fields, when unmarshalling, then should only unmarshal into annotated fields'() {
 		def protectTheString = 'do not delete me!'
 		def returnObject = new ZoomWithOtherFields(
 				notForDeserialization: protectTheString
@@ -34,6 +37,17 @@ class JsonPathResultFactoryTest {
 		factory.create(ZoomWithOtherFields, cartTotalZoom)
 
 		assert protectTheString == returnObject.notForDeserialization
+	}
+
+	@Test
+	void 'Given object with superclass fields, when unmarshalling, then should unmarshal superclass fields'() {
+		def returnObject = new ZoomWithParent()
+		given(classInstantiator.newInstance(ZoomWithParent))
+				.willReturn(returnObject)
+
+		def result = factory.create(ZoomWithParent, cartTotalZoom)
+
+		assert '/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=?zoom=total' == result.self.uri
 	}
 
 	def cartTotalZoom = '''

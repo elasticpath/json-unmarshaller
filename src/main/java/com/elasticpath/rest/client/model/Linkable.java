@@ -1,9 +1,13 @@
 package com.elasticpath.rest.client.model;
 
+import com.elasticpath.rest.client.annotations.JsonPath;
+
 public class Linkable {
 
+	@JsonPath("$.links")
 	private Iterable<Link> links;
 
+	@JsonPath("$.self")
 	private Self self;
 
 	public Self getSelf() {
