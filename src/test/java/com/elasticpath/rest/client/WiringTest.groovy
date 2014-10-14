@@ -8,7 +8,7 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 
 import com.elasticpath.rest.client.config.GuiceConfig
-import com.elasticpath.rest.client.zoom.ZoomUrlFactory
+import com.elasticpath.rest.client.url.CortexUrlFactory
 
 class WiringTest {
 
@@ -17,8 +17,8 @@ class WiringTest {
 	void 'Wiring test'() {
 		Injector injector = Guice.createInjector(new GuiceConfig());
 		CortexClient cortexClient = injector.getInstance(CortexClient.class);
-		ZoomUrlFactory zoomUrlFactory = injector.getInstance(ZoomUrlFactory.class);
+		CortexUrlFactory cortexUrlFactory = injector.getInstance(CortexUrlFactory.class);
 		assertNotNull(cortexClient);
-		assertNotNull(zoomUrlFactory);
+		assertNotNull(cortexUrlFactory);
 	}
 }

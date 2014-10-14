@@ -23,7 +23,7 @@ public class ZoomReaderInterceptor implements ReaderInterceptor {
 	@Override
 	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException {
 
-		if (!zoomModelIntrospector.isZoom(context.getType())) {
+		if (!zoomModelIntrospector.isZoomPresent(context.getType())) {
 			return context.proceed();
 		}
 
