@@ -20,7 +20,7 @@ public class ZoomModelIntrospector {
 
 	public ZoomModel createZoomModel(Class<?> zoomClass) {
 
-		checkArgument(isZoom(zoomClass));
+		checkArgument(isZoomPresent(zoomClass));
 
 		Iterable<RelationPath> relationPaths;
 		if (isSingleZoom(zoomClass)) {
@@ -47,7 +47,7 @@ public class ZoomModelIntrospector {
 		});
 	}
 
-	public boolean isZoom(Class<?> zoomClass) {
+	public boolean isZoomPresent(Class<?> zoomClass) {
 		return isSingleZoom(zoomClass) || isMultiZoom(zoomClass);
 	}
 

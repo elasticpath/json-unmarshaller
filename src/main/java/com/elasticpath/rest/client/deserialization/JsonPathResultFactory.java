@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elasticpath.rest.client.annotations.JsonPath;
-import com.elasticpath.rest.client.zoom.ZoomUrlFactory;
+import com.elasticpath.rest.client.url.CortexUrlFactory;
 
 @Named
 @Singleton
@@ -41,7 +41,7 @@ public class JsonPathResultFactory {
 	private ObjectMapper objectMapper;
 
 	@Inject
-	private ZoomUrlFactory zoomUrlFactory;
+	private CortexUrlFactory cortexUrlFactory;
 
 	public <T> T create(Class<T> resultClass,
 						String jsonResult) throws IOException {
@@ -79,7 +79,7 @@ public class JsonPathResultFactory {
 			LOG.error(format(
 					"[%s] failed JsonPath parsing for zoom [%s] with error: ",
 					resultClass.getName(),
-					zoomUrlFactory.create("", resultClass)
+					cortexUrlFactory.create("", resultClass)
 			), e);
 			throw new IllegalArgumentException(e);
 		}

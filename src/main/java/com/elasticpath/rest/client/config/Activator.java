@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 import com.elasticpath.rest.client.CortexClient;
 import com.elasticpath.rest.client.deserialization.JacksonProvider;
 import com.elasticpath.rest.client.zoom.ZoomReaderInterceptor;
-import com.elasticpath.rest.client.zoom.ZoomUrlFactory;
+import com.elasticpath.rest.client.url.CortexUrlFactory;
 
 /**
  * This class implements a simple bundle that uses the bundle
@@ -32,10 +32,10 @@ public class Activator implements BundleActivator {
 				new GuiceConfig()
 		);
 		CortexClient cortexClient = injector.getInstance(CortexClient.class);
-		ZoomUrlFactory zoomUrlFactory = injector.getInstance(ZoomUrlFactory.class);
+		CortexUrlFactory cortexUrlFactory = injector.getInstance(CortexUrlFactory.class);
 
 		context.registerService(CortexClient.class.getName(), cortexClient, null);
-		context.registerService(ZoomUrlFactory.class.getName(), zoomUrlFactory, null);
+		context.registerService(CortexUrlFactory.class.getName(), cortexUrlFactory, null);
 
 		register(context, injector, JacksonProvider.class);
 		register(context, injector, ZoomReaderInterceptor.class);

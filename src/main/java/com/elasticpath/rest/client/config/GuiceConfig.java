@@ -8,8 +8,8 @@ import com.google.inject.Provides;
 
 import com.elasticpath.rest.client.CortexClient;
 import com.elasticpath.rest.client.DefaultCortexClient;
-import com.elasticpath.rest.client.zoom.ZoomUrlFactory;
-import com.elasticpath.rest.client.zoom.ZoomUrlFactoryImpl;
+import com.elasticpath.rest.client.url.CortexUrlFactory;
+import com.elasticpath.rest.client.url.CortexUrlFactoryImpl;
 
 /**
  * Guice configuration class.
@@ -19,7 +19,7 @@ public class GuiceConfig extends AbstractModule {
 	@Override
 	protected void configure() {
 		bind(CortexClient.class).to(DefaultCortexClient.class);
-		bind(ZoomUrlFactory.class).to(ZoomUrlFactoryImpl.class);
+		bind(CortexUrlFactory.class).to(CortexUrlFactoryImpl.class);
 	}
 
 	@Provides
