@@ -8,6 +8,10 @@ import com.elasticpath.rest.client.annotations.Zoom;
 		@RelationPath({"discount"})
 })
 public class Discount {
-	@JsonPath("$.links[?(@.rel == 'discount')][0].type")
-	private String type;
+	@JsonPath("$.links[?(@.rel == 'discount')].type")
+	private Iterable<String> type;
+
+	public String getType() {
+		return type.iterator().next();
+	}
 }

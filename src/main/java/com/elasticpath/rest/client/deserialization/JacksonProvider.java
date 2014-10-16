@@ -1,7 +1,7 @@
 package com.elasticpath.rest.client.deserialization;
 
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.codehaus.jackson.map.DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -10,8 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Provider
 @Produces(APPLICATION_JSON)

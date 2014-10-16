@@ -1,6 +1,6 @@
 package com.elasticpath.rest.client.oauth2.model;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class OAuth2Token {
 
