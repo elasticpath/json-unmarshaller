@@ -74,8 +74,6 @@ public class JsonPathResultFactory {
 					JavaType typedField = objectMapper.getTypeFactory()
 							.constructParametricType(fieldType, actualTypeArgument);
 					setField(resultObject, field, objectMapper.convertValue(read, typedField));
-				} else if (fieldType.isAssignableFrom(String.class)) {
-					setField(resultObject, field, objectMapper.convertValue(read, String.class));
 				} else {
 					setField(resultObject, field, objectMapper.convertValue(read, fieldType));
 				}
