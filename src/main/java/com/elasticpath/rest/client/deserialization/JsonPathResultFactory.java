@@ -48,14 +48,14 @@ public class JsonPathResultFactory {
 	public <T> T create(Class<T> resultClass,
 						String jsonResult) throws IOException {
 
-		Configuration configuration = Configuration.defaultConfiguration().provider(
-				new JacksonProvider());
+		Configuration configuration = Configuration.defaultConfiguration().provider(new JacksonProvider());
+		Object jsonObject = objectMapper.readValue(jsonResult, Object.class);
 
 		ReadContext jsonContext = com.jayway
 				.jsonpath
 				.JsonPath
 				.using(configuration)
-				.parse(jsonResult);
+				.parse(jsonObject);
 
 		try {
 			T resultObject = classInstantiator.newInstance(resultClass);
