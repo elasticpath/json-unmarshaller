@@ -14,7 +14,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<com.fasterxml.jackson.version>2.4.2</com.fasterxml.jackson.version>
+		<com.fasterxml.jackson.version>2.4.0.1</com.fasterxml.jackson.version>
 		<org.glassfish.jersey.version>2.12</org.glassfish.jersey.version>
 		<org.slf4j.version>1.7.6</org.slf4j.version>
 	</properties>
@@ -47,11 +47,13 @@
 		</dependency>
 
 		<!--Jersey-Jackson binding-->
+<!--
 		<dependency>
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
 			<version>${org.glassfish.jersey.version}</version>
 		</dependency>
+-->
 
 		<!--JsonPath for Zoom deserialization-->
 		<dependency>
@@ -62,15 +64,15 @@
 
 		<!--Jackson annotations for specific deserialization config-->
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-annotations</artifactId>
-			<version>${com.fasterxml.jackson.version}</version>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
 		</dependency>
 
 		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-base</artifactId>
-			<version>${com.fasterxml.jackson.version}</version>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-jaxrs</artifactId>
+			<version>1.9.13</version>
 		</dependency>
 
 		<dependency>
@@ -132,6 +134,20 @@
 			<scope>test</scope>
 			<!-- Include this if you have dependency conflicts for Guava, Jetty, Jackson or Apache HTTP Client -->
 			<classifier>standalone</classifier>
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-annotations</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 

@@ -1,11 +1,13 @@
 package com.elasticpath.rest.client.model;
 
+import java.util.Collection;
+
 import com.elasticpath.rest.client.annotations.JsonPath;
 
 public class Linkable {
 
 	@JsonPath("$.links")
-	private Iterable<Link> links;
+	private Collection<Link> links;
 
 	@JsonPath("$.self")
 	private Self self;
@@ -22,7 +24,7 @@ public class Linkable {
 		return links;
 	}
 
-	public void setLinks(Iterable<Link> links) {
+	public void setLinks(Collection<Link> links) {
 		this.links = links;
 	}
 }

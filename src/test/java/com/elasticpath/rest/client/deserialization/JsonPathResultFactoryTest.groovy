@@ -1,12 +1,11 @@
 package com.elasticpath.rest.client.deserialization
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
+import static org.codehaus.jackson.map.DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES
 import static org.mockito.BDDMockito.given
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
-import com.fasterxml.jackson.databind.ObjectMapper
-
+import org.codehaus.jackson.map.ObjectMapper
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Spy
