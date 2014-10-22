@@ -1,4 +1,4 @@
-package com.elasticpath.rest.client.model;
+package com.elasticpath.rest.client.deserialization;
 
 public class Link {
 

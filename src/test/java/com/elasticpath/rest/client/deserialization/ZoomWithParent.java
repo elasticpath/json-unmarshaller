@@ -3,7 +3,6 @@ package com.elasticpath.rest.client.deserialization;
 import com.elasticpath.rest.client.annotations.JsonPath;
 import com.elasticpath.rest.client.annotations.RelationPath;
 import com.elasticpath.rest.client.annotations.Zoom;
-import com.elasticpath.rest.client.model.Linkable;
 
 @Zoom(
 		@RelationPath("total")
