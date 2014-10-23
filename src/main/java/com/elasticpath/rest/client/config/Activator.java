@@ -6,7 +6,7 @@ import com.google.inject.Injector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import com.elasticpath.rest.client.CortexClient;
+import com.elasticpath.rest.client.CortexClientFactory;
 import com.elasticpath.rest.client.deserialization.JacksonProvider;
 import com.elasticpath.rest.client.zoom.ZoomReaderInterceptor;
 import com.elasticpath.rest.client.url.CortexUrlFactory;
@@ -31,10 +31,10 @@ public class Activator implements BundleActivator {
 		Injector injector = Guice.createInjector(
 				new GuiceConfig()
 		);
-		CortexClient cortexClient = injector.getInstance(CortexClient.class);
+		CortexClientFactory cortexClientFactory = injector.getInstance(CortexClientFactory.class);
 		CortexUrlFactory cortexUrlFactory = injector.getInstance(CortexUrlFactory.class);
 
-		context.registerService(CortexClient.class.getName(), cortexClient, null);
+		context.registerService(CortexClientFactory.class.getName(), cortexClientFactory, null);
 		context.registerService(CortexUrlFactory.class.getName(), cortexUrlFactory, null);
 
 		register(context, injector, JacksonProvider.class);

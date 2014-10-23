@@ -11,6 +11,7 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.runners.MockitoJUnitRunner
 
+import com.elasticpath.rest.client.annotations.EntryPointUri
 import com.elasticpath.rest.client.annotations.FollowLocation
 import com.elasticpath.rest.client.annotations.RelationPath
 import com.elasticpath.rest.client.annotations.Zoom
@@ -29,6 +30,8 @@ class CortexUrlFactoryImplTest {
 
 	@InjectMocks
 	CortexUrlFactoryImpl cortexUrlFactory
+
+	def baseUrl = "http://test.com/cortex"
 
 	@Before
 	void setUp() {
@@ -92,6 +95,28 @@ class CortexUrlFactoryImplTest {
 		assert result.contains('zoom=') && result.contains('followLocation')
 	}
 
+	@Test
+	void 'Given an object annotated with EntryPointUri, scope should correctly be placed in the url'() {
+
+		given(zoomModelIntrospector.isZoomPresent(FollowAndZoomPresent.class))
+				.willReturn(false)
+
+		def result = cortexUrlFactory.createFromAnnotationsAndScope(baseUrl, "scoped", EntryPointUriPresent.class)
+
+		assert result.equals(baseUrl + '/im/a/scoped/uri')
+	}
+
+	@Test
+	void 'Given the resourcePath and an annotated Object, cortex url should be created correctly'() {
+
+		given(zoomModelIntrospector.isZoomPresent(FollowAndZoomPresent.class))
+				.willReturn(false)
+
+		def result = cortexUrlFactory.createFromAnnotationsAndResourcePath(baseUrl, "/blah/blah", NoAnnotationsPresent.class)
+
+		assert result.equals(baseUrl + '/blah/blah')
+	}
+
 
 	class NoAnnotationsPresent {}
 
@@ -104,4 +129,7 @@ class CortexUrlFactoryImplTest {
 	@Zoom(@RelationPath("blah"))
 	@FollowLocation
 	class FollowAndZoomPresent {}
+
+	@EntryPointUri(["im", "a", EntryPointUri.SCOPE, "uri"])
+	class EntryPointUriPresent {}
 }
