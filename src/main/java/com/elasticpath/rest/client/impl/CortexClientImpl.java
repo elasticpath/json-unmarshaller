@@ -1,5 +1,7 @@
 package com.elasticpath.rest.client.impl;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 import java.util.Map;
 
 import javax.ws.rs.client.Client;
@@ -7,8 +9,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.slf4j.Logger;
+
 import com.elasticpath.rest.client.CortexClient;
-import com.elasticpath.rest.client.model.CortexModel;
 import com.elasticpath.rest.client.url.CortexUrlFactory;
 
 /**
@@ -20,6 +23,7 @@ public class CortexClientImpl implements CortexClient {
 	private CortexUrlFactory cortexUrlFactory;
 	private String cortexBaseUrl;
 	private String scope;
+	private static final Logger LOG = getLogger(CortexClientImpl.class);
 
 	/**
 	 * Constructor.
@@ -39,40 +43,53 @@ public class CortexClientImpl implements CortexClient {
 	public <T> T get(final Class<T> cortexModelClass) {
 		String requestUrl = cortexUrlFactory.createFromAnnotationsAndScope(cortexBaseUrl, scope, cortexModelClass);
 		Response response = client.target(requestUrl).request().get();
-		return response.readEntity(cortexModelClass);
+		return readEntityFromResponse(cortexModelClass, response);
 	}
 
 	@Override
 	public <T> T get(final String cortexUri, final Class<T> cortexModelClass) {
 		String requestUrl = cortexUrlFactory.createFromAnnotationsAndResourcePath(cortexBaseUrl, cortexUri, cortexModelClass);
 		Response response = client.target(requestUrl).request().get();
-		return response.readEntity(cortexModelClass);
+		return readEntityFromResponse(cortexModelClass, response);
 	}
 
 
 	@Override
-	public <T extends CortexModel> T post(final String cortexUri, final Map<String, Object> formParameters,
-										  final Class<T> cortexModelClass) {
+	public <T extends CortexResponse> T post(final String cortexUri, final Map<String, ?> formParameters, final Class<T> cortexModelClass) {
 		String requestUrl = cortexUrlFactory.createFromAnnotationsAndResourcePath(cortexBaseUrl, cortexUri, cortexModelClass);
 		Response response = client.target(requestUrl).request().post(Entity.entity(formParameters, MediaType.APPLICATION_JSON_TYPE));
-		T cortexModel = response.readEntity(cortexModelClass);
-		cortexModel.setCortexResponse(response);
+		T cortexModel = readEntityFromResponse(cortexModelClass, response);
+		cortexModel.setResponse(response);
 		return cortexModel;
 	}
 
 	@Override
-	public Response post(final String cortexUri, final Map<String, Object> formParameters) {
+	public Response post(final String cortexUri, final Map<String, ?> formParameters) {
 		String requestUrl = cortexUrlFactory.createFromResourcePath(cortexBaseUrl, cortexUri);
 		return client.target(requestUrl).request().post(Entity.entity(formParameters, MediaType.APPLICATION_JSON_TYPE));
 	}
 
 
 	@Override
-	public <T extends CortexModel> T post(final Map<String, Object> formParameters, final Class<T> cortexModelClass) {
+	public <T extends CortexResponse> T post(final Map<String, ?> formParameters, final Class<T> cortexModelClass) {
 		String requestUrl = cortexUrlFactory.createFromAnnotationsAndScope(cortexBaseUrl, scope, cortexModelClass);
 		Response response = client.target(requestUrl).request().post(Entity.entity(formParameters, MediaType.APPLICATION_JSON_TYPE));
+		T cortexModel = readEntityFromResponse(cortexModelClass, response);
+		cortexModel.setResponse(response);
+		return cortexModel;
+	}
+
+	private <T> T readEntityFromResponse(final Class<T> cortexModelClass, final Response response) {
 		T cortexModel = response.readEntity(cortexModelClass);
-		cortexModel.setCortexResponse(response);
+		if (cortexModel == null) {
+			try {
+				cortexModel = cortexModelClass.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				String errorMessage = "An error occurred instantiating the provided CortexModelClass: " + cortexModelClass.getName();
+				LOG.warn(errorMessage);
+				throw new IllegalArgumentException(errorMessage, e);
+			}
+		}
 		return cortexModel;
 	}
 }

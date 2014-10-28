@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import com.elasticpath.rest.client.model.CortexModel;
+import com.elasticpath.rest.client.impl.CortexResponse;
 
 /**
  * A client for interacting with the Cortex API.
@@ -38,7 +38,7 @@ public interface CortexClient {
 	 * @param formParameters the map containing the values to be posted.
 	 * @return the Cortex response data.
 	 */
-	Response post(String cortexUri, Map<String, Object> formParameters);
+	Response post(String cortexUri, Map<String, ?> formParameters);
 
 	/**
 	 * Perform a POST operation on a Cortex resource. Expects a model object that has been annotated with Cortex resource access
@@ -49,7 +49,7 @@ public interface CortexClient {
 	 * @param cortexModelClass the model class containing the resource access annotations.
 	 * @return the Cortex response data.
 	 */
-	<T extends CortexModel> T post(Map<String, Object> formParameters, Class<T> cortexModelClass);
+	<T extends CortexResponse> T post(Map<String, ?> formParameters, Class<T> cortexModelClass);
 
 	/**
 	 * Perform a POST operation on a Cortex resource. Expects a model object that has been annotated with Cortex resource access
@@ -61,6 +61,6 @@ public interface CortexClient {
 	 * @param cortexModelClass the model class containing the resource access annotations.
 	 * @return the model object populated with Cortex response data.
 	 */
-	<T extends CortexModel> T post(String cortexUri, Map<String, Object> formParameters, Class<T> cortexModelClass);
+	<T extends CortexResponse> T post(String cortexUri, Map<String, ?> formParameters, Class<T> cortexModelClass);
 
 }

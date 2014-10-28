@@ -12,7 +12,7 @@ public @interface EntryPointUri {
 
 	public static final String SCOPE = "?scope?";
 
-	public static final String DEFAULT = "?scope?";
+	public static final String DEFAULT = "default";
 
 	String[] value();
 }
