@@ -47,7 +47,7 @@ public interface CortexClient {
 	 *
 	 * @param formParameters the map containing the values to be posted.
 	 * @param cortexModelClass the model class containing the resource access annotations.
-	 * @return the Cortex response data.
+	 * @return the model object populated with Cortex response data.
 	 */
 	<T extends CortexResponse> T post(Map<String, ?> formParameters, Class<T> cortexModelClass);
 
@@ -62,5 +62,22 @@ public interface CortexClient {
 	 * @return the model object populated with Cortex response data.
 	 */
 	<T extends CortexResponse> T post(String cortexUri, Map<String, ?> formParameters, Class<T> cortexModelClass);
+
+	/**
+	 * Perform a PUT operation on a Cortex resource.
+	 *
+	 * @param cortexUri contains the resource uri.
+	 * @param formParameters the map containing the values to be put.
+	 * @return the Cortex response data.
+	 */
+	Response put(String cortexUri, Map<String, ?> formParameters);
+
+	/**
+	 * Perform a DELETE operation on a Cortex resource.
+	 *
+	 * @param cortexUri contains the resource uri.
+	 * @return the model object populated with Cortex response data.
+	 */
+	Response delete(String cortexUri);
 
 }

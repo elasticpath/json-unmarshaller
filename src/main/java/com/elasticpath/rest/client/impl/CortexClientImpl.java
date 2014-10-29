@@ -79,6 +79,18 @@ public class CortexClientImpl implements CortexClient {
 		return cortexModel;
 	}
 
+	@Override
+	public Response put(final String cortexUri, final Map<String, ?> formParameters) {
+		String requestUrl = cortexUrlFactory.createFromResourcePath(cortexBaseUrl, cortexUri);
+		return client.target(requestUrl).request().put(Entity.entity(formParameters, MediaType.APPLICATION_JSON_TYPE));
+	}
+
+	@Override
+	public Response delete(final String cortexUri) {
+		String requestUrl = cortexUrlFactory.createFromResourcePath(cortexBaseUrl, cortexUri);
+		return client.target(requestUrl).request().delete();
+	}
+
 	private <T> T readEntityFromResponse(final Class<T> cortexModelClass, final Response response) {
 		T cortexModel = response.readEntity(cortexModelClass);
 		if (cortexModel == null) {
