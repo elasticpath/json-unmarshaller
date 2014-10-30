@@ -16,9 +16,7 @@ class WiringTest {
 	@Test
 	void 'Wiring test'() {
 		Injector injector = Guice.createInjector(new GuiceConfig());
-		CortexClientFactory cortexClient = injector.getInstance(CortexClientFactory.class);
 		CortexUrlFactory cortexUrlFactory = injector.getInstance(CortexUrlFactory.class);
-		assertNotNull(cortexClient);
 		assertNotNull(cortexUrlFactory);
 	}
 }
