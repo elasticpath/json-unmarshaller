@@ -19,8 +19,10 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
+import com.jayway.jsonpath.internal.spi.json.JacksonJsonProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +48,14 @@ public class JsonPathResultFactory {
 	public <T> T create(Class<T> resultClass,
 						String jsonResult) throws IOException {
 
+		Configuration configuration = Configuration.defaultConfiguration().jsonProvider(new JacksonJsonProvider());
+		Object jsonObject = objectMapper.readValue(jsonResult, Object.class);
+
 		ReadContext jsonContext = com.jayway
 				.jsonpath
 				.JsonPath
-				.parse(jsonResult);
+				.using(configuration)
+				.parse(jsonObject);
 
 		try {
 			T resultObject = classInstantiator.newInstance(resultClass);
@@ -67,11 +73,9 @@ public class JsonPathResultFactory {
 
 					JavaType typedField = objectMapper.getTypeFactory()
 							.constructParametricType(fieldType, actualTypeArgument);
-					setField(resultObject, field, objectMapper.readValue(String.valueOf(read), typedField));
-				} else if (fieldType.isAssignableFrom(String.class)) {
-					setField(resultObject, field, read);
+					setField(resultObject, field, objectMapper.convertValue(read, typedField));
 				} else {
-					setField(resultObject, field, objectMapper.readValue(String.valueOf(read), fieldType));
+					setField(resultObject, field, objectMapper.convertValue(read, fieldType));
 				}
 			}
 			return resultObject;

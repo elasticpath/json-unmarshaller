@@ -1,5 +1,4 @@
 package com.elasticpath.rest.client.deserialization
-
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import static org.mockito.BDDMockito.given
 
@@ -49,6 +48,20 @@ class JsonPathResultFactoryTest {
 
 		assert '/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=?zoom=total' == result.self.uri
 	}
+
+
+	@Test
+	void 'Given multiple rels to choose from, select the correct one based on a query'() {
+		def returnObject = new Discount()
+		given(classInstantiator.newInstance(Discount))
+				.willReturn(returnObject)
+
+		def result = factory.create(Discount, cartTotalZoom)
+
+		assert 'elasticpath.discounts.discount' == result.type
+	}
+
+
 
 	def cartTotalZoom = '''
 {
