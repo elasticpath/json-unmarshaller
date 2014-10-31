@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
-import com.elasticpath.rest.client.CortexClient;
-import com.elasticpath.rest.client.DefaultCortexClient;
+
 import com.elasticpath.rest.client.url.CortexUrlFactory;
 import com.elasticpath.rest.client.url.CortexUrlFactoryImpl;
 
@@ -18,7 +17,6 @@ public class GuiceConfig extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(CortexClient.class).to(DefaultCortexClient.class);
 		bind(CortexUrlFactory.class).to(CortexUrlFactoryImpl.class);
 	}
 
