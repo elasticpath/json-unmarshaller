@@ -6,9 +6,9 @@ import com.google.inject.Injector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import com.elasticpath.rest.client.deserialization.JacksonProvider;
-import com.elasticpath.rest.client.url.CortexUrlFactory;
-import com.elasticpath.rest.client.zoom.ZoomReaderInterceptor;
+import com.elasticpath.rest.client.unmarshalling.JacksonProvider;
+import com.elasticpath.rest.client.urlbuilding.CortexUrlFactory;
+import com.elasticpath.rest.client.unmarshalling.JsonUnmarshallReaderInterceptor;
 
 /**
  * This class implements a simple bundle that uses the bundle
@@ -35,7 +35,7 @@ public class Activator implements BundleActivator {
 		context.registerService(CortexUrlFactory.class.getName(), cortexUrlFactory, null);
 
 		register(context, injector, JacksonProvider.class);
-		register(context, injector, ZoomReaderInterceptor.class);
+		register(context, injector, JsonUnmarshallReaderInterceptor.class);
 	}
 
 	private void register(BundleContext context,

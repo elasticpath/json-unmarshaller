@@ -7,8 +7,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
 
-import com.elasticpath.rest.client.url.CortexUrlFactory;
-import com.elasticpath.rest.client.url.CortexUrlFactoryImpl;
+import com.elasticpath.rest.client.urlbuilding.CortexUrlFactory;
+import com.elasticpath.rest.client.urlbuilding.impl.CortexUrlFactoryImpl;
 
 /**
  * Guice configuration class.

@@ -8,7 +8,7 @@ import com.google.inject.Guice
 import com.google.inject.Injector
 
 import com.elasticpath.rest.client.config.GuiceConfig
-import com.elasticpath.rest.client.url.CortexUrlFactory
+import com.elasticpath.rest.client.urlbuilding.CortexUrlFactory
 
 class WiringTest {
 

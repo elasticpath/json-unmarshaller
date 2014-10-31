@@ -26,9 +26,9 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.varia.NullAppender;
 
 import com.elasticpath.rest.client.config.GuiceConfig;
-import com.elasticpath.rest.client.deserialization.JacksonProvider;
+import com.elasticpath.rest.client.unmarshalling.JacksonProvider;
 import com.elasticpath.rest.client.oauth2.model.OAuth2Token;
-import com.elasticpath.rest.client.zoom.ZoomReaderInterceptor;
+import com.elasticpath.rest.client.unmarshalling.JsonUnmarshallReaderInterceptor;
 
 public class IntegrationTest {
 
@@ -49,7 +49,7 @@ public class IntegrationTest {
 	{
 		Injector guice = Guice.createInjector(new GuiceConfig());
 		JacksonProvider jacksonProvider = guice.getInstance(JacksonProvider.class);
-		ZoomReaderInterceptor zoomReaderInterceptor = guice.getInstance(ZoomReaderInterceptor.class);
+		JsonUnmarshallReaderInterceptor jsonUnmarshallReaderInterceptor = guice.getInstance(JsonUnmarshallReaderInterceptor.class);
 
 		client = ClientBuilder.newBuilder()
 				.register(jacksonProvider)
@@ -61,7 +61,7 @@ public class IntegrationTest {
 								.putSingle(authToken.getHeaderName(), authToken.getHeaderValue());
 					}
 				})
-				.register(zoomReaderInterceptor)
+				.register(jsonUnmarshallReaderInterceptor)
 				.build();
 	}
 
