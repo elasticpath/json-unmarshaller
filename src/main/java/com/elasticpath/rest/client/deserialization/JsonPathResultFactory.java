@@ -1,6 +1,7 @@
 package com.elasticpath.rest.client.deserialization;
 
 import static com.google.common.collect.FluentIterable.from;
+import static com.jayway.jsonpath.JsonPath.using;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 
@@ -51,11 +52,7 @@ public class JsonPathResultFactory {
 		Configuration configuration = Configuration.defaultConfiguration().jsonProvider(new JacksonJsonProvider());
 		Object jsonObject = objectMapper.readValue(jsonResult, Object.class);
 
-		ReadContext jsonContext = com.jayway
-				.jsonpath
-				.JsonPath
-				.using(configuration)
-				.parse(jsonObject);
+		ReadContext jsonContext = using(configuration).parse(jsonObject);
 
 		try {
 			T resultObject = classInstantiator.newInstance(resultClass);
