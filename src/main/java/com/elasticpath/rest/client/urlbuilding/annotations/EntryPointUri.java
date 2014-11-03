@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface EntryPointUri {
 
-	public static final String SCOPE = "?scope?";
+	public static final String SCOPE = "{scope}";
 
 	public static final String DEFAULT = "default";
 
