@@ -10,6 +10,7 @@ import java.util.Collection;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
@@ -18,15 +19,15 @@ import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
 @Named
 @Singleton
-public class JsonPathModelIntrospector {
+public class JsonAnnotationsModelIntrospector {
 
 	/**
-	 * Given a class, return all fields in the entire class hierarchy that contain JsonPath annotations.
+	 * Given a class, return all fields in the entire class hierarchy that contain JsonPath or JsonProperty annotations.
 	 * @param clazz the class to search.
 	 * @param <T> the Class type
 	 * @return all fields in that class hierarchy that contain JsonPath annotation(s).
 	 */
-	public <T> Iterable<Field> retrieveFieldsWithJsonPathAnnotations(final Class<T> clazz) {
+	public <T> Iterable<Field> retrieveFieldsWithJsonAnnotations(final Class<T> clazz) {
 		return getInjectableFields(getSuperclassHierarchy(clazz));
 	}
 
@@ -38,7 +39,7 @@ public class JsonPathModelIntrospector {
 	 */
 	private Iterable<Class<?>> getSuperclassHierarchy(Class<?> resultClass) {
 
-		Collection<Class<?>> superclasses = new ArrayList<Class<?>>();
+		Collection<Class<?>> superclasses = new ArrayList<>();
 		Class<?> klass = resultClass;
 		while (!(klass.equals(Object.class))) {
 			superclasses.add(klass);
@@ -65,7 +66,7 @@ public class JsonPathModelIntrospector {
 				})
 				.filter(new Predicate<Field>() {
 					public boolean apply(Field input) {
-						return input.isAnnotationPresent(JsonPath.class);
+						return input.isAnnotationPresent(JsonPath.class) || input.isAnnotationPresent(JsonProperty.class);
 					}
 				});
 	}

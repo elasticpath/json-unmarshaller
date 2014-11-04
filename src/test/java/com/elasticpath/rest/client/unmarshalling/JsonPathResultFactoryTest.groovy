@@ -19,7 +19,7 @@ class JsonPathResultFactoryTest {
 	ClassInstantiator classInstantiator
 
 	@Spy
-	JsonPathModelIntrospector jsonPathModelIntrospector = new JsonPathModelIntrospector();
+	JsonAnnotationsModelIntrospector jsonPathModelIntrospector = new JsonAnnotationsModelIntrospector();
 
 	@Spy
 	ObjectMapper objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES)

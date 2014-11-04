@@ -16,7 +16,7 @@ public class JsonUnmarshallReaderInterceptor implements ReaderInterceptor {
 	private JsonPathResultFactory jsonPathResultFactory;
 
 	@Inject
-	private JsonPathModelIntrospector jsonPathModelIntrospector;
+	private JsonAnnotationsModelIntrospector jsonAnnotationsModelIntrospector;
 
 	@Override
 	public Object aroundReadFrom(ReaderInterceptorContext context) throws IOException {
@@ -35,7 +35,7 @@ public class JsonUnmarshallReaderInterceptor implements ReaderInterceptor {
 	}
 
 	private boolean doesClassContainJsonPathAnnotations(Class clazz) {
-		Iterable jsonFields = jsonPathModelIntrospector.retrieveFieldsWithJsonPathAnnotations(clazz);
+		Iterable jsonFields = jsonAnnotationsModelIntrospector.retrieveFieldsWithJsonAnnotations(clazz);
 		return jsonFields.iterator().hasNext();
 	}
 
