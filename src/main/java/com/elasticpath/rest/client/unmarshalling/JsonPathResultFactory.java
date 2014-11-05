@@ -60,7 +60,7 @@ public class JsonPathResultFactory {
 				if (jsonPathAnnotation != null) {
 					performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonPathAnnotation);
 				} else {
-					performJacksonUnmarshalling(jsonObject, resultObject, field);
+					performJacksonUnmarshalling(jsonObject, resultObject, field, jsonPropertyAnnotation);
 				}
 			}
 			return resultObject;
@@ -93,11 +93,12 @@ public class JsonPathResultFactory {
 	// If there's a top level @JsonProperty then simply copy that map entry from the unmarshalled jsonObject,
 	// and set it unchanged into the result object.
 	@SuppressWarnings("unchecked")
-	private <T> void performJacksonUnmarshalling(final Object jsonObject, final T resultObject, final Field field)
+	private <T> void performJacksonUnmarshalling(final Object jsonObject, final T resultObject, final Field field, JsonProperty jsonProperty)
 			throws IOException, IllegalAccessException {
 		Class<?> fieldType = field.getType();
+		String fieldName = jsonProperty.value();
 		Map<String, Object> jsonMap = (Map<String, Object>) jsonObject;
-		Object read = jsonMap.get(field.getName());
+		Object read = jsonMap.get(fieldName);
 		setField(resultObject, field, fieldType, read);
 	}
 
