@@ -12,6 +12,11 @@ import org.mockito.Mock
 import org.mockito.Spy
 import org.mockito.runners.MockitoJUnitRunner
 
+import com.elasticpath.rest.client.unmarshalling.data.TestViewWithBadAnnotations
+import com.elasticpath.rest.client.unmarshalling.data.TestViewWithJsonPath
+import com.elasticpath.rest.client.unmarshalling.data.TestViewWithOtherFields
+import com.elasticpath.rest.client.unmarshalling.data.TestViewWithParent
+
 @RunWith(MockitoJUnitRunner)
 class JsonPathResultFactoryTest {
 
@@ -19,7 +24,7 @@ class JsonPathResultFactoryTest {
 	ClassInstantiator classInstantiator
 
 	@Spy
-	JsonPathModelIntrospector jsonPathModelIntrospector = new JsonPathModelIntrospector();
+	JsonAnnotationsModelIntrospector jsonPathModelIntrospector = new JsonAnnotationsModelIntrospector();
 
 	@Spy
 	ObjectMapper objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES)
@@ -30,24 +35,24 @@ class JsonPathResultFactoryTest {
 	@Test
 	void 'Given object with non-annotated fields, when unmarshalling, then should only unmarshal into annotated fields'() {
 		def protectTheString = 'do not delete me!'
-		def returnObject = new ZoomWithOtherFields(
+		def returnObject = new TestViewWithOtherFields(
 				notForDeserialization: protectTheString
 		)
-		given(classInstantiator.newInstance(ZoomWithOtherFields))
+		given(classInstantiator.newInstance(TestViewWithOtherFields))
 				.willReturn(returnObject)
 
-		factory.create(ZoomWithOtherFields, cartTotalZoom)
+		factory.create(TestViewWithOtherFields, cartTotalZoomedJson)
 
 		assert protectTheString == returnObject.notForDeserialization
 	}
 
 	@Test
 	void 'Given object with superclass fields, when unmarshalling, then should unmarshal superclass fields'() {
-		def returnObject = new ZoomWithParent()
-		given(classInstantiator.newInstance(ZoomWithParent))
+		def returnObject = new TestViewWithParent()
+		given(classInstantiator.newInstance(TestViewWithParent))
 				.willReturn(returnObject)
 
-		def result = factory.create(ZoomWithParent, cartTotalZoom)
+		def result = factory.create(TestViewWithParent, cartTotalZoomedJson)
 
 		assert '/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=?zoom=total' == result.self.uri
 	}
@@ -55,18 +60,27 @@ class JsonPathResultFactoryTest {
 
 	@Test
 	void 'Given multiple rels to choose from, select the correct one based on a query'() {
-		def returnObject = new Discount()
-		given(classInstantiator.newInstance(Discount))
+		def returnObject = new TestViewWithJsonPath()
+		given(classInstantiator.newInstance(TestViewWithJsonPath))
 				.willReturn(returnObject)
 
-		def result = factory.create(Discount, cartTotalZoom)
+		def result = factory.create(TestViewWithJsonPath, cartTotalZoomedJson)
 
 		assert 'elasticpath.discounts.discount' == result.type
 	}
 
+	@Test(expected = IllegalStateException)
+	void 'Given bad usage of JsonPath and JsonProperty, expect an error'() {
+		def returnObject = new TestViewWithBadAnnotations()
+		given(classInstantiator.newInstance(TestViewWithBadAnnotations))
+				.willReturn(returnObject)
+
+		def result = factory.create(TestViewWithBadAnnotations, cartTotalZoomedJson)
+	}
 
 
-	def cartTotalZoom = '''
+
+	def cartTotalZoomedJson = '''
 {
   "self": {
     "type": "elasticpath.carts.cart",

@@ -1,13 +1,8 @@
-package com.elasticpath.rest.client.unmarshalling;
+package com.elasticpath.rest.client.unmarshalling.data;
 
 import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
-import com.elasticpath.rest.client.urlbuilding.annotations.RelationPath;
-import com.elasticpath.rest.client.urlbuilding.annotations.Zoom;
 
-@Zoom(
-		@RelationPath("total")
-)
-public class ZoomWithOtherFields {
+public class TestViewWithOtherFields {
 
 	@JsonPath("$._total[0].cost[0].currency")
 	private String currency;

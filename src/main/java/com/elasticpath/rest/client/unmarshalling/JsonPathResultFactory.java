@@ -8,11 +8,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
@@ -38,7 +40,7 @@ public class JsonPathResultFactory {
 	private ObjectMapper objectMapper;
 
 	@Inject
-	private JsonPathModelIntrospector jsonPathModelIntrospector;
+	private JsonAnnotationsModelIntrospector jsonAnnotationsModelIntrospector;
 
 	public <T> T create(Class<T> resultClass,
 						String jsonResult) throws IOException {
@@ -51,22 +53,14 @@ public class JsonPathResultFactory {
 		try {
 			T resultObject = classInstantiator.newInstance(resultClass);
 
-			for (Field field : jsonPathModelIntrospector.retrieveFieldsWithJsonPathAnnotations(resultClass)) {
-				JsonPath annotation = field.getAnnotation(JsonPath.class);
-				Class<?> fieldType = field.getType();
-				Object read = readField(jsonContext, annotation, fieldType);
-				Type genericType = field.getGenericType();
-
-				if (fieldType.isPrimitive()) {
-					setField(resultObject, field, read);
-				} else if (genericType instanceof ParameterizedType) {
-					Class actualTypeArgument = getActualTypeArgument(genericType);
-
-					JavaType typedField = objectMapper.getTypeFactory()
-							.constructParametricType(fieldType, actualTypeArgument);
-					setField(resultObject, field, objectMapper.convertValue(read, typedField));
+			for (Field field : jsonAnnotationsModelIntrospector.retrieveFieldsWithJsonAnnotations(resultClass)) {
+				JsonPath jsonPathAnnotation = field.getAnnotation(JsonPath.class);
+				JsonProperty jsonPropertyAnnotation = field.getAnnotation(JsonProperty.class);
+				sanityCheck(resultClass, field, jsonPathAnnotation, jsonPropertyAnnotation);
+				if (jsonPathAnnotation != null) {
+					performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonPathAnnotation);
 				} else {
-					setField(resultObject, field, objectMapper.convertValue(read, fieldType));
+					performJacksonUnmarshalling(jsonObject, resultObject, field);
 				}
 			}
 			return resultObject;
@@ -76,6 +70,52 @@ public class JsonPathResultFactory {
 					resultClass.getName()
 			), e);
 			throw new IllegalArgumentException(e);
+		}
+	}
+
+	private <T> void sanityCheck(final Class<T> resultClass, final Field field, final JsonPath jsonPathAnnotation,
+								 final JsonProperty jsonPropertyAnnotation) {
+		if (jsonPathAnnotation != null && jsonPropertyAnnotation != null) {
+			String errorMessage = format("JsonProperty and JsonPath annotations both detected on field [%s] in class [%s]",
+					field.getName(), resultClass.getName());
+			LOG.error(errorMessage);
+			throw new IllegalStateException(errorMessage);
+		}
+	}
+
+	private <T> void performJsonPathUnmarshalling(final ReadContext jsonContext, final T resultObject, final Field field, JsonPath jsonPath)
+			throws IllegalAccessException, IOException {
+		Class<?> fieldType = field.getType();
+		Object read = readField(jsonContext, jsonPath, fieldType);
+		setField(resultObject, field, fieldType, read);
+	}
+
+	// If there's a top level @JsonProperty then simply copy that map entry from the unmarshalled jsonObject,
+	// and set it unchanged into the result object.
+	@SuppressWarnings("unchecked")
+	private <T> void performJacksonUnmarshalling(final Object jsonObject, final T resultObject, final Field field)
+			throws IOException, IllegalAccessException {
+		Class<?> fieldType = field.getType();
+		Map<String, Object> jsonMap = (Map<String, Object>) jsonObject;
+		Object read = jsonMap.get(field.getName());
+		setField(resultObject, field, fieldType, read);
+	}
+
+
+	private <T> void setField(final T resultObject, final Field field, final Class<?> fieldType, final Object read)
+			throws IllegalAccessException, IOException {
+		Type genericType = field.getGenericType();
+
+		if (fieldType.isPrimitive()) {
+			setField(resultObject, field, read);
+		} else if (genericType instanceof ParameterizedType) {
+			Class actualTypeArgument = getActualTypeArgument(genericType);
+
+			JavaType typedField = objectMapper.getTypeFactory()
+					.constructParametricType(fieldType, actualTypeArgument);
+			setField(resultObject, field, objectMapper.convertValue(read, typedField));
+		} else {
+			setField(resultObject, field, objectMapper.convertValue(read, fieldType));
 		}
 	}
 
