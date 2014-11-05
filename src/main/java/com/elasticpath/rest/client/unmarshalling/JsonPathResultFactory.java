@@ -54,9 +54,14 @@ public class JsonPathResultFactory {
 			T resultObject = classInstantiator.newInstance(resultClass);
 
 			for (Field field : jsonAnnotationsModelIntrospector.retrieveFieldsWithJsonAnnotations(resultClass)) {
-				attemptJsonPathUnmarshalling(jsonContext, resultObject, field);
-				attemptJacksonUnmarshalling(jsonObject, resultObject, field);
-
+				JsonPath jsonPathAnnotation = field.getAnnotation(JsonPath.class);
+				JsonProperty jsonPropertyAnnotation = field.getAnnotation(JsonProperty.class);
+				sanityCheck(resultClass, field, jsonPathAnnotation, jsonPropertyAnnotation);
+				if (jsonPathAnnotation != null) {
+					performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonPathAnnotation);
+				} else {
+					performJacksonUnmarshalling(jsonObject, resultObject, field);
+				}
 			}
 			return resultObject;
 		} catch (IllegalAccessException | InstantiationException e) {
@@ -68,30 +73,37 @@ public class JsonPathResultFactory {
 		}
 	}
 
-	private <T> void attemptJsonPathUnmarshalling(final ReadContext jsonContext, final T resultObject, final Field field) throws IllegalAccessException, IOException {
-		JsonPath jsonPathAnnotation = field.getAnnotation(JsonPath.class);
-		if (jsonPathAnnotation != null) {
-			Class<?> fieldType = field.getType();
-			Object read = readField(jsonContext, jsonPathAnnotation, fieldType);
-			setField(resultObject, field, fieldType, read);
+	private <T> void sanityCheck(final Class<T> resultClass, final Field field, final JsonPath jsonPathAnnotation,
+								 final JsonProperty jsonPropertyAnnotation) {
+		if (jsonPathAnnotation != null && jsonPropertyAnnotation != null) {
+			String errorMessage = format("JsonProperty and JsonPath annotations both detected on field [%s] in class [%s]",
+					field.getName(), resultClass.getName());
+			LOG.error(errorMessage);
+			throw new IllegalStateException(errorMessage);
 		}
+	}
+
+	private <T> void performJsonPathUnmarshalling(final ReadContext jsonContext, final T resultObject, final Field field, JsonPath jsonPath)
+			throws IllegalAccessException, IOException {
+		Class<?> fieldType = field.getType();
+		Object read = readField(jsonContext, jsonPath, fieldType);
+		setField(resultObject, field, fieldType, read);
 	}
 
 	// If there's a top level @JsonProperty then simply copy that map entry from the unmarshalled jsonObject,
 	// and set it unchanged into the result object.
 	@SuppressWarnings("unchecked")
-	private <T> void attemptJacksonUnmarshalling(final Object jsonObject, final T resultObject, final Field field)
+	private <T> void performJacksonUnmarshalling(final Object jsonObject, final T resultObject, final Field field)
 			throws IOException, IllegalAccessException {
-		if (field.isAnnotationPresent(JsonProperty.class)) {
-			Class<?> fieldType = field.getType();
-			Map<String, Object> jsonMap = (Map<String, Object>) jsonObject;
-			Object read = jsonMap.get(field.getName());
-			setField(resultObject, field, fieldType, read);
-		}
+		Class<?> fieldType = field.getType();
+		Map<String, Object> jsonMap = (Map<String, Object>) jsonObject;
+		Object read = jsonMap.get(field.getName());
+		setField(resultObject, field, fieldType, read);
 	}
 
 
-	private <T> void setField(final T resultObject, final Field field, final Class<?> fieldType, final Object read) throws IllegalAccessException, IOException {
+	private <T> void setField(final T resultObject, final Field field, final Class<?> fieldType, final Object read)
+			throws IllegalAccessException, IOException {
 		Type genericType = field.getGenericType();
 
 		if (fieldType.isPrimitive()) {

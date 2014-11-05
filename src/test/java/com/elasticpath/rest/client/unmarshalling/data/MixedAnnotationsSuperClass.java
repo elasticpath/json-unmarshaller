@@ -1,13 +1,15 @@
-package com.elasticpath.rest.client.unmarshalling;
+package com.elasticpath.rest.client.unmarshalling.data;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
-public class Linkable {
+public class MixedAnnotationsSuperClass {
 
 	@JsonPath("$.links")
 	private Iterable<Link> links;
 
-	@JsonPath("$.self")
+	@JsonProperty("self")
 	private Self self;
 
 	public Self getSelf() {

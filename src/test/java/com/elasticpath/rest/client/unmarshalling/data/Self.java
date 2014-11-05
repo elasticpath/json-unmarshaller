@@ -1,4 +1,4 @@
-package com.elasticpath.rest.client.unmarshalling;
+package com.elasticpath.rest.client.unmarshalling.data;
 
 public class Self {
 
