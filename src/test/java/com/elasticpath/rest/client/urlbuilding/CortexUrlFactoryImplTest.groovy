@@ -100,10 +100,21 @@ class CortexUrlFactoryImplTest {
 	@Test
 	void 'Given an object annotated with EntryPointUri, scope should correctly be placed in the url'() {
 
-		given(zoomModelIntrospector.isZoomPresent(FollowAndZoomPresent.class))
+		given(zoomModelIntrospector.isZoomPresent(EntryPointUriPresent.class))
 				.willReturn(false)
 
 		def result = cortexUrlFactory.createFromAnnotationsAndScope(baseUrl, "scoped", EntryPointUriPresent.class)
+
+		assert result.equals(baseUrl + '/im/a/scoped/uri')
+	}
+
+	@Test
+	void 'Given an object annotated with EntryPointUri and scope placeholder, scope should correctly be placed in the url'() {
+
+		given(zoomModelIntrospector.isZoomPresent(EntryPointUriScopePlaceholderPresent.class))
+				.willReturn(false)
+
+		def result = cortexUrlFactory.createFromAnnotationsAndScope(baseUrl, "scoped", EntryPointUriScopePlaceholderPresent.class)
 
 		assert result.equals(baseUrl + '/im/a/scoped/uri')
 	}
@@ -134,4 +145,7 @@ class CortexUrlFactoryImplTest {
 
 	@EntryPointUri(["im", "a", EntryPointUri.SCOPE, "uri"])
 	class EntryPointUriPresent {}
+
+	@EntryPointUri("im/a/{scope}/uri")
+	class EntryPointUriScopePlaceholderPresent {}
 }

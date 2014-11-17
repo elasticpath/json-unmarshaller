@@ -52,17 +52,17 @@ public class CortexUrlFactoryImpl implements CortexUrlFactory {
 			throw new IllegalArgumentException(EntryPointUri.class.getName() + " was expected but is missing");
 		}
 		UriBuilder uriBuilder = UriBuilder.fromPath(cortexBaseUrl);
-		addBaseUrl(scope, resultClass, uriBuilder);
+		addResourceUriFromAnnotatedClass(scope, resultClass, uriBuilder);
 		addZoomParameter(resultClass, uriBuilder);
 		addFollowLocationParameter(resultClass, uriBuilder);
 		return uriBuilder.toString();
 	}
 
-	private void addBaseUrl(final String scope, final Class<?> resultClass, final UriBuilder uriBuilder) {
+	private void addResourceUriFromAnnotatedClass(final String scope, final Class<?> resultClass, final UriBuilder uriBuilder) {
 		String[] uriParts = resultClass.getAnnotation(EntryPointUri.class).value();
 		for (String uriPart : uriParts) {
-			if(uriPart.equals(EntryPointUri.SCOPE)) {
-				uriBuilder.path(scope);
+			if(uriPart.contains(EntryPointUri.SCOPE)) {
+				uriBuilder.path(uriPart.replace(EntryPointUri.SCOPE, scope));
 			} else {
 				uriBuilder.path(uriPart);
 			}
