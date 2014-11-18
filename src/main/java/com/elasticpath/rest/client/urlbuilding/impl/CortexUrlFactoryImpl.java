@@ -23,38 +23,38 @@ public class CortexUrlFactoryImpl implements CortexUrlFactory {
 	private ZoomQueryFactory zoomQueryFactory;
 
 	@Override
-	public String create(final String baseUrl, final Class<?> resultClass) {
-		UriBuilder uriBuilder = UriBuilder.fromPath(baseUrl);
-		addZoomParameter(resultClass, uriBuilder);
-		addFollowLocationParameter(resultClass, uriBuilder);
+	public String addQueryParametersToResourceUrl(final String resourceUrl, final Class<?> requestClass) {
+		UriBuilder uriBuilder = UriBuilder.fromPath(resourceUrl);
+		addZoomParameter(requestClass, uriBuilder);
+		addFollowLocationParameter(requestClass, uriBuilder);
 		return uriBuilder.toString();
 	}
 
 	@Override
-	public String createFromAnnotationsAndResourcePath(final String cortexBaseUrl, final String resourcePath, final Class<?> resultClass) {
+	public String createResourceUrlWithQueryParameters(final String cortexBaseUrl, final String resourcePath, final Class<?> requestClass) {
 		UriBuilder uriBuilder = UriBuilder.fromPath(cortexBaseUrl);
 		uriBuilder.path(resourcePath);
-		addZoomParameter(resultClass, uriBuilder);
-		addFollowLocationParameter(resultClass, uriBuilder);
+		addZoomParameter(requestClass, uriBuilder);
+		addFollowLocationParameter(requestClass, uriBuilder);
 		return uriBuilder.toString();
 	}
 
 	@Override
-	public String createFromResourcePath(final String cortexBaseUrl, final String resourcePath) {
+	public String createResourceUrlWithNoQueryParameters(final String cortexBaseUrl, final String resourcePath) {
 		UriBuilder uriBuilder = UriBuilder.fromPath(cortexBaseUrl);
 		uriBuilder.path(resourcePath);
 		return uriBuilder.toString();
 	}
 
 	@Override
-	public String createFromAnnotationsAndScope(final String cortexBaseUrl, final String scope, final Class<?> resultClass) {
-		if (!isEntryPointUriPresent(resultClass)) {
+	public String createEntryPointResourceUrl(final String cortexBaseUrl, final String scope, final Class<?> requestClass) {
+		if (!isEntryPointUriPresent(requestClass)) {
 			throw new IllegalArgumentException(EntryPointUri.class.getName() + " was expected but is missing");
 		}
 		UriBuilder uriBuilder = UriBuilder.fromPath(cortexBaseUrl);
-		addResourceUriFromAnnotatedClass(scope, resultClass, uriBuilder);
-		addZoomParameter(resultClass, uriBuilder);
-		addFollowLocationParameter(resultClass, uriBuilder);
+		addResourceUriFromAnnotatedClass(scope, requestClass, uriBuilder);
+		addZoomParameter(requestClass, uriBuilder);
+		addFollowLocationParameter(requestClass, uriBuilder);
 		return uriBuilder.toString();
 	}
 

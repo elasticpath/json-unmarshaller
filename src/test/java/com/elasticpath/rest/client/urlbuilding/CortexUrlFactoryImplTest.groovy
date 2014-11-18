@@ -48,7 +48,7 @@ class CortexUrlFactoryImplTest {
 		given(zoomModelIntrospector.isZoomPresent(NoAnnotationsPresent.class))
 				.willReturn(false)
 
-		def result = cortexUrlFactory.create(sampleUrl, NoAnnotationsPresent.class)
+		def result = cortexUrlFactory.addQueryParametersToResourceUrl(sampleUrl, NoAnnotationsPresent.class)
 
 		assert sampleUrl == result
 	}
@@ -59,7 +59,7 @@ class CortexUrlFactoryImplTest {
 		given(zoomModelIntrospector.isZoomPresent(ZoomPresent.class))
 				.willReturn(true)
 
-		cortexUrlFactory.create('', ZoomPresent.class)
+		cortexUrlFactory.addQueryParametersToResourceUrl('', ZoomPresent.class)
 
 		verify(zoomQueryFactory).create(any(ZoomModel))
 	}
@@ -70,7 +70,7 @@ class CortexUrlFactoryImplTest {
 		given(zoomModelIntrospector.isZoomPresent(ZoomPresent.class))
 				.willReturn(true)
 
-		def result = cortexUrlFactory.create('', ZoomPresent.class)
+		def result = cortexUrlFactory.addQueryParametersToResourceUrl('', ZoomPresent.class)
 
 		assert result.startsWith('?zoom=')
 	}
@@ -81,7 +81,7 @@ class CortexUrlFactoryImplTest {
 		given(zoomModelIntrospector.isZoomPresent(FollowLocationPresent.class))
 				.willReturn(false)
 
-		def result = cortexUrlFactory.create('', FollowLocationPresent.class)
+		def result = cortexUrlFactory.addQueryParametersToResourceUrl('', FollowLocationPresent.class)
 
 		assert result.startsWith('?followLocation=')
 	}
@@ -92,7 +92,7 @@ class CortexUrlFactoryImplTest {
 		given(zoomModelIntrospector.isZoomPresent(FollowAndZoomPresent.class))
 				.willReturn(true)
 
-		def result = cortexUrlFactory.create('', FollowAndZoomPresent.class)
+		def result = cortexUrlFactory.addQueryParametersToResourceUrl('', FollowAndZoomPresent.class)
 
 		assert result.contains('zoom=') && result.contains('followLocation')
 	}
@@ -103,7 +103,7 @@ class CortexUrlFactoryImplTest {
 		given(zoomModelIntrospector.isZoomPresent(EntryPointUriPresent.class))
 				.willReturn(false)
 
-		def result = cortexUrlFactory.createFromAnnotationsAndScope(baseUrl, "scoped", EntryPointUriPresent.class)
+		def result = cortexUrlFactory.createEntryPointResourceUrl(baseUrl, "scoped", EntryPointUriPresent.class)
 
 		assert result.equals(baseUrl + '/im/a/scoped/uri')
 	}
@@ -114,7 +114,7 @@ class CortexUrlFactoryImplTest {
 		given(zoomModelIntrospector.isZoomPresent(EntryPointUriScopePlaceholderPresent.class))
 				.willReturn(false)
 
-		def result = cortexUrlFactory.createFromAnnotationsAndScope(baseUrl, "scoped", EntryPointUriScopePlaceholderPresent.class)
+		def result = cortexUrlFactory.createEntryPointResourceUrl(baseUrl, "scoped", EntryPointUriScopePlaceholderPresent.class)
 
 		assert result.equals(baseUrl + '/im/a/scoped/uri')
 	}
@@ -125,7 +125,7 @@ class CortexUrlFactoryImplTest {
 		given(zoomModelIntrospector.isZoomPresent(FollowAndZoomPresent.class))
 				.willReturn(false)
 
-		def result = cortexUrlFactory.createFromAnnotationsAndResourcePath(baseUrl, "/blah/blah", NoAnnotationsPresent.class)
+		def result = cortexUrlFactory.createResourceUrlWithQueryParameters(baseUrl, "/blah/blah", NoAnnotationsPresent.class)
 
 		assert result.equals(baseUrl + '/blah/blah')
 	}
