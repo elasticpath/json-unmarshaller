@@ -11,18 +11,13 @@ import com.elasticpath.rest.client.urlbuilding.CortexUrlFactory;
 import com.elasticpath.rest.client.unmarshalling.JsonUnmarshallReaderInterceptor;
 
 /**
- * This class implements a simple bundle that uses the bundle
- * context to register an English language dictionary service
- * with the OSGi framework. The dictionary service interface is
- * defined in a separate class file and is implemented by an
- * inner class.
+ * The bundle activator, which registers the following services: cortexUrlFactory, jacksonProvider, jsonUnmarshallReaderInterceptor.
  **/
 public class Activator implements BundleActivator {
+
 	/**
-	 * Implements BundleActivator.start(). Registers an
-	 * instance of a dictionary service using the bundle context;
-	 * attaches properties to the service that can be queried
-	 * when performing a service look-up.
+	 * Implements BundleActivator.start().
+	 * Registers the following services: cortexUrlFactory, jacksonProvider, jsonUnmarshallReaderInterceptor.
 	 * @param context the framework context for the bundle.
 	 **/
 	public void start(BundleContext context)
@@ -30,10 +25,7 @@ public class Activator implements BundleActivator {
 		Injector injector = Guice.createInjector(
 				new GuiceConfig()
 		);
-		CortexUrlFactory cortexUrlFactory = injector.getInstance(CortexUrlFactory.class);
-
-		context.registerService(CortexUrlFactory.class.getName(), cortexUrlFactory, null);
-
+		register(context, injector, CortexUrlFactory.class);
 		register(context, injector, JacksonProvider.class);
 		register(context, injector, JsonUnmarshallReaderInterceptor.class);
 	}
@@ -55,7 +47,7 @@ public class Activator implements BundleActivator {
 	 **/
 	public void stop(BundleContext context)
 	{
-		// NOTE: The service is automatically unregistered.
+		// NOTE: The services are automatically unregistered.
 	}
 
 }
