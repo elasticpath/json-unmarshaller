@@ -3,6 +3,13 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>com.elasticpath</groupId>
+		<artifactId>grandparent</artifactId>
+		<version>80</version>
+		<relativePath/>
+	</parent>
+
 	<groupId>com.elasticpath.rest</groupId>
 	<artifactId>json-unmarshaller</artifactId>
 	<version>0-SNAPSHOT</version>
