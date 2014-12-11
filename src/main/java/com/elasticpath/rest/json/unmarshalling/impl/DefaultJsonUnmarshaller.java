@@ -2,9 +2,9 @@ package com.elasticpath.rest.json.unmarshalling.impl;
 
 import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.*;
 import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.*;
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.jayway.jsonpath.JsonPath.using;
 import static java.lang.String.format;
-
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.inject.Named;
+import javax.inject.Singleton;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JavaType;
@@ -26,8 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.elasticpath.rest.json.unmarshalling.JsonUnmarshaller;
-import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
+@Named
+@Singleton
 public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultJsonUnmarshaller.class);
@@ -36,8 +41,14 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	private final ObjectMapper objectMapper;
 	private final JsonAnnotationsModelIntrospector jsonAnnotationsModelIntrospector;
 
+	public DefaultJsonUnmarshaller(){
+
+		this(new ClassInstantiator(), new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES), new JsonAnnotationsModelIntrospector());
+	}
+
 	public DefaultJsonUnmarshaller(final ClassInstantiator classInstantiator, final ObjectMapper objectMapper,
 								   final JsonAnnotationsModelIntrospector jsonAnnotationsModelIntrospector) {
+
 		this.classInstantiator = classInstantiator;
 		this.objectMapper = objectMapper;
 		this.jsonAnnotationsModelIntrospector = jsonAnnotationsModelIntrospector;

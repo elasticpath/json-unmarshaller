@@ -6,7 +6,7 @@ package com.elasticpath.rest.json.unmarshalling.data.multi_level;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
 //TODO use lombok
 public final class SecondLevel {
@@ -28,7 +28,7 @@ public final class SecondLevel {
 
 		/*
 		Jway has a problem with setter methods - confilict
-		private ThirdLevel third_level;//TODO edge case; what happens if field is not annotated and matches json node?
+		private ThirdLevel third_level;
 
 		 */
 

@@ -1,4 +1,4 @@
-package com.elasticpath.rest.json.unmarshalling.annotations;
+package com.elasticpath.rest.client.unmarshalling.annotations;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;

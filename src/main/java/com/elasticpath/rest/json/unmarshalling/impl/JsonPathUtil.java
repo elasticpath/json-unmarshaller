@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Joiner;
 
-import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
 /**
  * Various util methods for getting/fixing Json paths, taken from annotations.

@@ -7,7 +7,7 @@ package com.elasticpath.rest.json.unmarshalling.data.multi_level;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
 
-import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 //TODO use lombok
 public class ThirdLevel {
 

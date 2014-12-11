@@ -8,11 +8,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
-import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
 
 public class JsonAnnotationsModelIntrospector {
@@ -77,7 +76,7 @@ public class JsonAnnotationsModelIntrospector {
 
 		Collection<Class<?>> superclasses = new ArrayList<>();
 		Class<?> klass = resultClass;
-		while (!(klass.equals(Object.class))) {
+		while (klass !=null && !(Object.class.equals(klass))) {
 			superclasses.add(klass);
 			klass = klass.getSuperclass();
 		}
