@@ -9,6 +9,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
+
+import com.google.common.collect.Lists;
 
 public final class FieldUtil {
 
@@ -19,13 +22,8 @@ public final class FieldUtil {
 		return isFieldArrayOfNonPrimitiveTypes(field.getType()) || isFieldListOfNonPrimitiveTypes(field);
 	}
 
-	//FIXME what if field is final? make a test
-	public static boolean isFieldNonPrimitiveAndNonFinal(final Class<?> fieldType){
-		return !fieldType.isPrimitive() && !Modifier.isFinal(fieldType.getModifiers());
-	}
-
-	public static Class getActualTypeArgument(final Type genericType) {
-		return (Class) ((ParameterizedType) genericType).getActualTypeArguments()[0];
+	public static Class<?> getActualTypeArgument(final Type genericType) {
+		return (Class<?>) ((ParameterizedType) genericType).getActualTypeArguments()[0];
 	}
 
 	public static <T> void setField(final T resultObject, final Field field, final Object value) throws IllegalAccessException, IOException {

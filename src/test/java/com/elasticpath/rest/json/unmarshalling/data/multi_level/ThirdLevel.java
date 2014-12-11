@@ -2,27 +2,35 @@
  * Copyright © 2014 Elastic Path Software Inc. All rights reserved.
  */
 
-package com.elasticpath.rest.json.unmarshalling.data;
+package com.elasticpath.rest.json.unmarshalling.data.multi_level;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.Lists;
 
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 //TODO use lombok
-public class FourthLevel {
+public class ThirdLevel {
 
-	@JsonPath("@.field1")//must resolve as relative
+	//absolute path
+	@JsonPath("$.second_level.third_level.field1")
 	private String field1;
 
-	@JsonPath("$.second_level.third_level.fourth_level.field2")
+	//relative path
+	@JsonPath("@.field2")//must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
 	private String field2;
 
-	@JsonProperty("field3")//must resolve as relative to class JsonPath/Property annotation
+	@JsonProperty("field3")//must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
 	private String field3;
 
-	private String field4;//matches JSON field in "fourth-level" JSON node; must be set
+	private String field4;//matches JSON field in "third-level" JSON node; must be set
 
-	private String field5 = "default 4th field5";;//doesn't match any Json node; will not be set nor affected
+	private String field5 = "default 3rd field5";//doesn't match any Json node; will not be set nor affected
 
+	@JsonPath("@.fourth_level_array")
+	private Iterable<FourthLevel> fourthLevelIterable;
+
+	@JsonProperty("fourth_level_array")
+	private FourthLevel[] fourthLevelArray;
 
 	public String getField1() {
 		return field1;
@@ -64,6 +72,22 @@ public class FourthLevel {
 		this.field5 = field5;
 	}
 
+	public Iterable<FourthLevel> getFourthLevelIterable() {
+		return fourthLevelIterable;
+	}
+
+	public void setFourthLevelIterable(Iterable<FourthLevel> fourthLevelIterable) {
+		this.fourthLevelIterable = fourthLevelIterable;
+	}
+
+	public FourthLevel[] getFourthLevelArray() {
+		return fourthLevelArray;
+	}
+
+	public void setFourthLevelArray(FourthLevel[] fourthLevelArray) {
+		this.fourthLevelArray = fourthLevelArray;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -73,7 +97,7 @@ public class FourthLevel {
 			return false;
 		}
 
-		FourthLevel that = (FourthLevel) o;
+		ThirdLevel that = (ThirdLevel) o;
 
 		if (!field1.equals(that.field1)) {
 			return false;
@@ -88,6 +112,12 @@ public class FourthLevel {
 			return false;
 		}
 		if (!field5.equals(that.field5)) {
+			return false;
+		}
+		if (!Lists.newArrayList(fourthLevelIterable).equals(Lists.newArrayList(that.fourthLevelIterable))){
+			return false;
+		}
+		if (!Lists.newArrayList(fourthLevelArray).equals(Lists.newArrayList(that.fourthLevelArray))){
 			return false;
 		}
 

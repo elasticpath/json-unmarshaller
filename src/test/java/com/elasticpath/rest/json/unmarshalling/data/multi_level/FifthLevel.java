@@ -2,11 +2,9 @@
  * Copyright © 2014 Elastic Path Software Inc. All rights reserved.
  */
 
-package com.elasticpath.rest.json.unmarshalling.data;
+package com.elasticpath.rest.json.unmarshalling.data.multi_level;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
 //TODO use lombok
 public class FifthLevel {

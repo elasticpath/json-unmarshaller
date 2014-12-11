@@ -11,8 +11,8 @@ import org.junit.runner.RunWith;
 
 import org.mockito.runners.MockitoJUnitRunner;
 
-import com.elasticpath.rest.json.unmarshalling.data.FifthLevel;
-import com.elasticpath.rest.json.unmarshalling.data.FourthLevel;
+import com.elasticpath.rest.json.unmarshalling.data.multi_level.FifthLevel;
+import com.elasticpath.rest.json.unmarshalling.data.multi_level.FourthLevel;
 
 @RunWith(MockitoJUnitRunner.class)
 public class JsonAnnotationsModelIntrospectorTest {

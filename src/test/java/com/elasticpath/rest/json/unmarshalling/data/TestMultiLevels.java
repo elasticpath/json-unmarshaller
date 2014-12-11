@@ -7,8 +7,17 @@ package com.elasticpath.rest.json.unmarshalling.data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.json.unmarshalling.data.multi_level.SecondLevel;
+
 //TODO use lombok
 public class TestMultiLevels {
+
+	//these 5 fields will not be processed because they don't match any Json node nor they are annotated
+	private int int1;
+	private Integer Integer2;
+	private String String3;
+	private byte[] byteArray4;
+	private char char5;
 
 	@JsonProperty("second_level")
 	private SecondLevel secondLevelJProperty;
@@ -48,6 +57,27 @@ public class TestMultiLevels {
 
 	@JsonProperty("simple-field-2")
 	private String simpleField2;
+
+
+	public int getInt1() {
+		return int1;
+	}
+
+	public Integer getInteger2() {
+		return Integer2;
+	}
+
+	public String getString3() {
+		return String3;
+	}
+
+	public byte[] getByteArray4() {
+		return byteArray4;
+	}
+
+	public char getChar5() {
+		return char5;
+	}
 
 	public int getSimpleField1() {
 		return simpleField1;

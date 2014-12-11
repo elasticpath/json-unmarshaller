@@ -18,12 +18,12 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 public class JsonAnnotationsModelIntrospector {
 
 	/**
-	 * Given a class, return all fields in the entire class hierarchy that contain JsonPath or JsonProperty annotations.
+	 * Given a class, return all fields in the entire class hierarchy
 	 * @param clazz the class to search.
 	 * @param <T> the Class type
-	 * @return all fields in that class hierarchy that contain JsonPath annotation(s).
+	 * @return all fields in that class hierarchy
 	 */
-	public <T> Iterable<Field> retrieveFieldsWithJsonAnnotations(final Class<T> clazz) {
+	public <T> Iterable<Field> retrieveAllFields(final Class<T> clazz) {
 		return getInjectableFields(getSuperclassHierarchy(clazz),false);
 	}
 
@@ -49,8 +49,7 @@ public class JsonAnnotationsModelIntrospector {
 
 		final boolean isFieldArrayOrListOfNonPrimitiveTypes = isFieldArrayOrListOfNonPrimitiveTypes(field);
 
-		//isFieldArrayOrListOfNonPrimitiveTypes must go first because arrays' FINAL modifier is TRUE
-		if (isFieldArrayOrListOfNonPrimitiveTypes || isFieldNonPrimitiveAndNonFinal(fieldType)){
+		if (isFieldArrayOrListOfNonPrimitiveTypes || !fieldType.isPrimitive()){
 			if (isFieldArrayOrListOfNonPrimitiveTypes) {
 				//iterable
 				if (fieldType.isAssignableFrom(Iterable.class)) {
@@ -107,7 +106,7 @@ public class JsonAnnotationsModelIntrospector {
 						   return input.isAnnotationPresent(JsonPath.class);
 					   }
 
-					   return input.isAnnotationPresent(JsonPath.class) || input.isAnnotationPresent(JsonProperty.class);
+					   return true;
 				   }
 				});
 	}
