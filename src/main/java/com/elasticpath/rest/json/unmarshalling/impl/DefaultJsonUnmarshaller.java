@@ -58,7 +58,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		}
 	}
 
-	private <T> T unmarshall(T resultObject, ReadContext jsonContext, Deque<String> jsonPathBuilder) throws IOException {
+	private <T> T unmarshall(T resultObject, ReadContext jsonContext, Deque<String> jsonPathStack) throws IOException {
 
 		final Class resultClass = resultObject.getClass();
 		final String resultClassName = resultClass.getName();
@@ -68,7 +68,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 			if (jsonAnnotatedFields.iterator().hasNext()) {
 
-				final String fullJsonPath = getJsonPath(jsonPathBuilder);
+				final String fullJsonPath = getJsonPath(jsonPathStack);
 
 				for (Field field : jsonAnnotatedFields) {
 					JsonProperty jsonPropertyAnnotation = field.getAnnotation(JsonProperty.class);
@@ -76,19 +76,8 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 					sanityCheck(resultClassName, field, jsonPathAnnotation, jsonPropertyAnnotation);
 
-					String jsonAnnotationValue;
+					final String jsonAnnotationValue = getJsonAnnotationValue(jsonPathAnnotation, jsonPropertyAnnotation, fullJsonPath);
 
-					if (jsonPathAnnotation != null) {
-						jsonAnnotationValue = jsonPathAnnotation.value();
-					} else {
-						//this makes JsonProperty annot value relative to parent JsonPath (or any other path)
-
-						if (jsonPathBuilder.isEmpty()){
-							jsonAnnotationValue = jsonPropertyAnnotation.value();
-						}else{
-							jsonAnnotationValue = fullJsonPath + "." + jsonPropertyAnnotation.value();
-						}
-					}
 					/*
 					   Rules to perform Json unmarshalling:
 					   1. Field must be annotated with JsonPath or
@@ -102,7 +91,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 						performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonAnnotationValue, fullJsonPath);
 					}
 
-					processMultiLevelAnnotations(field, getFieldValue(resultObject,field), jsonPathAnnotation, jsonPropertyAnnotation, jsonPathBuilder,
+					processMultiLevelAnnotations(field, getFieldValue(resultObject,field), jsonPathAnnotation, jsonPropertyAnnotation, jsonPathStack,
 														jsonContext);
 				}
 			}
@@ -115,13 +104,29 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		}
 	}
 
-	private String getJsonPath(Queue<String> jsonPathBuilder){
-		return Joiner.on("").join(jsonPathBuilder);
+	private String getJsonAnnotationValue(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
+										  final String fullJsonPath){
+
+		if (jsonPathAnnotation != null) {
+			return jsonPathAnnotation.value();
+		}
+
+		//this makes JsonProperty annot value relative to parent JsonPath (or any other path)
+
+		if (fullJsonPath.equals("")){
+			return jsonPropertyAnnotation.value();
+		}
+
+		return  fullJsonPath + "." + jsonPropertyAnnotation.value();
+	}
+
+	private String getJsonPath(Queue<String> jsonPathStack){
+		return Joiner.on("").join(jsonPathStack);
 	}
 
 	//TODO make a test with array/list of strings or primitives
 	private void processMultiLevelAnnotations(Field field, Object fieldValue, JsonPath jsonPathAnnotation,
-												   JsonProperty jsonPropertyAnnotation, Deque<String> jsonPathBuilder,
+												   JsonProperty jsonPropertyAnnotation, Deque<String> jsonPathStack,
 												   ReadContext jsonContext)
 			throws IOException {
 
@@ -130,7 +135,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 				return;
 			}
 
-			jsonPathBuilder = resolveRelativeJsonPaths(jsonPropertyAnnotation, jsonPathAnnotation, jsonPathBuilder);
+			jsonPathStack = resolveRelativeJsonPaths(jsonPropertyAnnotation, jsonPathAnnotation, jsonPathStack);
 
 			//handles arrays/Lists
 			if (isFieldArrayOrListOfNonPrimitiveTypes(field)){
@@ -145,16 +150,16 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 				for (int i = 0; i < fieldValueInstanceMembers.length; i++) {
 					Object member = fieldValueInstanceMembers[i];
-					jsonPathBuilder.add(".[" + i + "]");
+					jsonPathStack.add(".[" + i + "]");
 
-					unmarshall(member, jsonContext, jsonPathBuilder);
-					jsonPathBuilder.pollLast();
+					unmarshall(member, jsonContext, jsonPathStack);
+					jsonPathStack.pollLast();
 				}
 			}else {
 				//handles anything else
-				unmarshall(fieldValue, jsonContext, jsonPathBuilder);
+				unmarshall(fieldValue, jsonContext, jsonPathStack);
 			}
-			jsonPathBuilder.pollLast();
+			jsonPathStack.pollLast();
 		}
 	}
 	private boolean shouldPerformJsonPathUnmarshalling(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
@@ -164,31 +169,31 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		return jsonPathAnnotation !=null || (jsonPropertyAnnotation != null && (field.getType().isPrimitive() || fieldValue == null));
 	}
 
-	private Deque<String> resolveRelativeJsonPaths(JsonProperty jsonPropertyAnnotation, JsonPath jsonPathAnnotation, Deque<String> jsonPathBuilder){
+	private Deque<String> resolveRelativeJsonPaths(JsonProperty jsonPropertyAnnotation, JsonPath jsonPathAnnotation, Deque<String> jsonPathStack){
 
 		String jsonPathVal = jsonPathAnnotation==null?jsonPropertyAnnotation.value():jsonPathAnnotation.value();
 
 		if (jsonPropertyAnnotation != null){//handle jakson propery annotations
-			if (jsonPathBuilder.isEmpty()){//transform first Jakson property into JsonPath root
-				jsonPathBuilder.add("$." + jsonPathVal);
+			if (jsonPathStack.isEmpty()){//transform first Jakson property into JsonPath root
+				jsonPathStack.add("$." + jsonPathVal);
 			}else {
-				jsonPathBuilder.add("." + jsonPathVal);//all other jakson props will be simply appended
+				jsonPathStack.add("." + jsonPathVal);//all other jakson props will be simply appended
 			}
 
 		}else if (jsonPathVal.charAt(0) == '@'){//@.property
-			if (jsonPathBuilder.isEmpty()){
-				jsonPathBuilder.add(jsonPathVal.replaceFirst("@", "\\$"));
+			if (jsonPathStack.isEmpty()){
+				jsonPathStack.add(jsonPathVal.replaceFirst("@", "\\$"));
 			}else {
-				jsonPathBuilder.add(jsonPathVal.substring(1));
+				jsonPathStack.add(jsonPathVal.substring(1));
 			}
-		}else if (jsonPathVal.charAt(0) == '$' && !jsonPathBuilder.isEmpty()) {
-			jsonPathBuilder = new LinkedList<>();
-			jsonPathBuilder.add(jsonPathVal);
+		}else if (jsonPathVal.charAt(0) == '$' && !jsonPathStack.isEmpty()) {
+			jsonPathStack = new LinkedList<>();
+			jsonPathStack.add(jsonPathVal);
 		}else{
-			jsonPathBuilder.add(jsonPathVal);
+			jsonPathStack.add(jsonPathVal);
 		}
 
-		return jsonPathBuilder;
+		return jsonPathStack;
 	}
 
 	/*
