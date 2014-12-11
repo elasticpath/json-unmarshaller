@@ -12,6 +12,7 @@ import com.elasticpath.rest.json.unmarshalling.JsonUnmarshaller;
 /**
  * Guice configuration class.
  */
+@Deprecated
 public class GuiceConfig extends AbstractModule {
 
 	@Override
