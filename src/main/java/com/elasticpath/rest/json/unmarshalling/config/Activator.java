@@ -1,12 +1,15 @@
 package com.elasticpath.rest.json.unmarshalling.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import com.elasticpath.rest.json.unmarshalling.impl.ClassInstantiator;
 import com.elasticpath.rest.json.unmarshalling.impl.DefaultJsonUnmarshaller;
+import com.elasticpath.rest.json.unmarshalling.impl.JsonAnnotationsModelIntrospector;
 
 /**
  * The bundle activator, which registers the following services: jsonPathResultFactory
@@ -20,14 +23,12 @@ public class Activator implements BundleActivator {
 	 **/
 	public void start(BundleContext context)
 	{
-		Injector injector = Guice.createInjector(
-				new GuiceConfig()
-		);
 		context.registerService(
 				DefaultJsonUnmarshaller.class.getName(),
-				injector.getInstance(DefaultJsonUnmarshaller.class),
-				null
-		);
+				new DefaultJsonUnmarshaller(new ClassInstantiator(),
+											new ObjectMapper(),
+											new JsonAnnotationsModelIntrospector()),
+				null);
 	}
 
 	/**
