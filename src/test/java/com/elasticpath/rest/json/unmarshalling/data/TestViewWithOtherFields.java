@@ -13,7 +13,7 @@ public class TestViewWithOtherFields {
 		return currency;
 	}
 
-	public void setCurrency(String currency) {
+	public void setCurrency(final String currency) {
 		this.currency = currency;
 	}
 
@@ -21,7 +21,7 @@ public class TestViewWithOtherFields {
 		return notForDeserialization;
 	}
 
-	public void setNotForDeserialization(String notForDeserialization) {
+	public void setNotForDeserialization(final String notForDeserialization) {
 		this.notForDeserialization = notForDeserialization;
 	}
 }

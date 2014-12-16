@@ -6,18 +6,15 @@ package com.elasticpath.rest.json.unmarshalling.impl;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.List;
-
-import com.google.common.collect.Lists;
 
 public final class FieldUtil {
 
-	private FieldUtil(){}
+	private FieldUtil() {
+	}
 
-	public static boolean isFieldArrayOrListOfNonPrimitiveTypes(final Field field){
+	public static boolean isFieldArrayOrListOfNonPrimitiveTypes(final Field field) {
 
 		return isFieldArrayOfNonPrimitiveTypes(field.getType()) || isFieldListOfNonPrimitiveTypes(field);
 	}
@@ -40,12 +37,12 @@ public final class FieldUtil {
 		return fieldVal;
 	}
 
-	private static boolean isFieldListOfNonPrimitiveTypes(final Field field){
+	private static boolean isFieldListOfNonPrimitiveTypes(final Field field) {
 
 		return field.getType().isAssignableFrom(Iterable.class) && !getActualTypeArgument(field.getGenericType()).isPrimitive();
 	}
 
-	private static boolean isFieldArrayOfNonPrimitiveTypes(final Class<?> fieldType){
+	private static boolean isFieldArrayOfNonPrimitiveTypes(final Class<?> fieldType) {
 
 		return fieldType.isArray() && fieldType.getComponentType() != null && !fieldType.getComponentType().isPrimitive();
 	}

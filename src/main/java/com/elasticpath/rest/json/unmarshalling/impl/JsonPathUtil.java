@@ -11,11 +11,11 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 /**
  * Various util methods for getting/fixing Json paths, taken from annotations.
  * Some paths are handled by Jway fmwk, but not all.
- *
  */
 public class JsonPathUtil {
 
-	private JsonPathUtil(){}
+	private JsonPathUtil() {
+	}
 
 	/**
 	 * Get annotation value and transform JsonProperty value to a relative JsonPath, if required
@@ -29,34 +29,34 @@ public class JsonPathUtil {
 	 * @return
 	 */
 	public static String getJsonAnnotationValue(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
-										  		final String fieldName, final boolean isAbsolutePath){
+												final String fieldName, final boolean isAbsolutePath) {
 
 		if (jsonPathAnnotation != null) {
 			return jsonPathAnnotation.value();
 		}
 
 		String jsonPath;
-		if (jsonPropertyAnnotation == null){
+		if (jsonPropertyAnnotation == null) {
 			jsonPath = fieldName;
-		}else{
+		} else {
 			jsonPath = jsonPropertyAnnotation.value();
 		}
 
-		if (isAbsolutePath){
+		if (isAbsolutePath) {
 			return jsonPath; //Jway ReadContext will resolve JsonProperty value as absolute path, by adding $.
 		}
 
 		//this makes JsonProperty annot value relative to parent JsonPath (or any other path)
-		return  "@." + jsonPath;
+		return "@." + jsonPath;
 	}
 
 	/**
 	 * Make a string out of all deque elements
-	  *
+	 *
 	 * @param jsonPathStack
 	 * @return
 	 */
-	public static String getJsonPath(final Deque<String> jsonPathStack){
+	public static String getJsonPath(final Deque<String> jsonPathStack) {
 
 		return Joiner.on("").join(jsonPathStack);
 	}
@@ -71,36 +71,36 @@ public class JsonPathUtil {
 	 * @param jsonPathStack
 	 * @return
 	 */
-	public static Deque<String> resolveRelativeJsonPaths(final JsonPath jsonPathAnnotation,final JsonProperty jsonPropertyAnnotation,
-												   		 final String fieldName, Deque<String> jsonPathStack){
+	public static Deque<String> resolveRelativeJsonPaths(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
+														 final String fieldName, Deque<String> jsonPathStack) {
 
 		String jsonPathVal;
 
-		if (jsonPathAnnotation!=null){
+		if (jsonPathAnnotation != null) {
 			jsonPathVal = jsonPathAnnotation.value();
-		}else if (jsonPropertyAnnotation != null){
+		} else if (jsonPropertyAnnotation != null) {
 			jsonPathVal = jsonPropertyAnnotation.value();
-		}else{
+		} else {
 			jsonPathVal = fieldName;
 		}
 
-		if (jsonPropertyAnnotation != null){//handle jakson propery annotations
-			if (jsonPathStack.isEmpty()){//transform first Jakson property into JsonPath root
+		if (jsonPropertyAnnotation != null) {//handle jakson propery annotations
+			if (jsonPathStack.isEmpty()) {//transform first Jakson property into JsonPath root
 				jsonPathStack.add("$." + jsonPathVal);
-			}else {
+			} else {
 				jsonPathStack.add("." + jsonPathVal);//all other jakson props will be simply appended
 			}
 
-		}else if (jsonPathVal.charAt(0) == '@'){//@.property
-			if (jsonPathStack.isEmpty()){
+		} else if (jsonPathVal.charAt(0) == '@') {//@.property
+			if (jsonPathStack.isEmpty()) {
 				jsonPathStack.add(jsonPathVal.replaceFirst("@", "\\$"));
-			}else {
+			} else {
 				jsonPathStack.add(jsonPathVal.substring(1));
 			}
-		}else if (jsonPathVal.charAt(0) == '$' && !jsonPathStack.isEmpty()) {
+		} else if (jsonPathVal.charAt(0) == '$' && !jsonPathStack.isEmpty()) {
 			jsonPathStack = new LinkedList<>();
 			jsonPathStack.add(jsonPathVal);
-		}else{
+		} else {
 			jsonPathStack.add(jsonPathVal);
 		}
 
@@ -115,10 +115,10 @@ public class JsonPathUtil {
 	 * @param parentJsonPath
 	 * @return
 	 */
-	public static String buildCorrectJsonPath(String jsonPath, final String parentJsonPath){
+	public static String buildCorrectJsonPath(final String jsonPath, final String parentJsonPath) {
 
 		//matches @.path   $.path  .path
-		if (jsonPath.matches("[@\\$]?[.].+")){
+		if (jsonPath.matches("[@\\$]?[.].+")) {
 			if (jsonPath.charAt(0) == '@') {
 				return (parentJsonPath.equals("") ? "$" : parentJsonPath) + jsonPath.substring(1);
 			}
@@ -129,13 +129,13 @@ public class JsonPathUtil {
 		}
 
 		//path like @path is invalid should be resolved as relative or absolute, depending on parent path
-		if (jsonPath.charAt(0) == '@'){
+		if (jsonPath.charAt(0) == '@') {
 			return (parentJsonPath.equals("") ? "$" : parentJsonPath) + "." + jsonPath.substring(1);
 		}
 
 		//path like $path is invalid should be resolved as absolute
-		if (jsonPath.charAt(0) == '$'){
-			return  "$." + jsonPath.substring(1);
+		if (jsonPath.charAt(0) == '$') {
+			return "$." + jsonPath.substring(1);
 		}
 
 		//any path that doesn't start with @ or $

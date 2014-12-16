@@ -7,8 +7,11 @@ package com.elasticpath.rest.json.unmarshalling.data.multi_level;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
+
 //TODO use lombok
 public class FourthLevel {
+
+	public static final int ODD_PRIME = 31;
 
 	@JsonPath("@.field1")//must resolve as relative
 	private String field1;
@@ -21,14 +24,15 @@ public class FourthLevel {
 
 	private String field4;//matches JSON field in "fourth-level" JSON node; must be set
 
-	private String field5 = "default 4th field5";;//doesn't match any Json node; will not be set nor affected
+	private String field5 = "default 4th field5";
+	;//doesn't match any Json node; will not be set nor affected
 
 
 	public String getField1() {
 		return field1;
 	}
 
-	public void setField1(String field1) {
+	public void setField1(final String field1) {
 		this.field1 = field1;
 	}
 
@@ -36,7 +40,7 @@ public class FourthLevel {
 		return field2;
 	}
 
-	public void setField2(String field2) {
+	public void setField2(final String field2) {
 		this.field2 = field2;
 	}
 
@@ -44,7 +48,7 @@ public class FourthLevel {
 		return field3;
 	}
 
-	public void setField3(String field3) {
+	public void setField3(final String field3) {
 		this.field3 = field3;
 	}
 
@@ -52,7 +56,7 @@ public class FourthLevel {
 		return field4;
 	}
 
-	public void setField4(String field4) {
+	public void setField4(final String field4) {
 		this.field4 = field4;
 	}
 
@@ -60,12 +64,12 @@ public class FourthLevel {
 		return field5;
 	}
 
-	public void setField5(String field5) {
+	public void setField5(final String field5) {
 		this.field5 = field5;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -97,10 +101,10 @@ public class FourthLevel {
 	@Override
 	public int hashCode() {
 		int result = field1.hashCode();
-		result = 31 * result + field2.hashCode();
-		result = 31 * result + field3.hashCode();
-		result = 31 * result + field4.hashCode();
-		result = 31 * result + field5.hashCode();
+		result = ODD_PRIME * result + field2.hashCode();
+		result = ODD_PRIME * result + field3.hashCode();
+		result = ODD_PRIME * result + field4.hashCode();
+		result = ODD_PRIME * result + field5.hashCode();
 		return result;
 	}
 }

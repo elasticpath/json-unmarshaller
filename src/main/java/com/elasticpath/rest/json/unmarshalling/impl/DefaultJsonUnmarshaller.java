@@ -83,17 +83,17 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 					JsonProperty jsonPropertyAnnotation = field.getAnnotation(JsonProperty.class);
 					JsonPath jsonPathAnnotation = field.getAnnotation(JsonPath.class);
 
-					sanityCheck(jsonPathAnnotation, jsonPropertyAnnotation,resultClassName, field);
+					sanityCheck(jsonPathAnnotation, jsonPropertyAnnotation, resultClassName, field);
 
 					final String jsonPath = getJsonAnnotationValue(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(),
-																			  isAbsolutePath);
+							isAbsolutePath);
 
-					if (shouldPerformJsonPathUnmarshalling(jsonPathAnnotation, jsonPropertyAnnotation, field, getFieldValue(resultObject,field))){
+					if (shouldPerformJsonPathUnmarshalling(jsonPathAnnotation, jsonPropertyAnnotation, field, getFieldValue(resultObject, field))) {
 						performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonPath, fullJsonPath);
 					}
 
-					processMultiLevelAnnotations(jsonPathAnnotation, jsonPropertyAnnotation, field, getFieldValue(resultObject,field), jsonContext,
-												 jsonPathStack);
+					processMultiLevelAnnotations(jsonPathAnnotation, jsonPropertyAnnotation, field, getFieldValue(resultObject, field), jsonContext,
+							jsonPathStack);
 				}
 			}
 			return resultObject;
@@ -104,7 +104,6 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			throw new IllegalArgumentException(e);
 		}
 	}
-
 
 
 	/*
@@ -120,23 +119,23 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * @param jsonContext
 	 * @throws IOException
 	 */
-	private void processMultiLevelAnnotations(final JsonPath jsonPathAnnotation,final JsonProperty jsonPropertyAnnotation,
+	private void processMultiLevelAnnotations(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
 											  final Field field, final Object fieldValue, final ReadContext jsonContext,
 											  Deque<String> jsonPathStack)
 			throws IOException {
 
-		if (jsonAnnotationsModelIntrospector.hasJsonPathAnnotatatedFields(field)){
-			if (fieldValue == null){
+		if (jsonAnnotationsModelIntrospector.hasJsonPathAnnotatatedFields(field)) {
+			if (fieldValue == null) {
 				return;
 			}
 
 			jsonPathStack = resolveRelativeJsonPaths(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(), jsonPathStack);
 
 			//handles arrays/Lists
-			if (isFieldArrayOrListOfNonPrimitiveTypes(field)){
-				unmarshalArrayOrList(fieldValue,jsonPathStack,jsonContext);
+			if (isFieldArrayOrListOfNonPrimitiveTypes(field)) {
+				unmarshalArrayOrList(fieldValue, jsonPathStack, jsonContext);
 
-			}else {
+			} else {
 				//handles anything else
 				unmarshall(fieldValue, jsonContext, jsonPathStack);
 			}
@@ -197,10 +196,9 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		final boolean isFieldPrimitive = field.getType().isPrimitive();
 
 
-		return jsonPathAnnotation !=null || (jsonPropertyAnnotation != null && (isFieldPrimitive || fieldValue == null) ||
-													 isFieldPrimitive || fieldValue == null);
+		return jsonPathAnnotation != null || (jsonPropertyAnnotation != null && (isFieldPrimitive || fieldValue == null) ||
+				isFieldPrimitive || fieldValue == null);
 	}
-
 
 
 	/*
@@ -239,10 +237,10 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			throws IllegalAccessException, IOException {
 
 		final Class<?> fieldType = field.getType();
-		jsonPath = buildCorrectJsonPath(jsonPath,parentJsonPath);
+		jsonPath = buildCorrectJsonPath(jsonPath, parentJsonPath);
 
 		final Object read = readField(jsonContext, jsonPath, fieldType);
-		if (read == null && fieldType.isPrimitive()){
+		if (read == null && fieldType.isPrimitive()) {
 			return;
 		}
 		setField(resultObject, field, fieldType, read);

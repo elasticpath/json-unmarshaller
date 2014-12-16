@@ -20,17 +20,17 @@ public class JsonAnnotationsModelIntrospectorTest {
 	private JsonAnnotationsModelIntrospector fixture;
 
 	@Before
-	public void setUp(){
+	public void setUp() {
 		fixture = new JsonAnnotationsModelIntrospector();
 	}
 
 	@Test
-	public void shouldReturnTrueWhenJsonPathAnnoationIsFoundInField(){
+	public void shouldReturnTrueWhenJsonPathAnnoationIsFoundInField() {
 		assert fixture.hasJsonPathAnnotatedFields(FourthLevel.class) == true;
 	}
 
 	@Test
-	public void shouldReturnFalseWhenJsonPathAnnoationIsNotFoundInField(){
+	public void shouldReturnFalseWhenJsonPathAnnoationIsNotFoundInField() {
 		assert fixture.hasJsonPathAnnotatedFields(FifthLevel.class) == false;
 	}
 }

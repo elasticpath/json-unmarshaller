@@ -83,7 +83,7 @@ public class TestMultiLevels {
 		return simpleField1;
 	}
 
-	public void setSimpleField1(int simpleField1) {
+	public void setSimpleField1(final int simpleField1) {
 		this.simpleField1 = simpleField1;
 	}
 
@@ -91,7 +91,7 @@ public class TestMultiLevels {
 		return simpleField2;
 	}
 
-	public void setSimpleField2(String simpleField2) {
+	public void setSimpleField2(final String simpleField2) {
 		this.simpleField2 = simpleField2;
 	}
 
@@ -99,7 +99,7 @@ public class TestMultiLevels {
 		return secondLevelJProperty;
 	}
 
-	public void setSecondLevelJProperty(SecondLevel secondLevelJProperty) {
+	public void setSecondLevelJProperty(final SecondLevel secondLevelJProperty) {
 		this.secondLevelJProperty = secondLevelJProperty;
 	}
 
@@ -107,7 +107,7 @@ public class TestMultiLevels {
 		return secondLevelRelativeJPath;
 	}
 
-	public void setSecondLevelRelativeJPath(SecondLevel secondLevelRelativeJPath) {
+	public void setSecondLevelRelativeJPath(final SecondLevel secondLevelRelativeJPath) {
 		this.secondLevelRelativeJPath = secondLevelRelativeJPath;
 	}
 
@@ -115,7 +115,7 @@ public class TestMultiLevels {
 		return secondLevelAbsoluteJPath;
 	}
 
-	public void setSecondLevelAbsoluteJPath(SecondLevel secondLevelAbsoluteJPath) {
+	public void setSecondLevelAbsoluteJPath(final SecondLevel secondLevelAbsoluteJPath) {
 		this.secondLevelAbsoluteJPath = secondLevelAbsoluteJPath;
 	}
 
@@ -123,7 +123,7 @@ public class TestMultiLevels {
 		return secondLevelArrayJProperty;
 	}
 
-	public void setSecondLevelArrayJProperty(SecondLevel[] secondLevelArrayJProperty) {
+	public void setSecondLevelArrayJProperty(final SecondLevel[] secondLevelArrayJProperty) {
 		this.secondLevelArrayJProperty = secondLevelArrayJProperty;
 	}
 
@@ -131,7 +131,7 @@ public class TestMultiLevels {
 		return secondLevelIterableJProperty;
 	}
 
-	public void setSecondLevelIterableJProperty(Iterable<SecondLevel> secondLevelIterableJProperty) {
+	public void setSecondLevelIterableJProperty(final Iterable<SecondLevel> secondLevelIterableJProperty) {
 		this.secondLevelIterableJProperty = secondLevelIterableJProperty;
 	}
 
@@ -139,7 +139,7 @@ public class TestMultiLevels {
 		return field3;
 	}
 
-	public void setField3(String field3) {
+	public void setField3(final String field3) {
 		this.field3 = field3;
 	}
 
@@ -147,7 +147,7 @@ public class TestMultiLevels {
 		return field2AbsolutePath;
 	}
 
-	public void setField2AbsolutePath(String field2AbsolutePath) {
+	public void setField2AbsolutePath(final String field2AbsolutePath) {
 		this.field2AbsolutePath = field2AbsolutePath;
 	}
 
@@ -155,7 +155,7 @@ public class TestMultiLevels {
 		return field2RelativePath;
 	}
 
-	public void setField2RelativePath(String field2RelativePath) {
+	public void setField2RelativePath(final String field2RelativePath) {
 		this.field2RelativePath = field2RelativePath;
 	}
 
@@ -163,7 +163,7 @@ public class TestMultiLevels {
 		return secondLevelArrayJPath;
 	}
 
-	public void setSecondLevelArrayJPath(SecondLevel[] secondLevelArrayJPath) {
+	public void setSecondLevelArrayJPath(final SecondLevel[] secondLevelArrayJPath) {
 		this.secondLevelArrayJPath = secondLevelArrayJPath;
 	}
 
@@ -171,7 +171,7 @@ public class TestMultiLevels {
 		return secondLevelIterableJPath;
 	}
 
-	public void setSecondLevelIterableJPath(Iterable<SecondLevel> secondLevelIterableJPath) {
+	public void setSecondLevelIterableJPath(final Iterable<SecondLevel> secondLevelIterableJPath) {
 		this.secondLevelIterableJPath = secondLevelIterableJPath;
 	}
 

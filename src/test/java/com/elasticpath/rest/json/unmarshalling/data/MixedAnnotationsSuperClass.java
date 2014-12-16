@@ -16,7 +16,7 @@ public class MixedAnnotationsSuperClass {
 		return self;
 	}
 
-	public void setSelf(Self self) {
+	public void setSelf(final Self self) {
 		this.self = self;
 	}
 
@@ -24,7 +24,7 @@ public class MixedAnnotationsSuperClass {
 		return links;
 	}
 
-	public void setLinks(Iterable<Link> links) {
+	public void setLinks(final Iterable<Link> links) {
 		this.links = links;
 	}
 }

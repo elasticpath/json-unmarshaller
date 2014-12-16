@@ -12,7 +12,7 @@ public class TestViewWithParent extends MixedAnnotationsSuperClass {
 		return currency;
 	}
 
-	public void setCurrency(String currency) {
+	public void setCurrency(final String currency) {
 		this.currency = currency;
 	}
 }

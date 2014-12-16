@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 //TODO use lombok
 public class FifthLevel {
 
+	public static final int ODD_PRIME = 31;
 	@JsonProperty("field1")
 	private String field1;
 
@@ -20,7 +21,7 @@ public class FifthLevel {
 		return field1;
 	}
 
-	public void setField1(String field1) {
+	public void setField1(final String field1) {
 		this.field1 = field1;
 	}
 
@@ -28,7 +29,7 @@ public class FifthLevel {
 		return field2;
 	}
 
-	public void setField2(int field2) {
+	public void setField2(final int field2) {
 		this.field2 = field2;
 	}
 
@@ -36,12 +37,12 @@ public class FifthLevel {
 		return field3;
 	}
 
-	public void setField3(String field3) {
+	public void setField3(final String field3) {
 		this.field3 = field3;
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
@@ -67,8 +68,8 @@ public class FifthLevel {
 	@Override
 	public int hashCode() {
 		int result = field1.hashCode();
-		result = 31 * result + field2;
-		result = 31 * result + field3.hashCode();
+		result = ODD_PRIME * result + field2;
+		result = ODD_PRIME * result + field3.hashCode();
 		return result;
 	}
 }
