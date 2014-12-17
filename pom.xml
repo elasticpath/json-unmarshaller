@@ -142,10 +142,14 @@
 						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
 						<Embed-Directory>OSGI-INF/lib</Embed-Directory>
 						<Embed-Transitive>true</Embed-Transitive>
-						<Export-Package>com.elasticpath.rest.json.unmarshalling.*,
-							com.elasticpath.rest.client.unmarshalling.annotations</Export-Package>
-						<Import-Package>com.fasterxml.jackson.annotation,
-										*;resolution:=optional</Import-Package>
+						<Export-Package>
+							com.elasticpath.rest.json.unmarshalling.*,
+							com.elasticpath.rest.client.unmarshalling.annotations
+						</Export-Package>
+						<Import-Package>
+							com.fasterxml.jackson.annotation,
+							*;resolution:=optional
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
