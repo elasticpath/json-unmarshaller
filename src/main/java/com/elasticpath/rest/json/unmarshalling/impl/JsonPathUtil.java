@@ -8,7 +8,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
 /**
  * Various util methods for getting/fixing Json paths, taken from annotations.

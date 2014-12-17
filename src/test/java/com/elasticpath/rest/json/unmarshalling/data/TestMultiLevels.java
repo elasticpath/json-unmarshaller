@@ -6,7 +6,7 @@ package com.elasticpath.rest.json.unmarshalling.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 import com.elasticpath.rest.json.unmarshalling.data.multi_level.SecondLevel;
 
 //TODO use lombok
