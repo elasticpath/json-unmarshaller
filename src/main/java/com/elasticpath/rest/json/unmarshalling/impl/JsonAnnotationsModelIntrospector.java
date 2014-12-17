@@ -1,7 +1,8 @@
 package com.elasticpath.rest.json.unmarshalling.impl;
 
 import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getFirstTypeArgumentFromGeneric;
-import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrListOfNonPrimitiveTypes;
+import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrList;
+import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrListOfPrimitiveTypes;
 import static com.google.common.collect.FluentIterable.from;
 import static java.util.Arrays.asList;
 
@@ -51,24 +52,22 @@ public class JsonAnnotationsModelIntrospector {
 	public boolean hasJsonPathAnnotatatedFields(final Field field) {
 		final Class<?> fieldType = field.getType();
 
-		final boolean isFieldArrayOrListOfNonPrimitiveTypes = isFieldArrayOrListOfNonPrimitiveTypes(field);
-
-		if (isFieldArrayOrListOfNonPrimitiveTypes || !fieldType.isPrimitive()) {
-			if (isFieldArrayOrListOfNonPrimitiveTypes) {
-				//iterable
-				if (fieldType.isAssignableFrom(Iterable.class)) {
-					return hasJsonPathAnnotatedFields(getFirstTypeArgumentFromGeneric(field.getGenericType()));
-				}
-
-				//array
-				return hasJsonPathAnnotatedFields(fieldType.getComponentType());
+		if (isFieldArrayOrListOfPrimitiveTypes(field) || fieldType.isPrimitive()) {
+			return false;
+		}
+		if (isFieldArrayOrList(field)) {
+			//iterable
+			if (fieldType.isAssignableFrom(Iterable.class)) {
+				return hasJsonPathAnnotatedFields(getFirstTypeArgumentFromGeneric(field.getGenericType()));
 			}
-
-			//non-array/list field
-			return hasJsonPathAnnotatedFields(fieldType);
+			//array
+			return hasJsonPathAnnotatedFields(fieldType.getComponentType());
 		}
 
-		return false;
+		//non-array/list field
+		return hasJsonPathAnnotatedFields(fieldType);
+
+
 	}
 
 	/*

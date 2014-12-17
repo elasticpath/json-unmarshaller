@@ -2,7 +2,7 @@ package com.elasticpath.rest.json.unmarshalling.impl;
 
 import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getFieldValue;
 import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getFirstTypeArgumentFromGeneric;
-import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrListOfNonPrimitiveTypes;
+import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrList;
 import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.buildCorrectJsonPath;
 import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.getJsonAnnotationValue;
 import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.getJsonPath;
@@ -87,7 +87,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			if (declaredFields.iterator().hasNext()) {
 
 				final String parentJsonPathString = getJsonPath(parentJsonPath);
-				final boolean isAbsolutePath = parentJsonPathString.equals("");
+				final boolean isAbsolutePath = "".equals(parentJsonPathString);
 
 				for (Field field : declaredFields) {
 					JsonProperty jsonPropertyAnnotation = field.getAnnotation(JsonProperty.class);
@@ -136,7 +136,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			Iterable<String> currentJsonPath = resolveRelativeJsonPaths(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(), parentJsonPath);
 
 			//handles arrays/Lists
-			if (isFieldArrayOrListOfNonPrimitiveTypes(field)) {
+			if (isFieldArrayOrList(field)) {
 				unmarshalArrayOrList(fieldValue, currentJsonPath, jsonContext);
 
 			} else {

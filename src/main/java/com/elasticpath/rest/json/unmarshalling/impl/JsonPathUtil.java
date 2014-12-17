@@ -62,7 +62,7 @@ public final class JsonPathUtil {
 	 */
 	public static String getJsonPath(final Iterable<String> jsonPathStack) {
 
-		return Joiner.on("").join(jsonPathStack);
+		return Joiner.on(".").join(jsonPathStack);
 	}
 
 	/**
@@ -77,26 +77,29 @@ public final class JsonPathUtil {
 	 * @return the relative json path of the passed field.
 	 */
 	public static Iterable<String> resolveRelativeJsonPaths(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
-														 final String fieldName, final Iterable<String> parentJsonPath) {
+															final String fieldName, final Iterable<String> parentJsonPath) {
 
-		String fieldsJsonInstuctions;
+		String fieldJsonPath = getJsonPathFromField(jsonPathAnnotation, jsonPropertyAnnotation, fieldName);
 
-		if (jsonPathAnnotation != null) {
-			fieldsJsonInstuctions = jsonPathAnnotation.value();
-		} else if (jsonPropertyAnnotation != null) {
-			fieldsJsonInstuctions = jsonPropertyAnnotation.value();
-		} else {
-			fieldsJsonInstuctions = fieldName;
-		}
-
-		Iterable<String> currentJsonPath;
+		Iterable<String> combinedJsonPath;
 		
-		if (fieldsJsonInstuctions.charAt(0) == '$' && !Iterables.isEmpty(parentJsonPath)) { //todo is this the correct way around?
-			currentJsonPath = makeNewRootRelativePath(fieldsJsonInstuctions);
+		if (fieldJsonPath.charAt(0) == '$' && !Iterables.isEmpty(parentJsonPath)) { //Handle new absolute json path defined on field
+			combinedJsonPath = makeNewRootRelativePath(fieldJsonPath);
 		} else {
-			currentJsonPath = updateExistingRelativePath(jsonPropertyAnnotation, parentJsonPath, fieldsJsonInstuctions);
+			combinedJsonPath = updateExistingRelativePath(parentJsonPath, fieldJsonPath);
 		}
-		return currentJsonPath;
+		return combinedJsonPath;
+	}
+
+	private static String getJsonPathFromField(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
+											   final String fieldName) {
+		if (jsonPathAnnotation != null) {
+			return jsonPathAnnotation.value();
+		}
+		if (jsonPropertyAnnotation != null) {
+			return jsonPropertyAnnotation.value();
+		}
+		return fieldName;
 	}
 
 	private static Iterable<String> makeNewRootRelativePath(final String jsonPathVal) {
@@ -105,25 +108,15 @@ public final class JsonPathUtil {
 		return updatedJsonPathStack;
 	}
 
-	private static Iterable<String> updateExistingRelativePath(final JsonProperty jsonPropertyAnnotation, final Iterable<String> parentJsonPath,
-															final String jsonPathVal) {
+	private static Iterable<String> updateExistingRelativePath(final Iterable<String> parentJsonPath, final String jsonPathVal) {
 		List<String> currentJsonPath = Lists.newArrayList(parentJsonPath);
+		String jsonPathPrefixRegex = "^[^.]*\\.";
+		String sanitizedJsonPathValue = jsonPathVal.replaceFirst(jsonPathPrefixRegex, "");
 
-		if (jsonPropertyAnnotation != null) { //handle jakson propery annotations
-			if (currentJsonPath.isEmpty()) { //transform first Jakson property into JsonPath root
-				currentJsonPath.add("$." + jsonPathVal);
-			} else {
-				currentJsonPath.add("." + jsonPathVal); //all other jakson props will be simply appended
-			}
-
-		} else if (jsonPathVal.charAt(0) == '@') { //@.property
-			if (currentJsonPath.isEmpty()) {
-				currentJsonPath.add(jsonPathVal.replaceFirst("@", "\\$"));
-			} else {
-				currentJsonPath.add(jsonPathVal.substring(1));
-			}
+		if (currentJsonPath.isEmpty()) { //transform first Jakson property into JsonPath root
+				currentJsonPath.add("$." + sanitizedJsonPathValue);
 		} else {
-			currentJsonPath.add(jsonPathVal);
+				currentJsonPath.add(sanitizedJsonPathValue); //all other jakson props will be simply appended
 		}
 		return currentJsonPath;
 	}

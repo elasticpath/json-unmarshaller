@@ -17,13 +17,23 @@ public final class FieldUtil {
 	}
 
 	/**
-	 * Checks if the field is an array or list of non primitive types.
+	 * Checks if the field is an array or list of primitive types.
 	 * @param field the field to check.
-	 * @return true if the passed field is a list ot array of non primitive types.
+	 * @return true if the passed field is a list ot array of primitive types.
 	 */
-	public static boolean isFieldArrayOrListOfNonPrimitiveTypes(final Field field) {
+	public static boolean isFieldArrayOrListOfPrimitiveTypes(final Field field) {
 
-		return isFieldArrayOfNonPrimitiveTypes(field.getType()) || isFieldListOfNonPrimitiveTypes(field);
+		return isFieldArrayOfPrimitiveTypes(field.getType()) || isFieldAListOfPrimitiveTypes(field);
+	}
+
+	/**
+	 * Checks if the field is an array or list.
+	 * @param field the field to check.
+	 * @return true if the field is an array or list.
+	 */
+	public static boolean isFieldArrayOrList(final Field field) {
+		Class<?> type = field.getType();
+		return type.isArray() || type.isAssignableFrom(Iterable.class);
 	}
 
 	/**
@@ -67,13 +77,15 @@ public final class FieldUtil {
 		return fieldVal;
 	}
 
-	private static boolean isFieldListOfNonPrimitiveTypes(final Field field) {
+	private static boolean isFieldAListOfPrimitiveTypes(final Field field) {
 
-		return field.getType().isAssignableFrom(Iterable.class) && !getFirstTypeArgumentFromGeneric(field.getGenericType()).isPrimitive();
+		return field.getType().isAssignableFrom(Iterable.class) && getFirstTypeArgumentFromGeneric(field.getGenericType()).isPrimitive();
 	}
 
-	private static boolean isFieldArrayOfNonPrimitiveTypes(final Class<?> fieldType) {
+	private static boolean isFieldArrayOfPrimitiveTypes(final Class<?> fieldType) {
 
-		return fieldType.isArray() && fieldType.getComponentType() != null && !fieldType.getComponentType().isPrimitive();
+		return fieldType.isArray() && fieldType.getComponentType() != null && fieldType.getComponentType().isPrimitive();
 	}
+
 }
+
