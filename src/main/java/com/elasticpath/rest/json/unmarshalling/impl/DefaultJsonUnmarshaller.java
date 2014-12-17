@@ -45,21 +45,12 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	private final JsonAnnotationsModelIntrospector jsonAnnotationsModelIntrospector;
 
 	/**
-	 * Delete this constructor.
-	 * @param classInstantiator delete
-	 * @param objectMapper delete
-	 * @param jsonAnnotationsModelIntrospector delete
+	 * Default constructor.
 	 */
-	public DefaultJsonUnmarshaller(){
-
-		this(new ClassInstantiator(), new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES), new JsonAnnotationsModelIntrospector());
-	}
-
-	public DefaultJsonUnmarshaller(final ClassInstantiator classInstantiator, final ObjectMapper objectMapper,
-								   final JsonAnnotationsModelIntrospector jsonAnnotationsModelIntrospector) {
-		this.classInstantiator = classInstantiator;
-		this.objectMapper = objectMapper;
-		this.jsonAnnotationsModelIntrospector = jsonAnnotationsModelIntrospector;
+	public DefaultJsonUnmarshaller() {
+		this.classInstantiator = new ClassInstantiator();
+		this.objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES);
+		this.jsonAnnotationsModelIntrospector = new JsonAnnotationsModelIntrospector();
 	}
 
 	@Override
