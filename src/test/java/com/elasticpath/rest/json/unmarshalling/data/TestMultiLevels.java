@@ -10,12 +10,15 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 import com.elasticpath.rest.json.unmarshalling.data.multi_level.SecondLevel;
 
 //TODO use lombok
+/**
+ * Test data class for multiple Json levels.
+ */
 public class TestMultiLevels {
 
 	//these 5 fields will not be processed because they don't match any Json node nor they are annotated
 	private int int1;
-	private Integer Integer2;
-	private String String3;
+	private Integer integer2;
+	private String string3;
 	private byte[] byteArray4;
 	private char char5;
 
@@ -64,11 +67,11 @@ public class TestMultiLevels {
 	}
 
 	public Integer getInteger2() {
-		return Integer2;
+		return integer2;
 	}
 
 	public String getString3() {
-		return String3;
+		return string3;
 	}
 
 	public byte[] getByteArray4() {

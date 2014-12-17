@@ -9,31 +9,31 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
 //TODO use lombok
+/**
+ * Test data class.
+ */
 public final class SecondLevel {
 
-	public static final int ODD_PRIME = 31;
+	private static final int ODD_PRIME = 31;
 	//absolute path
 	@JsonPath("$.second_level.field1")
 	private String field1;
 
 	//relative path
-	@JsonPath("@.field2")//must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
+	@JsonPath("@.field2") //must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
 	private String field2;
 
-	@JsonProperty("field3")//must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
+	@JsonProperty("field3") //must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
 	private String field3;
 
-	private String field4;//matches JSON field in "third-level" JSON node; must be set
+	private String field4; //matches JSON field in "third-level" JSON node; must be set
 
-	private String field5 = "default 2nd field5";
-	;//doesn't match any Json node; will not be set nor affected
+	private String field5 = "default 2nd field5"; //doesn't match any Json node; will not be set nor affected
 
-		/*
-		Jway has a problem with setter methods - confilict
-		private ThirdLevel third_level;//TODO edge case; what happens if field is not annotated and matches json node?
-
-		 */
-
+	/*
+	Jway has a problem with setter methods - confilict
+	private ThirdLevel third_level;//TODO edge case; what happens if field is not annotated and matches json node?
+	 */
 	@JsonProperty("third_level")
 	private ThirdLevel thirdLevelJsonProperty;
 

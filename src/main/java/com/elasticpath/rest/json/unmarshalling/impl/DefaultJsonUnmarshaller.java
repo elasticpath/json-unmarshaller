@@ -1,7 +1,12 @@
 package com.elasticpath.rest.json.unmarshalling.impl;
 
-import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.*;
-import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.*;
+import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getFieldValue;
+import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getFirstTypeArgumentFromGeneric;
+import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrListOfNonPrimitiveTypes;
+import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.buildCorrectJsonPath;
+import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.getJsonAnnotationValue;
+import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.getJsonPath;
+import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.resolveRelativeJsonPaths;
 import static com.jayway.jsonpath.JsonPath.using;
 import static java.lang.String.format;
 
@@ -10,13 +15,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
@@ -28,14 +32,22 @@ import org.slf4j.LoggerFactory;
 import com.elasticpath.rest.json.unmarshalling.JsonUnmarshaller;
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
+/**
+ * The default implementation of {@link JsonUnmarshaller}.
+ */
 public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultJsonUnmarshaller.class);
-
 	private final ClassInstantiator classInstantiator;
 	private final ObjectMapper objectMapper;
 	private final JsonAnnotationsModelIntrospector jsonAnnotationsModelIntrospector;
 
+	/**
+	 * Delete this constructor.
+	 * @param classInstantiator delete
+	 * @param objectMapper delete
+	 * @param jsonAnnotationsModelIntrospector delete
+	 */
 	public DefaultJsonUnmarshaller(final ClassInstantiator classInstantiator, final ObjectMapper objectMapper,
 								   final JsonAnnotationsModelIntrospector jsonAnnotationsModelIntrospector) {
 		this.classInstantiator = classInstantiator;
@@ -47,10 +59,10 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	public <T> T unmarshall(final Class<T> resultClass, final String jsonResult) throws IOException {
 
 		final Configuration configuration = Configuration.defaultConfiguration().jsonProvider(new JacksonJsonProvider());
-		final ReadContext jsonContext = using(configuration).parse(jsonResult);//for JSONPath
+		final ReadContext jsonContext = using(configuration).parse(jsonResult); //for JSONPath
 
 		try {
-			return unmarshall(classInstantiator.newInstance(resultClass), jsonContext, new LinkedList<String>());
+			return unmarshall(classInstantiator.newInstance(resultClass), jsonContext, new ArrayList<String>());
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -61,12 +73,10 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	  *
 	 * @param resultObject an object currently being processed
 	 * @param jsonContext Jway Json context
-	 * @param jsonPathStack Deque for storing Json paths
-	 * @param <T>
+	 * @param parentJsonPath Deque for storing Json paths
 	 * @return unmarshalled POJO
-	 * @throws IOException
 	 */
-	private <T> T unmarshall(final T resultObject, final ReadContext jsonContext, final Deque<String> jsonPathStack) throws IOException {
+	private <T> T unmarshall(final T resultObject, final ReadContext jsonContext, final Iterable<String> parentJsonPath) throws IOException {
 
 		final Class<?> resultClass = resultObject.getClass();
 		final String resultClassName = resultClass.getName();
@@ -76,8 +86,8 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 			if (declaredFields.iterator().hasNext()) {
 
-				final String fullJsonPath = getJsonPath(jsonPathStack);
-				final boolean isAbsolutePath = fullJsonPath.equals("");
+				final String parentJsonPathString = getJsonPath(parentJsonPath);
+				final boolean isAbsolutePath = parentJsonPathString.equals("");
 
 				for (Field field : declaredFields) {
 					JsonProperty jsonPropertyAnnotation = field.getAnnotation(JsonProperty.class);
@@ -85,15 +95,15 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 					sanityCheck(jsonPathAnnotation, jsonPropertyAnnotation, resultClassName, field);
 
-					final String jsonPath = getJsonAnnotationValue(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(),
+					final String jsonPathOnField = getJsonAnnotationValue(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(),
 							isAbsolutePath);
 
 					if (shouldPerformJsonPathUnmarshalling(jsonPathAnnotation, jsonPropertyAnnotation, field, getFieldValue(resultObject, field))) {
-						performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonPath, fullJsonPath);
+						performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonPathOnField, parentJsonPathString);
 					}
 
 					processMultiLevelAnnotations(jsonPathAnnotation, jsonPropertyAnnotation, field, getFieldValue(resultObject, field), jsonContext,
-							jsonPathStack);
+							parentJsonPath);
 				}
 			}
 			return resultObject;
@@ -111,35 +121,28 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * Fields annotated with JsonProperty will be automatically set on all levels as long as
 	 * field name matches Json node name
 	 *
-	 * @param field
-	 * @param fieldValue
-	 * @param jsonPathAnnotation
-	 * @param jsonPropertyAnnotation
-	 * @param jsonPathStack
-	 * @param jsonContext
-	 * @throws IOException
 	 */
 	private void processMultiLevelAnnotations(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
 											  final Field field, final Object fieldValue, final ReadContext jsonContext,
-											  Deque<String> jsonPathStack)
+											  final Iterable<String> parentJsonPath)
 			throws IOException {
 
+		// Todo - Will this cause a break in the depth first search if there is a child buffer(s) with only JsonProperty annotations?
 		if (jsonAnnotationsModelIntrospector.hasJsonPathAnnotatatedFields(field)) {
 			if (fieldValue == null) {
 				return;
 			}
 
-			jsonPathStack = resolveRelativeJsonPaths(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(), jsonPathStack);
+			Iterable<String> currentJsonPath = resolveRelativeJsonPaths(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(), parentJsonPath);
 
 			//handles arrays/Lists
 			if (isFieldArrayOrListOfNonPrimitiveTypes(field)) {
-				unmarshalArrayOrList(fieldValue, jsonPathStack, jsonContext);
+				unmarshalArrayOrList(fieldValue, currentJsonPath, jsonContext);
 
 			} else {
 				//handles anything else
-				unmarshall(fieldValue, jsonContext, jsonPathStack);
+				unmarshall(fieldValue, jsonContext, currentJsonPath);
 			}
-			jsonPathStack.pollLast();
 		}
 	}
 
@@ -148,11 +151,8 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	  * The path looks like e.g. $.parent.array_node[0], $.parent.array_node[1] etc
 	  *
 	 * @param fieldValue used to determine whether a field is a list(iterable) or array
-	 * @param jsonPathStack
-	 * @param jsonContext
-	 * @throws IOException
 	 */
-	private void unmarshalArrayOrList(final Object fieldValue, final Deque<String> jsonPathStack, final ReadContext jsonContext)
+	private void unmarshalArrayOrList(final Object fieldValue, final Iterable<String> parentJsonPath, final ReadContext jsonContext)
 			throws IOException {
 
 		Object[] fieldValueInstanceMembers;
@@ -165,10 +165,10 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 		for (int i = 0; i < fieldValueInstanceMembers.length; i++) {
 			Object member = fieldValueInstanceMembers[i];
-			jsonPathStack.add("[" + i + "]");
+			List<String> currentJsonPath = Lists.newArrayList(parentJsonPath);
+			currentJsonPath.add("[" + i + "]");
 
-			unmarshall(member, jsonContext, jsonPathStack);
-			jsonPathStack.pollLast();
+			unmarshall(member, jsonContext, currentJsonPath);
 		}
 	}
 
@@ -182,13 +182,6 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	   Note:
 			getFieldValue(resultObject,field) can't be resolved into var because in very first loop, returned value is null
 			while after performing unmarshalling may be non-null
-
-	  *
-	 * @param jsonPathAnnotation
-	 * @param jsonPropertyAnnotation
-	 * @param field
-	 * @param fieldValue
-	 * @return
 	 */
 	private boolean shouldPerformJsonPathUnmarshalling(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
 													   final Field field, final Object fieldValue) {
@@ -196,8 +189,8 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		final boolean isFieldPrimitive = field.getType().isPrimitive();
 
 
-		return jsonPathAnnotation != null || (jsonPropertyAnnotation != null && (isFieldPrimitive || fieldValue == null) ||
-				isFieldPrimitive || fieldValue == null);
+		return jsonPathAnnotation != null || (jsonPropertyAnnotation != null && (isFieldPrimitive || fieldValue == null)
+				|| isFieldPrimitive || fieldValue == null);
 	}
 
 
@@ -233,13 +226,13 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * @throws IOException
 	 */
 	private <T> void performJsonPathUnmarshalling(final ReadContext jsonContext, final T resultObject, final Field field,
-												  String jsonPath, final String parentJsonPath)
+												  final String fieldJsonPath, final String parentJsonPath)
 			throws IllegalAccessException, IOException {
 
 		final Class<?> fieldType = field.getType();
-		jsonPath = buildCorrectJsonPath(jsonPath, parentJsonPath);
+		String currentJsonPath = buildCorrectJsonPath(fieldJsonPath, parentJsonPath);
 
-		final Object read = readField(jsonContext, jsonPath, fieldType);
+		final Object read = readField(jsonContext, currentJsonPath, fieldType);
 		if (read == null && fieldType.isPrimitive()) {
 			return;
 		}
@@ -248,7 +241,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	/*
 	 * Set Java field using value obtained from readField method
-	  *
+	 *
 	 * @param resultObject target object, field owner
 	 * @param field the field to be set with found Json value
 	 * @param fieldType field type; method checks if field is primitive, List or none of these
@@ -265,8 +258,8 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		if (fieldType.isPrimitive()) {
 			FieldUtil.setField(resultObject, field, read);
 
-		} else if (genericType instanceof ParameterizedType) {//FIXME what about arrays? make a test
-			final Class actualTypeArgument = getActualTypeArgument(genericType);
+		} else if (genericType instanceof ParameterizedType) { //FIXME what about arrays? make a test
+			final Class actualTypeArgument = getFirstTypeArgumentFromGeneric(genericType);
 
 			final JavaType typedField = objectMapper.getTypeFactory().constructParametricType(fieldType, actualTypeArgument);
 			FieldUtil.setField(resultObject, field, objectMapper.convertValue(read, typedField));
@@ -278,7 +271,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	/*
 	 * Read value from Json tree for given JsonPath
-	 	 *
+	 *
 	 * @param jsonContext Jway Json Context object that resolves fields for given path
 	 * @param jsonPath Json path
 	 * @param fieldType field type, used to determine whether field is Iterable or not
@@ -290,7 +283,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		try {
 			read = jsonContext.read(jsonPath);
 		} catch (PathNotFoundException e) {
-			if (Iterable.class.isAssignableFrom(fieldType)) {//FIXME what about arrays? make a test
+			if (Iterable.class.isAssignableFrom(fieldType)) { //FIXME what about arrays? make a test
 				read = new ArrayList();
 			} else {
 				LOG.trace(e.getMessage(), e);

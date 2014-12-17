@@ -2,7 +2,9 @@ package com.elasticpath.rest.json.unmarshalling.data;
 
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
-
+/**
+ * Test data class.
+ */
 public class TestViewWithParent extends MixedAnnotationsSuperClass {
 
 	@JsonPath("$._total[0].cost[0].currency")

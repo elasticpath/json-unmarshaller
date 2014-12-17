@@ -10,23 +10,26 @@ import com.google.common.collect.Lists;
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
 //TODO use lombok
+/**
+ * Test data class.
+ */
 public class ThirdLevel {
 
-	public static final int ODD_PRIME = 31;
+	private static final int ODD_PRIME = 31;
 	//absolute path
 	@JsonPath("$.second_level.third_level.field1")
 	private String field1;
 
 	//relative path
-	@JsonPath("@.field2")//must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
+	@JsonPath("@.field2") //must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
 	private String field2;
 
-	@JsonProperty("field3")//must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
+	@JsonProperty("field3") //must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
 	private String field3;
 
-	private String field4;//matches JSON field in "third-level" JSON node; must be set
+	private String field4; //matches JSON field in "third-level" JSON node; must be set
 
-	private String field5 = "default 3rd field5";//doesn't match any Json node; will not be set nor affected
+	private String field5 = "default 3rd field5"; //doesn't match any Json node; will not be set nor affected
 
 	@JsonPath("@.fourth_level_array")
 	private Iterable<FourthLevel> fourthLevelIterable;

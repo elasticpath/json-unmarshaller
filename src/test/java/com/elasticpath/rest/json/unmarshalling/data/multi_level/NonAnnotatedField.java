@@ -42,7 +42,7 @@ public class NonAnnotatedField {
 	private String field1;
 
 	@JsonPath("@.lastString")
-	private String field2;//will be null because the path will be resolved as relative to field name in TestNonAnnotatedField i.e. nonAnnotatedField
+	private String field2; //will be null because the path will be resolved as relative to field name in TestNonAnnotatedField i.e. nonAnnotatedField
 
 	//matches json node
 	private String field4;

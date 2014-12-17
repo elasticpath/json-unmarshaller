@@ -7,9 +7,13 @@ package com.elasticpath.rest.json.unmarshalling.data.multi_level;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 //TODO use lombok
+/**
+ * Test data class.
+ */
 public class FifthLevel {
 
-	public static final int ODD_PRIME = 31;
+	private static final int ODD_PRIME = 31;
+
 	@JsonProperty("field1")
 	private String field1;
 

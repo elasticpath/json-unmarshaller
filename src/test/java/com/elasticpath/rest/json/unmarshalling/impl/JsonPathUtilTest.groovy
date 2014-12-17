@@ -5,6 +5,9 @@ import org.junit.runner.RunWith
 
 import org.mockito.runners.MockitoJUnitRunner
 
+/**
+ * Tests for {@link JsonPathUtil}
+ */
 @RunWith(MockitoJUnitRunner)
 class JsonPathUtilTest {
 

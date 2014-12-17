@@ -20,6 +20,9 @@ import com.elasticpath.rest.json.unmarshalling.data.TestViewWithJsonPath
 import com.elasticpath.rest.json.unmarshalling.data.TestViewWithOtherFields
 import com.elasticpath.rest.json.unmarshalling.data.TestViewWithParent
 
+/**
+ * Tests for {@link DefaultJsonUnmarshaller}
+ */
 @RunWith(MockitoJUnitRunner)
 class DefaultJsonUnmarshallerTest {
 

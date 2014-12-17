@@ -1,6 +1,6 @@
 package com.elasticpath.rest.json.unmarshalling.impl;
 
-import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getActualTypeArgument;
+import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getFirstTypeArgumentFromGeneric;
 import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrListOfNonPrimitiveTypes;
 import static com.google.common.collect.FluentIterable.from;
 import static java.util.Arrays.asList;
@@ -14,11 +14,13 @@ import com.google.common.base.Predicate;
 
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
-
+/**
+ * Tool for inspecting the fields in a Class for Json unmarshalling.
+ */
 public class JsonAnnotationsModelIntrospector {
 
 	/**
-	 * Given a class, return all fields in the entire class hierarchy
+	 * Given a class, return all fields in the entire class hierarchy.
 	 *
 	 * @param clazz the class to search.
 	 * @param <T>   the Class type
@@ -29,7 +31,7 @@ public class JsonAnnotationsModelIntrospector {
 	}
 
 	/**
-	 * Given a class, check if class contains at least one field (including super class) JsonPath annotation
+	 * Given a class, check if class contains at least one field (including super class) JsonPath annotation.
 	 *
 	 * @param clazz the class to search
 	 * @param <T>   the Class type
@@ -55,7 +57,7 @@ public class JsonAnnotationsModelIntrospector {
 			if (isFieldArrayOrListOfNonPrimitiveTypes) {
 				//iterable
 				if (fieldType.isAssignableFrom(Iterable.class)) {
-					return hasJsonPathAnnotatedFields(getActualTypeArgument(field.getGenericType()));
+					return hasJsonPathAnnotatedFields(getFirstTypeArgumentFromGeneric(field.getGenericType()));
 				}
 
 				//array

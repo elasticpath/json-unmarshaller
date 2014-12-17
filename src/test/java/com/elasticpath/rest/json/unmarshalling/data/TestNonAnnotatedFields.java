@@ -6,6 +6,9 @@ package com.elasticpath.rest.json.unmarshalling.data;
 
 import com.elasticpath.rest.json.unmarshalling.data.multi_level.NonAnnotatedField;
 
+/**
+ * Test data class.
+ */
 public class TestNonAnnotatedFields {
 
 	//these fields should be ignored; don't match any Json node

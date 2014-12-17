@@ -17,7 +17,7 @@ public interface JsonUnmarshaller {
 	 * @param jsonResult the json.
 	 * @param <T> the class type.
 	 * @return the resulting pojo.
-	 * @throws IOException
+	 * @throws IOException if something goes wrong with unmarshalling.
 	 */
 	<T> T unmarshall(Class<T> resultClass, String jsonResult) throws IOException;
 }

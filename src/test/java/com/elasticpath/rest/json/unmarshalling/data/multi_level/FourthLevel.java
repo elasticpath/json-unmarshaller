@@ -9,9 +9,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
 //TODO use lombok
+/**
+ * Test data class.
+ */
 public class FourthLevel {
 
-	public static final int ODD_PRIME = 31;
+	private static final int ODD_PRIME = 31;
 
 	@JsonPath("@.field1")//must resolve as relative
 	private String field1;
@@ -19,13 +22,12 @@ public class FourthLevel {
 	@JsonPath("$.second_level.third_level.fourth_level.field2")
 	private String field2;
 
-	@JsonProperty("field3")//must resolve as relative to class JsonPath/Property annotation
+	@JsonProperty("field3") //must resolve as relative to class JsonPath/Property annotation
 	private String field3;
 
-	private String field4;//matches JSON field in "fourth-level" JSON node; must be set
+	private String field4; //matches JSON field in "fourth-level" JSON node; must be set
 
-	private String field5 = "default 4th field5";
-	;//doesn't match any Json node; will not be set nor affected
+	private String field5 = "default 4th field5"; //doesn't match any Json node; will not be set nor affected
 
 
 	public String getField1() {

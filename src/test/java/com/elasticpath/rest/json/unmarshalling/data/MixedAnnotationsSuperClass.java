@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
+/**
+ * Test data superclass with mixed annotation types.
+ */
 public class MixedAnnotationsSuperClass {
 
 	@JsonPath("$.links")

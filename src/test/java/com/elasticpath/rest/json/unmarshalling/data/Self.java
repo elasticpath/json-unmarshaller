@@ -1,5 +1,8 @@
 package com.elasticpath.rest.json.unmarshalling.data;
 
+/**
+ * Test data class.
+ */
 public class Self {
 
 	private String href;
