@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Test data class.
  */
+@SuppressWarnings("PMD")
 public class FifthLevel {
 
 	private static final int ODD_PRIME = 31;

@@ -13,6 +13,7 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 /**
  * Test data class.
  */
+@SuppressWarnings("PMD")
 public class ThirdLevel {
 
 	private static final int ODD_PRIME = 31;
@@ -94,15 +95,15 @@ public class ThirdLevel {
 	}
 
 	@Override
-	public boolean equals(final Object o) {
-		if (this == o) {
+	public boolean equals(final Object object) {
+		if (this == object) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (object == null || getClass() != object.getClass()) {
 			return false;
 		}
 
-		ThirdLevel that = (ThirdLevel) o;
+		ThirdLevel that = (ThirdLevel) object;
 
 		if (!field1.equals(that.field1)) {
 			return false;

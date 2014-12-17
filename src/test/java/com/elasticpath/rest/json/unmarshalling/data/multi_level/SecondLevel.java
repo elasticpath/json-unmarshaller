@@ -12,6 +12,7 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 /**
  * Test data class.
  */
+@SuppressWarnings("PMD")
 public final class SecondLevel {
 
 	private static final int ODD_PRIME = 31;

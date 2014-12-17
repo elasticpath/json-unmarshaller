@@ -13,6 +13,7 @@ import com.elasticpath.rest.json.unmarshalling.data.multi_level.SecondLevel;
 /**
  * Test data class for multiple Json levels.
  */
+@SuppressWarnings("PMD")
 public class TestMultiLevels {
 
 	//these 5 fields will not be processed because they don't match any Json node nor they are annotated

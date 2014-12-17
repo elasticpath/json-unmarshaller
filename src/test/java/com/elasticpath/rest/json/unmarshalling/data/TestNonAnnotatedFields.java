@@ -9,6 +9,7 @@ import com.elasticpath.rest.json.unmarshalling.data.multi_level.NonAnnotatedFiel
 /**
  * Test data class.
  */
+@SuppressWarnings("PMD")
 public class TestNonAnnotatedFields {
 
 	//these fields should be ignored; don't match any Json node
