@@ -129,22 +129,23 @@ public final class JsonPathUtil {
 	 * @param parentJsonPath parent json path.
 	 * @return the correct json path for the current field.
 	 */
+	@SuppressWarnings("PMD.NPathComplexity")
 	public static String buildCorrectJsonPath(final String jsonPath, final String parentJsonPath) {
 
 		//matches @.path   $.path  .path
 		if (jsonPath.matches("[@\\$]?[.].+")) {
 			if (jsonPath.charAt(0) == '@') {
-				return (parentJsonPath.equals("") ? "$" : parentJsonPath) + jsonPath.substring(1);
+				return ("".equals(parentJsonPath) ? "$" : parentJsonPath) + jsonPath.substring(1);
 			}
 			if (jsonPath.charAt(0) == '.') {
-				return (parentJsonPath.equals("") ? "$" : parentJsonPath) + jsonPath;
+				return ("".equals(parentJsonPath) ? "$" : parentJsonPath) + jsonPath;
 			}
 			return jsonPath;
 		}
 
 		//path like @path is invalid should be resolved as relative or absolute, depending on parent path
 		if (jsonPath.charAt(0) == '@') {
-			return (parentJsonPath.equals("") ? "$" : parentJsonPath) + "." + jsonPath.substring(1);
+			return ("".equals(parentJsonPath) ? "$" : parentJsonPath) + "." + jsonPath.substring(1);
 		}
 
 		//path like $path is invalid should be resolved as absolute
@@ -153,6 +154,6 @@ public final class JsonPathUtil {
 		}
 
 		//any path that doesn't start with @ or $
-		return (parentJsonPath.equals("") ? "$" : parentJsonPath) + "." + jsonPath;
+		return ("".equals(parentJsonPath) ? "$" : parentJsonPath) + "." + jsonPath;
 	}
 }
