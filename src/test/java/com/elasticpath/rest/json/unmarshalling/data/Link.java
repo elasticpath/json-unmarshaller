@@ -1,5 +1,8 @@
 package com.elasticpath.rest.json.unmarshalling.data;
 
+/**
+ * Test data class.
+ */
 public class Link {
 
 	private String href;
@@ -11,7 +14,7 @@ public class Link {
 		return href;
 	}
 
-	public void setHref(String href) {
+	public void setHref(final String href) {
 		this.href = href;
 	}
 
@@ -19,7 +22,7 @@ public class Link {
 		return rel;
 	}
 
-	public void setRel(String rel) {
+	public void setRel(final String rel) {
 		this.rel = rel;
 	}
 
@@ -27,7 +30,7 @@ public class Link {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(final String type) {
 		this.type = type;
 	}
 
@@ -35,7 +38,7 @@ public class Link {
 		return uri;
 	}
 
-	public void setUri(String uri) {
+	public void setUri(final String uri) {
 		this.uri = uri;
 	}
 }

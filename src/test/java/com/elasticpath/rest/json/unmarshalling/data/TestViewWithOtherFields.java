@@ -2,6 +2,9 @@ package com.elasticpath.rest.json.unmarshalling.data;
 
 import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
+/**
+ * Test data class.
+ */
 public class TestViewWithOtherFields {
 
 	@JsonPath("$._total[0].cost[0].currency")
@@ -13,7 +16,7 @@ public class TestViewWithOtherFields {
 		return currency;
 	}
 
-	public void setCurrency(String currency) {
+	public void setCurrency(final String currency) {
 		this.currency = currency;
 	}
 
@@ -21,7 +24,7 @@ public class TestViewWithOtherFields {
 		return notForDeserialization;
 	}
 
-	public void setNotForDeserialization(String notForDeserialization) {
+	public void setNotForDeserialization(final String notForDeserialization) {
 		this.notForDeserialization = notForDeserialization;
 	}
 }

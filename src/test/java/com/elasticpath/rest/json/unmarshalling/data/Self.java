@@ -1,5 +1,8 @@
 package com.elasticpath.rest.json.unmarshalling.data;
 
+/**
+ * Test data class.
+ */
 public class Self {
 
 	private String href;
@@ -9,7 +12,7 @@ public class Self {
 		return href;
 	}
 
-	public void setHref(String href) {
+	public void setHref(final String href) {
 		this.href = href;
 	}
 
@@ -17,7 +20,7 @@ public class Self {
 		return uri;
 	}
 
-	public void setUri(String uri) {
+	public void setUri(final String uri) {
 		this.uri = uri;
 	}
 }

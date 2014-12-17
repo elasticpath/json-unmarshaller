@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
+/**
+ * Test data superclass with mixed annotation types.
+ */
 public class MixedAnnotationsSuperClass {
 
 	@JsonPath("$.links")
@@ -16,7 +19,7 @@ public class MixedAnnotationsSuperClass {
 		return self;
 	}
 
-	public void setSelf(Self self) {
+	public void setSelf(final Self self) {
 		this.self = self;
 	}
 
@@ -24,7 +27,7 @@ public class MixedAnnotationsSuperClass {
 		return links;
 	}
 
-	public void setLinks(Iterable<Link> links) {
+	public void setLinks(final Iterable<Link> links) {
 		this.links = links;
 	}
 }

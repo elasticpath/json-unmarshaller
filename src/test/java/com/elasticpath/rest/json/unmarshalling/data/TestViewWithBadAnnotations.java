@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
+/**
+ * Test data class.
+ */
 public class TestViewWithBadAnnotations {
 
 	@JsonProperty("links")

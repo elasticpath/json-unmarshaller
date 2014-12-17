@@ -2,8 +2,12 @@ package com.elasticpath.rest.json.unmarshalling.impl
 
 import org.junit.Test
 import org.junit.runner.RunWith
+
 import org.mockito.runners.MockitoJUnitRunner
 
+/**
+ * Tests for {@link JsonPathUtil}
+ */
 @RunWith(MockitoJUnitRunner)
 class JsonPathUtilTest {
 

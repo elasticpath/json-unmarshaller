@@ -6,7 +6,7 @@ import org.osgi.framework.BundleContext;
 import com.elasticpath.rest.json.unmarshalling.impl.DefaultJsonUnmarshaller;
 
 /**
- * The bundle activator, which registers the following services: jsonPathResultFactory
+ * The bundle activator, which registers the following services: jsonPathResultFactory.
  **/
 public class Activator implements BundleActivator {
 
@@ -15,8 +15,7 @@ public class Activator implements BundleActivator {
 	 * Registers the following services: jsonUnmarshaller
 	 * @param context the framework context for the bundle.
 	 **/
-	public void start(BundleContext context)
-	{
+	public void start(final BundleContext context) {
 		context.registerService(
 				DefaultJsonUnmarshaller.class.getName(),
 				new DefaultJsonUnmarshaller(), null);
@@ -27,8 +26,7 @@ public class Activator implements BundleActivator {
 	 * the framework will automatically unregister any registered services.
 	 * @param context the framework context for the bundle.
 	 **/
-	public void stop(BundleContext context)
-	{
+	public void stop(final BundleContext context) {
 		// NOTE: The services are automatically unregistered.
 	}
 

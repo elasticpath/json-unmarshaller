@@ -42,7 +42,7 @@ public class NonAnnotatedField {
 	private String field1;
 
 	@JsonPath("@.lastString")
-	private String field2;//will be null because the path will be resolved as relative to field name in TestNonAnnotatedField i.e. nonAnnotatedField
+	private String field2; //will be null because the path will be resolved as relative to field name in TestNonAnnotatedField i.e. nonAnnotatedField
 
 	//matches json node
 	private String field4;
@@ -53,7 +53,7 @@ public class NonAnnotatedField {
 		return absJsonPathField;
 	}
 
-	public void setAbsJsonPathField(String absJsonPathField) {
+	public void setAbsJsonPathField(final String absJsonPathField) {
 		this.absJsonPathField = absJsonPathField;
 	}
 
@@ -61,7 +61,7 @@ public class NonAnnotatedField {
 		return relJsonPathField;
 	}
 
-	public void setRelJsonPathField(String relJsonPathField) {
+	public void setRelJsonPathField(final String relJsonPathField) {
 		this.relJsonPathField = relJsonPathField;
 	}
 
@@ -69,7 +69,7 @@ public class NonAnnotatedField {
 		return jsonProp;
 	}
 
-	public void setJsonProp(int jsonProp) {
+	public void setJsonProp(final int jsonProp) {
 		this.jsonProp = jsonProp;
 	}
 
@@ -77,7 +77,7 @@ public class NonAnnotatedField {
 		return field1;
 	}
 
-	public void setField1(String field1) {
+	public void setField1(final String field1) {
 		this.field1 = field1;
 	}
 
@@ -85,7 +85,7 @@ public class NonAnnotatedField {
 		return field2;
 	}
 
-	public void setField2(String field2) {
+	public void setField2(final String field2) {
 		this.field2 = field2;
 	}
 
@@ -93,7 +93,7 @@ public class NonAnnotatedField {
 		return field4;
 	}
 
-	public void setField4(String field4) {
+	public void setField4(final String field4) {
 		this.field4 = field4;
 	}
 
@@ -101,7 +101,7 @@ public class NonAnnotatedField {
 		return field5;
 	}
 
-	public void setField5(String field5) {
+	public void setField5(final String field5) {
 		this.field5 = field5;
 	}
 }

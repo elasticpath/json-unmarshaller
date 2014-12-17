@@ -6,33 +6,37 @@ package com.elasticpath.rest.json.unmarshalling.data;
 
 import com.elasticpath.rest.json.unmarshalling.data.multi_level.NonAnnotatedField;
 
+/**
+ * Test data class.
+ */
+@SuppressWarnings("PMD")
 public class TestNonAnnotatedFields {
 
 	//these fields should be ignored; don't match any Json node
-	int primitive;
-	Integer integer;
-	String string;
-	String[] strArray;
-	int[] intArray;
-	boolean primitiveBoolean;
+	private int primitive;
+	private Integer integer;
+	private String string;
+	private String[] strArray;
+	private int[] intArray;
+	private boolean primitiveBoolean;
 
 	//these fields should be set, because they match Json nodes
-	int firstInt;
-	Integer lastInt;
-	String firstString;
-	String lastString;
-	Boolean firstBoolean;
-	String[] stringArray;
-	int[] integerArray;
-	boolean lastBoolean;
+	private int firstInt;
+	private Integer lastInt;
+	private String firstString;
+	private String lastString;
+	private Boolean firstBoolean;
+	private String[] stringArray;
+	private int[] integerArray;
+	private boolean lastBoolean;
 
-	NonAnnotatedField nonAnnotatedField;
+	private NonAnnotatedField nonAnnotatedField;
 
 	public int getPrimitive() {
 		return primitive;
 	}
 
-	public void setPrimitive(int primitive) {
+	public void setPrimitive(final int primitive) {
 		this.primitive = primitive;
 	}
 
@@ -40,7 +44,7 @@ public class TestNonAnnotatedFields {
 		return integer;
 	}
 
-	public void setInteger(Integer integer) {
+	public void setInteger(final Integer integer) {
 		this.integer = integer;
 	}
 
@@ -48,7 +52,7 @@ public class TestNonAnnotatedFields {
 		return string;
 	}
 
-	public void setString(String string) {
+	public void setString(final String string) {
 		this.string = string;
 	}
 
@@ -56,7 +60,7 @@ public class TestNonAnnotatedFields {
 		return strArray;
 	}
 
-	public void setStrArray(String[] strArray) {
+	public void setStrArray(final String[] strArray) {
 		this.strArray = strArray;
 	}
 
@@ -64,7 +68,7 @@ public class TestNonAnnotatedFields {
 		return intArray;
 	}
 
-	public void setIntArray(int[] intArray) {
+	public void setIntArray(final int[] intArray) {
 		this.intArray = intArray;
 	}
 
@@ -72,7 +76,7 @@ public class TestNonAnnotatedFields {
 		return primitiveBoolean;
 	}
 
-	public void setPrimitiveBoolean(boolean primitiveBoolean) {
+	public void setPrimitiveBoolean(final boolean primitiveBoolean) {
 		this.primitiveBoolean = primitiveBoolean;
 	}
 
@@ -80,7 +84,7 @@ public class TestNonAnnotatedFields {
 		return firstInt;
 	}
 
-	public void setFirstInt(int firstInt) {
+	public void setFirstInt(final int firstInt) {
 		this.firstInt = firstInt;
 	}
 
@@ -88,7 +92,7 @@ public class TestNonAnnotatedFields {
 		return lastInt;
 	}
 
-	public void setLastInt(Integer lastInt) {
+	public void setLastInt(final Integer lastInt) {
 		this.lastInt = lastInt;
 	}
 
@@ -96,7 +100,7 @@ public class TestNonAnnotatedFields {
 		return firstString;
 	}
 
-	public void setFirstString(String firstString) {
+	public void setFirstString(final String firstString) {
 		this.firstString = firstString;
 	}
 
@@ -104,7 +108,7 @@ public class TestNonAnnotatedFields {
 		return lastString;
 	}
 
-	public void setLastString(String lastString) {
+	public void setLastString(final String lastString) {
 		this.lastString = lastString;
 	}
 
@@ -112,7 +116,7 @@ public class TestNonAnnotatedFields {
 		return firstBoolean;
 	}
 
-	public void setFirstBoolean(Boolean firstBoolean) {
+	public void setFirstBoolean(final Boolean firstBoolean) {
 		this.firstBoolean = firstBoolean;
 	}
 
@@ -120,7 +124,7 @@ public class TestNonAnnotatedFields {
 		return stringArray;
 	}
 
-	public void setStringArray(String[] stringArray) {
+	public void setStringArray(final String[] stringArray) {
 		this.stringArray = stringArray;
 	}
 
@@ -128,7 +132,7 @@ public class TestNonAnnotatedFields {
 		return integerArray;
 	}
 
-	public void setIntegerArray(int[] integerArray) {
+	public void setIntegerArray(final int[] integerArray) {
 		this.integerArray = integerArray;
 	}
 
@@ -136,7 +140,7 @@ public class TestNonAnnotatedFields {
 		return lastBoolean;
 	}
 
-	public void setLastBoolean(boolean lastBoolean) {
+	public void setLastBoolean(final boolean lastBoolean) {
 		this.lastBoolean = lastBoolean;
 	}
 
@@ -144,7 +148,7 @@ public class TestNonAnnotatedFields {
 		return nonAnnotatedField;
 	}
 
-	public void setNonAnnotatedField(NonAnnotatedField nonAnnotatedField) {
+	public void setNonAnnotatedField(final NonAnnotatedField nonAnnotatedField) {
 		this.nonAnnotatedField = nonAnnotatedField;
 	}
 
