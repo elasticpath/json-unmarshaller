@@ -80,7 +80,7 @@ public class JsonAnnotationsModelIntrospector {
 
 		Collection<Class<?>> superclasses = new ArrayList<>();
 		Class<?> klass = resultClass;
-		while (klass != null && !(Object.class.equals(klass))) {
+		while (klass != null && !Object.class.equals(klass)) {
 			superclasses.add(klass);
 			klass = klass.getSuperclass();
 		}
