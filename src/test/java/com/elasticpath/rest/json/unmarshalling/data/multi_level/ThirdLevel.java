@@ -126,7 +126,7 @@ public class ThirdLevel {
 		if (!(fourthLevelIterable).equals(that.fourthLevelIterable)) {
 			return false;
 		}
-		if (!Arrays.asList(fourthLevelArray).equals(Arrays.asList(that.fourthLevelArray))) {
+		if (!Arrays.equals(fourthLevelArray, that.fourthLevelArray)) {
 			return false;
 		}
 
