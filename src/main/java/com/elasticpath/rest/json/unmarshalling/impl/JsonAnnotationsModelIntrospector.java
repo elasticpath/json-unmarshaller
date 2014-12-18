@@ -96,7 +96,7 @@ public class JsonAnnotationsModelIntrospector {
 	 * @return an iterable collection of fields
 	 */
 	private Iterable<Field> getInjectableFields(final Iterable<Class<?>> classes, final boolean lookForJsonPathOnly) {
-
+		//TODO Remove Guava
 		return from(classes)
 				.transformAndConcat(new Function<Class<?>, Iterable<? extends Field>>() {
 					public Iterable<? extends Field> apply(final java.lang.Class<?> input) {

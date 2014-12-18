@@ -3,12 +3,12 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
+<!--	<parent>
 		<groupId>com.elasticpath</groupId>
 		<artifactId>grandparent</artifactId>
 		<version>80</version>
 		<relativePath/>
-	</parent>
+	</parent>-->
 
 	<groupId>com.elasticpath.rest</groupId>
 	<artifactId>json-unmarshaller</artifactId>
@@ -32,21 +32,6 @@
 	</organization>
 
 	<dependencies>
-		<!--JAX-RS api-->
-		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>javax.ws.rs-api</artifactId>
-			<version>2.0.1</version>
-		</dependency>
-
-		<!-- Google Guice Dependency Injection -->
-		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
-			<version>3.0</version>
-		</dependency>
-
-
 		<!--JsonPath for complex unmarshalling -->
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
@@ -67,6 +52,7 @@
 			<version>${com.fasterxml.jackson.version}</version>
 		</dependency>
 
+		<!-- TODO - Delete this -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -78,14 +64,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${org.slf4j.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<!--OSGI-->
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>4.3.1</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -119,14 +97,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.github.tomakehurst</groupId>
-			<artifactId>wiremock</artifactId>
-			<version>1.48</version>
-			<scope>test</scope>
-			<!-- Include this if you have dependency conflicts for Guava, Jetty, Jackson or Apache HTTP Client -->
-			<classifier>standalone</classifier>
-		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -174,7 +145,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+<!--			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 			</plugin>
@@ -185,7 +156,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-			</plugin>
+			</plugin>-->
 		</plugins>
 
 		<pluginManagement>
