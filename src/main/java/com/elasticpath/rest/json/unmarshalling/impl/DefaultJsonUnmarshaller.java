@@ -8,7 +8,6 @@ import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.getJsonA
 import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.getJsonPath;
 import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.resolveRelativeJsonPaths;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-
 import static com.jayway.jsonpath.JsonPath.using;
 import static java.lang.String.format;
 
@@ -17,12 +16,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
@@ -31,8 +30,8 @@ import com.jayway.jsonpath.internal.spi.json.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.elasticpath.rest.json.unmarshalling.JsonUnmarshaller;
 import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.json.unmarshalling.JsonUnmarshaller;
 
 /**
  * The default implementation of {@link JsonUnmarshaller}.
@@ -74,7 +73,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * @param parentJsonPath Deque for storing Json paths
 	 * @return unmarshalled POJO
 	 */
-	private <T> T unmarshall(final T resultObject, final ReadContext jsonContext, final Iterable<String> parentJsonPath) throws IOException {
+	private <T> T unmarshall(final T resultObject, final ReadContext jsonContext, final Collection<String> parentJsonPath) throws IOException {
 
 		final Class<?> resultClass = resultObject.getClass();
 		final String resultClassName = resultClass.getName();
@@ -122,7 +121,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 */
 	private void processMultiLevelAnnotations(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
 											  final Field field, final Object fieldValue, final ReadContext jsonContext,
-											  final Iterable<String> parentJsonPath)
+											  final Collection<String> parentJsonPath)
 			throws IOException {
 
 		// Todo - Will this cause a break in the depth first search if there is a child buffer(s) with only JsonProperty annotations?
@@ -131,7 +130,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 				return;
 			}
 
-			Iterable<String> currentJsonPath = resolveRelativeJsonPaths(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(), parentJsonPath);
+			Collection<String> currentJsonPath = resolveRelativeJsonPaths(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(), parentJsonPath);
 
 			//handles arrays/Lists
 			if (isFieldArrayOrList(field)) {
@@ -150,7 +149,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	  *
 	 * @param fieldValue used to determine whether a field is a list(iterable) or array
 	 */
-	private void unmarshalArrayOrList(final Object fieldValue, final Iterable<String> parentJsonPath, final ReadContext jsonContext)
+	private void unmarshalArrayOrList(final Object fieldValue, final Collection<String> parentJsonPath, final ReadContext jsonContext)
 			throws IOException {
 
 		Object[] fieldValueInstanceMembers;
@@ -163,9 +162,8 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 		for (int i = 0; i < fieldValueInstanceMembers.length; i++) {
 			Object member = fieldValueInstanceMembers[i];
-			List<String> currentJsonPath = Lists.newArrayList(parentJsonPath);
+			List<String> currentJsonPath = new ArrayList<>(parentJsonPath);
 			currentJsonPath.add("[" + i + "]");
-
 			unmarshall(member, jsonContext, currentJsonPath);
 		}
 	}

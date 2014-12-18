@@ -4,8 +4,12 @@
 
 package com.elasticpath.rest.json.unmarshalling.data.multi_level;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.Lists;
 
 import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 //TODO use lombok
@@ -119,10 +123,10 @@ public class ThirdLevel {
 		if (!field5.equals(that.field5)) {
 			return false;
 		}
-		if (!Lists.newArrayList(fourthLevelIterable).equals(Lists.newArrayList(that.fourthLevelIterable))) {
+		if (!(fourthLevelIterable).equals(that.fourthLevelIterable)) {
 			return false;
 		}
-		if (!Lists.newArrayList(fourthLevelArray).equals(Lists.newArrayList(that.fourthLevelArray))) {
+		if (!Arrays.equals(fourthLevelArray, that.fourthLevelArray)) {
 			return false;
 		}
 

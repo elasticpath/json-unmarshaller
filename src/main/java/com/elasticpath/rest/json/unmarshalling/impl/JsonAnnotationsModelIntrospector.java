@@ -3,15 +3,11 @@ package com.elasticpath.rest.json.unmarshalling.impl;
 import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getFirstTypeArgumentFromGeneric;
 import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrList;
 import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrListOfPrimitiveTypes;
-import static com.google.common.collect.FluentIterable.from;
-import static java.util.Arrays.asList;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import java.util.List;
 
 import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
@@ -76,7 +72,7 @@ public class JsonAnnotationsModelIntrospector {
 	 * @param resultClass leaf class in the hierarchy to scan
 	 * @return an iterable collection of classes
 	 */
-	private Iterable<Class<?>> getSuperclassHierarchy(final Class<?> resultClass) {
+	private Collection<Class<?>> getSuperclassHierarchy(final Class<?> resultClass) {
 
 		Collection<Class<?>> superclasses = new ArrayList<>();
 		Class<?> klass = resultClass;
@@ -95,22 +91,20 @@ public class JsonAnnotationsModelIntrospector {
 	 * @param classes any iterable collection of classes
 	 * @return an iterable collection of fields
 	 */
-	private Iterable<Field> getInjectableFields(final Iterable<Class<?>> classes, final boolean lookForJsonPathOnly) {
-		//TODO Remove Guava
-		return from(classes)
-				.transformAndConcat(new Function<Class<?>, Iterable<? extends Field>>() {
-					public Iterable<? extends Field> apply(final java.lang.Class<?> input) {
-						return asList(input.getDeclaredFields());
-					}
-				})
-				.filter(new Predicate<Field>() {
-					public boolean apply(final Field input) {
-						if (lookForJsonPathOnly) {
-							return input.isAnnotationPresent(JsonPath.class);
-						}
-
-						return true;
-					}
-				});
+	private Iterable<Field> getInjectableFields(final Collection<Class<?>> classes, final boolean lookForJsonPathOnly) {
+		List<Field> injectableFields = new ArrayList<>();
+		for (Class<?> clazz : classes) {
+			for (Field potentialField : clazz.getDeclaredFields()) {
+				if (!lookForJsonPathOnly || potentialField.isAnnotationPresent(JsonPath.class)) {
+					injectableFields.add(potentialField);
+				}
+			}
+		}
+		return injectableFields;
+		/* In Java 8 the perfomance of above can massively be improved using Streams as below:
+		return classes.stream()
+				.flatMap(clazz -> Arrays.stream(clazz.getDeclaredFields()))
+				.filter(field -> !lookForJsonPathOnly || field.isAnnotationPresent(JsonPath.class))
+				.collect(Collectors.toList());*/
 	}
 }

@@ -1,12 +1,10 @@
 package com.elasticpath.rest.json.unmarshalling.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 
@@ -60,9 +58,15 @@ public final class JsonPathUtil {
 	 * @param jsonPathStack the collection of json paths.
 	 * @return the string representation.
 	 */
-	public static String getJsonPath(final Iterable<String> jsonPathStack) {
-
-		return Joiner.on(".").join(jsonPathStack);
+	public static String getJsonPath(final Collection<String> jsonPathStack) {
+		StringBuilder stringBuilder = new StringBuilder();
+		String delimiter = "";
+		for (String entry : jsonPathStack) {
+			stringBuilder.append(delimiter);
+			stringBuilder.append(entry);
+			delimiter = ".";
+		}
+		return stringBuilder.toString();
 	}
 
 	/**
@@ -76,14 +80,14 @@ public final class JsonPathUtil {
 	 * @param parentJsonPath the current relative json path.
 	 * @return the relative json path of the passed field.
 	 */
-	public static Iterable<String> resolveRelativeJsonPaths(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
-															final String fieldName, final Iterable<String> parentJsonPath) {
+	public static Collection<String> resolveRelativeJsonPaths(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
+															final String fieldName, final Collection<String> parentJsonPath) {
 
 		String fieldJsonPath = getJsonPathFromField(jsonPathAnnotation, jsonPropertyAnnotation, fieldName);
 
-		Iterable<String> combinedJsonPath;
+		Collection<String> combinedJsonPath;
 		
-		if (fieldJsonPath.charAt(0) == '$' && !Iterables.isEmpty(parentJsonPath)) { //Handle new absolute json path defined on field
+		if (fieldJsonPath.charAt(0) == '$' && !parentJsonPath.isEmpty()) { //Handle new absolute json path defined on field
 			combinedJsonPath = makeNewRootRelativePath(fieldJsonPath);
 		} else {
 			combinedJsonPath = updateExistingRelativePath(parentJsonPath, fieldJsonPath);
@@ -102,14 +106,14 @@ public final class JsonPathUtil {
 		return fieldName;
 	}
 
-	private static Iterable<String> makeNewRootRelativePath(final String jsonPathVal) {
+	private static Collection<String> makeNewRootRelativePath(final String jsonPathVal) {
 		List<String> updatedJsonPathStack = new ArrayList<>();
 		updatedJsonPathStack.add(jsonPathVal);
 		return updatedJsonPathStack;
 	}
 
-	private static Iterable<String> updateExistingRelativePath(final Iterable<String> parentJsonPath, final String jsonPathVal) {
-		List<String> currentJsonPath = Lists.newArrayList(parentJsonPath);
+	private static Collection<String> updateExistingRelativePath(final Collection<String> parentJsonPath, final String jsonPathVal) {
+		List<String> currentJsonPath = new ArrayList<>(parentJsonPath);
 		String jsonPathPrefixRegex = "^[^.]*\\.";
 		String sanitizedJsonPathValue = jsonPathVal.replaceFirst(jsonPathPrefixRegex, "");
 

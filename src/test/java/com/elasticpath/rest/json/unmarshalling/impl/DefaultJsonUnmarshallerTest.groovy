@@ -293,7 +293,7 @@ class DefaultJsonUnmarshallerTest {
 		assert 2 == fourthLevelJPropertyIterable.asCollection().size()
 		assert 2 == fourthLevelJPropertyArray.size()
 
-		assert fourthLevelJPropertyArray as Collection == fourthLevelJPropertyIterable.asCollection()
+		assert fourthLevelJPropertyArray as Collection  == fourthLevelJPropertyIterable as Collection
 
 		// ======== assert fourth level from first element of array ==========================
 		def fourthLevelArrayFirstElement = fourthLevelJPropertyArray[0]
