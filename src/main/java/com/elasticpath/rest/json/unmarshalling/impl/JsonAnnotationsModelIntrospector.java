@@ -49,7 +49,7 @@ public class JsonAnnotationsModelIntrospector {
 	 * @param field the field to be inspected
 	 * @return true if field contains at least one JsonPath annotation at any level
 	 */
-	public boolean hasJsonPathAnnotatatedFields(final Field field) {
+	public boolean hasJsonPathAnnotations(final Field field) {
 		final Class<?> fieldType = field.getType();
 
 		if (isFieldArrayOrListOfPrimitiveTypes(field) || fieldType.isPrimitive()) {

@@ -126,7 +126,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			throws IOException {
 
 		// Todo - Will this cause a break in the depth first search if there is a child buffer(s) with only JsonProperty annotations?
-		if (jsonAnnotationsModelIntrospector.hasJsonPathAnnotatatedFields(field)) {
+		if (jsonAnnotationsModelIntrospector.hasJsonPathAnnotations(field)) {
 			if (fieldValue == null) {
 				return;
 			}
