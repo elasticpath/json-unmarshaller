@@ -1,12 +1,5 @@
 package com.elasticpath.rest.json.unmarshalling.impl;
 
-import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getFieldValue;
-import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.getFirstTypeArgumentFromGeneric;
-import static com.elasticpath.rest.json.unmarshalling.impl.FieldUtil.isFieldArrayOrList;
-import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.buildCorrectJsonPath;
-import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.getJsonAnnotationValue;
-import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.getJsonPath;
-import static com.elasticpath.rest.json.unmarshalling.impl.JsonPathUtil.resolveRelativeJsonPaths;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.jayway.jsonpath.JsonPath.using;
 import static java.lang.String.format;
@@ -30,7 +23,6 @@ import com.jayway.jsonpath.internal.spi.json.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
 import com.elasticpath.rest.json.unmarshalling.JsonUnmarshaller;
 
 /**
@@ -41,7 +33,8 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultJsonUnmarshaller.class);
 	private final ClassInstantiator classInstantiator;
 	private final ObjectMapper objectMapper;
-	private final JsonAnnotationsModelIntrospector jsonAnnotationsModelIntrospector;
+	private final ReflectionUtil reflectionUtil;
+	private final JsonPathUtil jsonPathUtil;
 
 	/**
 	 * Default constructor.
@@ -49,7 +42,26 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	public DefaultJsonUnmarshaller() {
 		this.classInstantiator = new ClassInstantiator();
 		this.objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES);
-		this.jsonAnnotationsModelIntrospector = new JsonAnnotationsModelIntrospector();
+		this.reflectionUtil = new ReflectionUtil();
+		this.jsonPathUtil = new JsonPathUtil();
+	}
+
+	/**
+	 *
+	 * Custom constructor used in JUnits.
+	 *
+	 * @param classInstantiator class instantiator
+	 * @param objectMapper Jakson ObjectMapper
+	 * @param reflectionUtil reflection util
+	 * @param jsonPathUtil json path util
+	 */
+	public DefaultJsonUnmarshaller(final ClassInstantiator classInstantiator, final ObjectMapper objectMapper, final ReflectionUtil reflectionUtil,
+								   final JsonPathUtil jsonPathUtil) {
+
+		this.classInstantiator = classInstantiator;
+		this.objectMapper = objectMapper;
+		this.reflectionUtil = reflectionUtil;
+		this.jsonPathUtil = jsonPathUtil;
 	}
 
 	@Override
@@ -79,28 +91,27 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		final String resultClassName = resultClass.getName();
 
 		try {
-			final Iterable<Field> declaredFields = jsonAnnotationsModelIntrospector.retrieveAllFields(resultClass);
+			final Iterable<Field> declaredFields = reflectionUtil.retrieveAllFields(resultClass);
 
 			if (declaredFields.iterator().hasNext()) {
 
-				final String parentJsonPathString = getJsonPath(parentJsonPath);
+				final String parentJsonPathString = jsonPathUtil.getJsonPath(parentJsonPath);
 				final boolean isAbsolutePath = "".equals(parentJsonPathString);
 
+				JsonAnnotationHandler jsonAnnotationHandler;
 				for (Field field : declaredFields) {
-					JsonProperty jsonPropertyAnnotation = field.getAnnotation(JsonProperty.class);
-					JsonPath jsonPathAnnotation = field.getAnnotation(JsonPath.class);
 
-					sanityCheck(jsonPathAnnotation, jsonPropertyAnnotation, resultClassName, field);
+					jsonAnnotationHandler = new JsonAnnotationHandler(field);
 
-					final String jsonPathOnField = getJsonAnnotationValue(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(),
-							isAbsolutePath);
+					sanityCheck(jsonAnnotationHandler, resultClassName);
 
-					if (shouldPerformJsonPathUnmarshalling(jsonPathAnnotation, jsonPropertyAnnotation, field, getFieldValue(resultObject, field))) {
+					final String jsonPathOnField = jsonAnnotationHandler.getJsonAnnotationValue(isAbsolutePath);
+
+					if (shouldPerformJsonPathUnmarshalling(jsonAnnotationHandler, resultObject)) {
 						performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonPathOnField, parentJsonPathString);
 					}
 
-					processMultiLevelAnnotations(jsonPathAnnotation, jsonPropertyAnnotation, field, getFieldValue(resultObject, field), jsonContext,
-							parentJsonPath);
+					processMultiLevelAnnotations(jsonAnnotationHandler, resultObject, jsonContext, parentJsonPath);
 				}
 			}
 			return resultObject;
@@ -119,22 +130,23 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * field name matches Json node name
 	 *
 	 */
-	private void processMultiLevelAnnotations(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
-											  final Field field, final Object fieldValue, final ReadContext jsonContext,
-											  final Collection<String> parentJsonPath)
-			throws IOException {
+	private void processMultiLevelAnnotations(final JsonAnnotationHandler jsonAnnotationHandler, final Object resultObject,
+											  final ReadContext jsonContext, final Collection<String> parentJsonPath)
+			throws IOException, IllegalAccessException {
 
-		// Todo - Will this cause a break in the depth first search if there is a child buffer(s) with only JsonProperty annotations?
-		if (jsonAnnotationsModelIntrospector.hasJsonPathAnnotations(field)) {
+		final Field field = jsonAnnotationHandler.getField();
+		if (reflectionUtil.canUnmarshallClass(field.getType())) {
+
+			final Object fieldValue = jsonAnnotationHandler.getFieldValue(resultObject);
 			if (fieldValue == null) {
 				return;
 			}
 
-			Collection<String> currentJsonPath = resolveRelativeJsonPaths(jsonPathAnnotation, jsonPropertyAnnotation, field.getName(), parentJsonPath);
+			final Collection<String> currentJsonPath = jsonPathUtil.resolveRelativeJsonPaths(jsonAnnotationHandler, parentJsonPath);
 
 			//handles arrays/Lists
-			if (isFieldArrayOrList(field)) {
-				unmarshalArrayOrList(fieldValue, currentJsonPath, jsonContext);
+			if (reflectionUtil.isFieldArrayOrList(field)) {
+				unmarshalArrayOrList(fieldValue, jsonContext, currentJsonPath);
 
 			} else {
 				//handles anything else
@@ -149,7 +161,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	  *
 	 * @param fieldValue used to determine whether a field is a list(iterable) or array
 	 */
-	private void unmarshalArrayOrList(final Object fieldValue, final Collection<String> parentJsonPath, final ReadContext jsonContext)
+	private void unmarshalArrayOrList(final Object fieldValue, final ReadContext jsonContext, final Collection<String> parentJsonPath)
 			throws IOException {
 
 		Object[] fieldValueInstanceMembers;
@@ -160,12 +172,22 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			fieldValueInstanceMembers = (Object[]) fieldValue;
 		}
 
+		if (canUnmarshallMemberInstance(fieldValueInstanceMembers)) {
+				return;
+		}
+
 		for (int i = 0; i < fieldValueInstanceMembers.length; i++) {
 			Object member = fieldValueInstanceMembers[i];
 			List<String> currentJsonPath = new ArrayList<>(parentJsonPath);
 			currentJsonPath.add("[" + i + "]");
 			unmarshall(member, jsonContext, currentJsonPath);
 		}
+	}
+
+	private boolean canUnmarshallMemberInstance(final Object[] fieldValueInstanceMembers) {
+
+		return fieldValueInstanceMembers.length > 0
+					   && !reflectionUtil.canUnmarshallClass(fieldValueInstanceMembers[0].getClass());
 	}
 
 	/*
@@ -179,14 +201,28 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			getFieldValue(resultObject,field) can't be resolved into var because in very first loop, returned value is null
 			while after performing unmarshalling may be non-null
 	 */
-	private boolean shouldPerformJsonPathUnmarshalling(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation,
-													   final Field field, final Object fieldValue) {
+	private boolean shouldPerformJsonPathUnmarshalling(final JsonAnnotationHandler jsonAnnotationHandler, final Object resultObject)
+			throws IllegalAccessException {
 
-		final boolean isFieldPrimitive = field.getType().isPrimitive();
+		final boolean isFieldPrimitive = reflectionUtil.isFieldPrimitive(jsonAnnotationHandler.getField());
+		final Object fieldValue = jsonAnnotationHandler.getFieldValue(resultObject);
 
+		final boolean shouldUnmarshallJsonPathAnnotation = jsonAnnotationHandler.getJsonPathAnnotation() != null;
 
-		return jsonPathAnnotation != null || (jsonPropertyAnnotation != null && (isFieldPrimitive || fieldValue == null)
-				|| isFieldPrimitive || fieldValue == null);
+		return shouldUnmarshallJsonPathAnnotation
+					   || shouldUnmarshallJsonPropertyAnnotation(jsonAnnotationHandler.getJsonPropertyAnnotation(), isFieldPrimitive, fieldValue)
+					   || shouldUnmarshallNonAnnotatedField(isFieldPrimitive, fieldValue);
+	}
+
+	private boolean shouldUnmarshallJsonPropertyAnnotation(final JsonProperty jsonPropertyAnnotation, final boolean isFieldPrimitive,
+														   final Object fieldValue) {
+
+		return jsonPropertyAnnotation != null && shouldUnmarshallNonAnnotatedField(isFieldPrimitive, fieldValue);
+	}
+
+	private boolean shouldUnmarshallNonAnnotatedField(final boolean isFieldPrimitive, final Object fieldValue) {
+
+		return isFieldPrimitive || fieldValue == null;
 	}
 
 
@@ -198,12 +234,12 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * @param jsonPathAnnotation
 	 * @param jsonPropertyAnnotation
 	 */
-	private void sanityCheck(final JsonPath jsonPathAnnotation, final JsonProperty jsonPropertyAnnotation, final String resultClassName,
-							 final Field field) {
+	private void sanityCheck(final JsonAnnotationHandler jsonAnnotationHandler, final String resultClassName) {
 
-		if (jsonPathAnnotation != null && jsonPropertyAnnotation != null) {
+		if (jsonAnnotationHandler.areAnnotationsPresent()) {
 			String errorMessage = format("JsonProperty and JsonPath annotations both detected on field [%s] in class [%s]",
-					field.getName(), resultClassName);
+												jsonAnnotationHandler.getField().getName(), resultClassName);
+
 			LOG.error(errorMessage);
 			throw new IllegalStateException(errorMessage);
 		}
@@ -226,42 +262,49 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			throws IllegalAccessException, IOException {
 
 		final Class<?> fieldType = field.getType();
-		String currentJsonPath = buildCorrectJsonPath(fieldJsonPath, parentJsonPath);
+		final String currentJsonPath = jsonPathUtil.buildCorrectJsonPath(fieldJsonPath, parentJsonPath);
 
-		final Object read = readField(jsonContext, currentJsonPath, fieldType);
-		if (read == null && fieldType.isPrimitive()) {
+		final Object unmarshalledValue = unmarshallField(jsonContext, currentJsonPath, fieldType);
+		if (unmarshalledValue == null && fieldType.isPrimitive()) {
 			return;
 		}
-		setField(resultObject, field, fieldType, read);
+		setField(resultObject, field, unmarshalledValue);
 	}
 
 	/*
-	 * Set Java field using value obtained from readField method
+	 * Set Java field using value obtained from unmarshallField method
 	 *
 	 * @param resultObject target object, field owner
 	 * @param field the field to be set with found Json value
 	 * @param fieldType field type; method checks if field is primitive, List or none of these
-	 * @param read Json value
+	 * @param unmarshalledValue Json value
 	 * @param <T>
 	 * @throws IllegalAccessException
 	 * @throws IOException
 	 */
-	private <T> void setField(final T resultObject, final Field field, final Class<?> fieldType, final Object read)
+	private <T> void setField(final T resultObject, final Field field, final Object unmarshalledValue)
 			throws IllegalAccessException, IOException {
 
-		Type genericType = field.getGenericType();
+		final Class<?> fieldType = field.getType();
+		final Type genericType = field.getGenericType();
 
 		if (fieldType.isPrimitive()) {
-			FieldUtil.setField(resultObject, field, read);
+			reflectionUtil.setField(resultObject, field, unmarshalledValue);
 
-		} else if (genericType instanceof ParameterizedType) { //FIXME what about arrays? make a test
-			final Class actualTypeArgument = getFirstTypeArgumentFromGeneric(genericType);
+		} else if (genericType instanceof ParameterizedType) {
+			final Class<?>[] actualTypeArguments = reflectionUtil.geClassArgumentsFromGeneric(genericType);
 
-			final JavaType typedField = objectMapper.getTypeFactory().constructParametricType(fieldType, actualTypeArgument);
-			FieldUtil.setField(resultObject, field, objectMapper.convertValue(read, typedField));
+			final JavaType typedField;
+			if (actualTypeArguments.length == 1) {
+				typedField = objectMapper.getTypeFactory().constructParametricType(fieldType, actualTypeArguments[0]);
+			} else {
+				typedField = objectMapper.getTypeFactory().constructMapLikeType(fieldType, actualTypeArguments[0], actualTypeArguments[1]);
+			}
+
+			reflectionUtil.setField(resultObject, field, objectMapper.convertValue(unmarshalledValue, typedField));
 
 		} else {
-			FieldUtil.setField(resultObject, field, objectMapper.convertValue(read, fieldType));
+			reflectionUtil.setField(resultObject, field, objectMapper.convertValue(unmarshalledValue, fieldType));
 		}
 	}
 
@@ -273,13 +316,13 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * @param fieldType field type, used to determine whether field is Iterable or not
 	 * @return
 	 */
-	private Object readField(final ReadContext jsonContext, final String jsonPath, final Class<?> fieldType) {
+	private Object unmarshallField(final ReadContext jsonContext, final String jsonPath, final Class<?> fieldType) {
 
 		Object read = null;
 		try {
 			read = jsonContext.read(jsonPath);
 		} catch (PathNotFoundException e) {
-			if (Iterable.class.isAssignableFrom(fieldType)) { //FIXME what about arrays? make a test
+			if (Iterable.class.isAssignableFrom(fieldType)) {
 				read = new ArrayList();
 			} else {
 				LOG.trace(e.getMessage(), e);
