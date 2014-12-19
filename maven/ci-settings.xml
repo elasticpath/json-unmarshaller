@@ -163,6 +163,11 @@
 	<!-- Follow the guide here: http://maven.apache.org/guides/mini/guide-encryption.html#How_to_encrypt_server_passwords to set your passwords in here encrypted. -->
 	<servers>
 		<server>
+			<id>staging-deployment</id>
+			<username>maven-deployer</username>
+			<password>{1Nte6eUXvf8H/nxSUvXr76rsa4h+AaQE5S5IsN977q0=}</password>
+		</server>
+		<server>
 			<id>snapshots</id>
 			<username>maven-deployer</username>
 			<password>{NF/4B2eF8JwH5d73ojeEc3kycLZWrSjCQHY5x0FAfQQ=}</password>
