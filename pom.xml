@@ -102,7 +102,6 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-Activator>com.elasticpath.rest.json.unmarshalling.config.Activator</Bundle-Activator>
 						<Embed-Dependency>*;scope=compile|runtime</Embed-Dependency>
 						<Embed-Directory>OSGI-INF/lib</Embed-Directory>
 						<Embed-Transitive>true</Embed-Transitive>
