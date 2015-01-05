@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Some paths are handled by Jway fmwk, but not all.
  *
  */
-public final class JsonPathUtil {
+public class JsonPathUtil {
 
 	/**
 	 * Make a string out of all elements in the json collection.

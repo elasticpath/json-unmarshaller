@@ -55,7 +55,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * @param reflectionUtil reflection util
 	 * @param jsonPathUtil json path util
 	 */
-	public DefaultJsonUnmarshaller(final ClassInstantiator classInstantiator, final ObjectMapper objectMapper, final ReflectionUtil reflectionUtil,
+	DefaultJsonUnmarshaller(final ClassInstantiator classInstantiator, final ObjectMapper objectMapper, final ReflectionUtil reflectionUtil,
 								   final JsonPathUtil jsonPathUtil) {
 
 		this.classInstantiator = classInstantiator;

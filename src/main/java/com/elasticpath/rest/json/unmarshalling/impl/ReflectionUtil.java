@@ -1,6 +1,5 @@
 package com.elasticpath.rest.json.unmarshalling.impl;
 
-import static com.google.common.collect.FluentIterable.from;
 import static java.util.Arrays.asList;
 
 import java.lang.reflect.Field;
@@ -11,7 +10,6 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.google.common.base.Function;
 
 /**
  * This class provides set of reflection call methods.
@@ -100,14 +98,8 @@ public class ReflectionUtil {
 	 */
 	public <T> Iterable<Field> retrieveAllFields(final Class<T> clazz) {
 
-		final Iterable<Class<?>> classes = getClassHierarchy(clazz);
+		return getInjectableFields(getClassHierarchy(clazz));
 
-		return from(classes)
-					   .transformAndConcat(new Function<Class<?>, Iterable<? extends Field>>() {
-						   public Iterable<? extends Field> apply(final java.lang.Class<?> input) {
-							   return asList(input.getDeclaredFields());
-						   }
-					   });
 	}
 
 	/**
@@ -151,7 +143,7 @@ public class ReflectionUtil {
 	 * @param resultClass leaf class in the hierarchy to scan
 	 * @return an iterable collection of classes
 	 */
-	private Iterable<Class<?>> getClassHierarchy(final Class<?> resultClass) {
+	private Collection<Class<?>> getClassHierarchy(final Class<?> resultClass) {
 
 		Collection<Class<?>> classes = new ArrayList<>();
 		Class<?> klass = resultClass;
@@ -160,5 +152,27 @@ public class ReflectionUtil {
 			klass = klass.getSuperclass();
 		}
 		return classes;
+	}
+
+	/*
+	 * Retrieves all fields valid for injection from the given iterable of classes.
+	 * <p/>
+	 * Fields are valid if they are annotated @JsonPath.
+	 *
+	 * @param classes any iterable collection of classes
+	 * @return an iterable collection of fields
+	 */
+	private Iterable<Field> getInjectableFields(final Collection<Class<?>> classes) {
+		List<Field> injectableFields = new ArrayList<>();
+		for (Class<?> clazz : classes) {
+			for (Field potentialField : clazz.getDeclaredFields()) {
+				injectableFields.add(potentialField);
+			}
+		}
+		return injectableFields;
+		/* In Java 8 the perfomance of above can massively be improved using Streams as below:
+		return classes.stream()
+				.flatMap(clazz -> Arrays.stream(clazz.getDeclaredFields()))
+				.collect(Collectors.toList());*/
 	}
 }
