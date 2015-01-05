@@ -1,11 +1,10 @@
 package com.elasticpath.rest.json.unmarshalling.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Collection;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Various util methods for getting/fixing Json paths, taken from annotations.
@@ -45,8 +44,6 @@ public class JsonPathUtil {
 
 		String fieldJsonPath = jsonAnnotationHandler.getJsonPathFromField();
 
-		Collection<String> combinedJsonPath;
-
 		if (fieldJsonPath.charAt(0) == '$' && !parentJsonPath.isEmpty()) { //Handle new absolute json path defined on field
 			return makeNewRootRelativePath(fieldJsonPath);
 		}
@@ -55,9 +52,7 @@ public class JsonPathUtil {
 	}
 
 	private Collection<String> makeNewRootRelativePath(final String jsonPathVal) {
-		List<String> updatedJsonPathStack = new ArrayList<>();
-		updatedJsonPathStack.add(jsonPathVal);
-		return updatedJsonPathStack;
+		return Arrays.asList(jsonPathVal);
 	}
 
 	private Collection<String> updateExistingRelativePath(final Collection<String> parentJsonPath, final String jsonPathVal) {

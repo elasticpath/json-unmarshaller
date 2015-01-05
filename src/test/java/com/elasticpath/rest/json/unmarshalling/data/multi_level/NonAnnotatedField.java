@@ -47,5 +47,5 @@ public class NonAnnotatedField {
 	//matches json node
 	private String field4;
 
-	private String anythingElse = "non-annotated, doesn't match Json node";
+	private String anythingElse = "will never be set";
 }
