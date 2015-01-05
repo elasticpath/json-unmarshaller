@@ -452,8 +452,6 @@ class DefaultJsonUnmarshallerTest {
 	}
 
 
-	//TODO NR should read Json from a file
-
 	def cartTotalZoomedJson = '''
 {
   "self": {
