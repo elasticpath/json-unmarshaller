@@ -1,24 +1,18 @@
 package com.elasticpath.rest.json.unmarshalling.impl
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-import static org.mockito.BDDMockito.given
-
+import com.elasticpath.rest.json.unmarshalling.data.*
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import com.fasterxml.jackson.databind.ObjectMapper
-
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Spy
 import org.mockito.runners.MockitoJUnitRunner
 
-import com.elasticpath.rest.json.unmarshalling.data.TestMultiLevels
-import com.elasticpath.rest.json.unmarshalling.data.TestNonAnnotatedFields
-import com.elasticpath.rest.json.unmarshalling.data.TestViewWithBadAnnotations
-import com.elasticpath.rest.json.unmarshalling.data.TestViewWithJsonPath
-import com.elasticpath.rest.json.unmarshalling.data.TestViewWithOtherFields
-import com.elasticpath.rest.json.unmarshalling.data.TestViewWithParent
+import static org.mockito.BDDMockito.given
+import static org.mockito.Mockito.never
+import static org.mockito.Mockito.verify
 
 /**
  * Tests for {@link DefaultJsonUnmarshaller}
@@ -30,7 +24,10 @@ class DefaultJsonUnmarshallerTest {
 	ClassInstantiator classInstantiator
 
 	@Spy
-	JsonAnnotationsModelIntrospector jsonPathModelIntrospector = new JsonAnnotationsModelIntrospector();
+	ReflectionUtil reflectionUtil;
+
+	@Spy
+	JsonPathUtil jsonPathUtil
 
 	@Spy
 	ObjectMapper objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES)
@@ -94,11 +91,11 @@ class DefaultJsonUnmarshallerTest {
 
 		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
 
-		assert 0 == result.getInt1();
-		assert 0 == result.getChar5()
-		assert null == result.getInteger2()
-		assert null == result.getString3()
-		assert null == result.getByteArray4()
+		assert 0 == result.int1;
+		assert 0 == result.char5
+		assert null == result.integer2
+		assert null == result.string3
+		assert null == result.byteArray4
 	}
 
 	@Test
@@ -165,7 +162,7 @@ class DefaultJsonUnmarshallerTest {
 		assert 3 == secondLevelArrayJProperty.size()
 		assert 3 == secondLevelIterableJProperty.asCollection().size()
 
-		assert secondLevelArrayJProperty as Collection == secondLevelIterableJProperty.asCollection()
+		assert secondLevelArrayJProperty as Collection == secondLevelIterableJProperty as Collection
 	}
 
 	@Test
@@ -195,7 +192,7 @@ class DefaultJsonUnmarshallerTest {
 		assert 3 == secondLevelArrayJPath.size()
 		assert 3 == secondLevelIterableJPath.asCollection().size()
 
-		assert secondLevelArrayJPath as Collection == secondLevelIterableJPath.asCollection()
+		assert secondLevelArrayJPath as Collection == secondLevelIterableJPath as Collection
 
 		//regardless of annotation, result must be the same
 		assert secondLevelIterableJProperty.asCollection() == secondLevelIterableJPath.asCollection()
@@ -293,7 +290,7 @@ class DefaultJsonUnmarshallerTest {
 		assert 2 == fourthLevelJPropertyIterable.asCollection().size()
 		assert 2 == fourthLevelJPropertyArray.size()
 
-		assert fourthLevelJPropertyArray as Collection  == fourthLevelJPropertyIterable as Collection
+		assert fourthLevelJPropertyArray as Collection == fourthLevelJPropertyIterable as Collection
 
 		// ======== assert fourth level from first element of array ==========================
 		def fourthLevelArrayFirstElement = fourthLevelJPropertyArray[0]
@@ -336,32 +333,111 @@ class DefaultJsonUnmarshallerTest {
 
 		def result = factory.unmarshall(TestNonAnnotatedFields, nonAnnotatedFields)
 
-		assert 0 == result.getPrimitive()
-		assert null == result.getInteger()
-		assert null == result.getString()
-		assert null == result.getStrArray()
-		assert null == result.getIntArray()
-		assert false == result.isPrimitiveBoolean()
-		assert 12345 == result.getFirstInt()
-		assert 678901 == result.getLastInt()
-		assert 'First String' == result.getFirstString()
-		assert 'Last String' == result.getLastString()
-		assert true == result.getFirstBoolean()
-		assert 3 == result.getStringArray().length
-		assert 3 == result.getIntegerArray().length
-		assert true == result.isLastBoolean()
+		assert 0 == result.primitive
+		assert null == result.integer
+		assert null == result.string
+		assert null == result.strArray
+		assert null == result.intArray
+		assert false == result.primitiveBoolean
+		assert 12345 == result.firstInt
+		assert 678901 == result.lastInt
+		assert 'First String' == result.firstString
+		assert 'Last String' == result.lastString
+		assert true == result.firstBoolean
+		assert 3 == result.stringArray.length
+		assert 3 == result.integerArray.length
+		assert true == result.lastBoolean
 
 		def nonAnnotatedField = result.nonAnnotatedField
 		assert null != nonAnnotatedField
-		assert 'absolute JSon path' == nonAnnotatedField.getAbsJsonPathField()
-		assert 'relative JSon path' == nonAnnotatedField.getRelJsonPathField()
-		assert 112233 == nonAnnotatedField.getJsonProp()
-		assert 'First String' == nonAnnotatedField.getField1()
-		assert null == nonAnnotatedField.getField2()
-		assert 'non-annotated, matches Json node' == nonAnnotatedField.getField4()
-		assert 'non-annotated, doesn\'t match Json node' == nonAnnotatedField.getField5()
+		assert 'absolute JSon path' == nonAnnotatedField.absJsonPathField
+		assert 'relative JSon path' == nonAnnotatedField.relJsonPathField
+		assert 112233 == nonAnnotatedField.jsonProp
+		assert 'First String' == nonAnnotatedField.field1
+		assert null == nonAnnotatedField.field2
+		assert 'non-annotated, matches Json node' == nonAnnotatedField.field4
+		assert 'non-annotated, doesn\'t match Json node' == nonAnnotatedField.anythingElse
 	}
 
+	@Test
+	void 'In multi-level structure, field annotated with JsonProperty on second and JsonPath on third level must be unmarshalled correctly'() {
+		def returnObject = new TestMultiLevelsWithJsonPropertyOnly()
+
+		given(classInstantiator.newInstance(TestMultiLevelsWithJsonPropertyOnly))
+				.willReturn(returnObject)
+
+		def result = factory.unmarshall(TestMultiLevelsWithJsonPropertyOnly, multiLevelJson)
+
+		def secondLevelJProperty = result.secondLevelJProperty
+		assert null != secondLevelJProperty
+		// ============ assert third level =======================
+		def thirdLevelJProperty = secondLevelJProperty.thirdLevelWithJsonPath
+
+		assert null != thirdLevelJProperty
+
+		assert '3rd field1[1]' == thirdLevelJProperty.absoluteJsonPath
+	}
+
+	@Test
+	void 'In multi-level structure, non-annotated field on second and annotated with JsonPath on third level must be unmarshalled correctly'() {
+		def returnObject = new TestMultiLevelsWithNonAnnotatedField()
+
+		given(classInstantiator.newInstance(TestMultiLevelsWithNonAnnotatedField))
+				.willReturn(returnObject)
+
+		def result = factory.unmarshall(TestMultiLevelsWithNonAnnotatedField, multiLevelJson)
+
+		def secondLevelNonAnnotated = result.secondLevelNonAnnotated
+		assert null != secondLevelNonAnnotated
+		// ============ assert third level =======================
+		def thirdLevelJProperty = secondLevelNonAnnotated.third_level
+
+		assert null != thirdLevelJProperty
+
+		assert '3rd field1[1]' == thirdLevelJProperty.absoluteJsonPath
+	}
+
+	@Test
+	void 'Classes from ignored packages must not trigger recursive calls'() {
+
+		def returnObject = new TestUnmarshallingClassesFromIgnoredPackages()
+
+		given(classInstantiator.newInstance(TestUnmarshallingClassesFromIgnoredPackages))
+				.willReturn(returnObject)
+
+		def result = factory.unmarshall(TestUnmarshallingClassesFromIgnoredPackages, ignoredClasses)
+
+		assert result.price == 789.45
+		assert result.items != null
+		assert result.items.size() == 3
+		assert result.aDate.equals(new Date(1419028953000))
+
+		verify(reflectionUtil).canUnmarshallClass(String.class)
+
+		/*
+		 verifies that ReflectionUtil.isFieldArrayOrList method
+		 works correctly; here, verification is against
+		 long serialVersionID field in List class, which shouldn't
+		 be processed ever.
+		 */
+		verify(reflectionUtil, never()).canUnmarshallClass(long.class)
+	}
+
+	@Test//if map/table is unmarshalled, an exception would be thrown
+	void 'Maps and tables shouldn\'t be further unmarshalled'(){
+		def returnObject = new TestMaps()
+
+		given(classInstantiator.newInstance(TestMaps)).willReturn(returnObject)
+
+		def result = factory.unmarshall(TestMaps.class, jsonWithMap)
+		assert result.countryMap != null
+		assert result.countryMap.size() == 2
+		assert result.mapOfCountries != null
+		assert result.mapOfCountries.size() == 2
+	}
+
+
+	//TODO NR should read Json from a file
 
 	def cartTotalZoomedJson = '''
 {
@@ -557,7 +633,7 @@ class DefaultJsonUnmarshallerTest {
         "field2": "relative JSon path",
         "field3": 112233,
         "field4": "non-annotated, matches Json node",
-        "field5": "non-annotated, doesn't match Json node"
+        "field5": "will never be set"
       },
       "stringArray":[
         "string1","string2","string3"
@@ -571,4 +647,23 @@ class DefaultJsonUnmarshallerTest {
     }
 
     '''
+
+	def ignoredClasses = '''
+	{
+		"price":789.45,
+		"items":[
+			"item1","item2","item3"
+		],
+		"date": 1419028953000
+	}
+	'''
+
+	def jsonWithMap = '''
+	{
+		"countryMap" :{
+			"country1" : ["region11","region12"],
+			"country2" : ["region21","region22"]
+		}
+	}
+	'''
 }

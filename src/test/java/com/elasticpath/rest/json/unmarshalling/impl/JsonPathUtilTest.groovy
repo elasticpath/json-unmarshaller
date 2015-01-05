@@ -2,7 +2,7 @@ package com.elasticpath.rest.json.unmarshalling.impl
 
 import org.junit.Test
 import org.junit.runner.RunWith
-
+import org.mockito.InjectMocks
 import org.mockito.runners.MockitoJUnitRunner
 
 /**
@@ -11,11 +11,14 @@ import org.mockito.runners.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner)
 class JsonPathUtilTest {
 
+	@InjectMocks
+	JsonPathUtil factory
+
 	@Test
 	void 'Json path without @,$ and dot should be resolved as absolute if parent path is empty'() {
 
 		def testedJsonPath = 'jsonPath'
-		def result = JsonPathUtil.buildCorrectJsonPath(testedJsonPath, "")
+		def result = factory.buildCorrectJsonPath(testedJsonPath, "")
 
 		assert '$.jsonPath' == result
 	}
@@ -25,7 +28,7 @@ class JsonPathUtilTest {
 
 		def testedJsonPath = 'jsonPath'
 		def parentJsonPath = '$.parentJsonPath'
-		def result = JsonPathUtil.buildCorrectJsonPath(testedJsonPath, parentJsonPath)
+		def result = factory.buildCorrectJsonPath(testedJsonPath, parentJsonPath)
 
 		assert '$.parentJsonPath.jsonPath' == result
 	}
@@ -34,7 +37,7 @@ class JsonPathUtilTest {
 	void 'Json path starting with @ and without dot should be resolved as absolute if parent path is empty'() {
 
 		def testedJsonPath = '@jsonPath'
-		def result = JsonPathUtil.buildCorrectJsonPath(testedJsonPath, "")
+		def result = factory.buildCorrectJsonPath(testedJsonPath, "")
 
 		assert '$.jsonPath' == result
 	}
@@ -44,7 +47,7 @@ class JsonPathUtilTest {
 
 		def testedJsonPath = '@jsonPath'
 		def parentJsonPath = '$.parentJsonPath'
-		def result = JsonPathUtil.buildCorrectJsonPath(testedJsonPath, parentJsonPath)
+		def result = factory.buildCorrectJsonPath(testedJsonPath, parentJsonPath)
 
 		assert '$.parentJsonPath.jsonPath' == result
 	}
@@ -53,7 +56,7 @@ class JsonPathUtilTest {
 	void 'Json path starting with $ and without dot should be resolved as absolute if parent path is empty'() {
 
 		def testedJsonPath = '$jsonPath'
-		def result = JsonPathUtil.buildCorrectJsonPath(testedJsonPath, "")
+		def result = factory.buildCorrectJsonPath(testedJsonPath, "")
 
 		assert '$.jsonPath' == result
 	}
@@ -63,7 +66,7 @@ class JsonPathUtilTest {
 
 		def testedJsonPath = '$jsonPath'
 		def parentJsonPath = '$.parentJsonPath'
-		def result = JsonPathUtil.buildCorrectJsonPath(testedJsonPath, parentJsonPath)
+		def result = factory.buildCorrectJsonPath(testedJsonPath, parentJsonPath)
 
 		assert '$.jsonPath' == result
 	}
@@ -72,7 +75,7 @@ class JsonPathUtilTest {
 	void 'Json path starting with dot should be resolved as absolute if parent path is empty'() {
 
 		def testedJsonPath = '.jsonPath'
-		def result = JsonPathUtil.buildCorrectJsonPath(testedJsonPath, "")
+		def result = factory.buildCorrectJsonPath(testedJsonPath, "")
 
 		assert '$.jsonPath' == result
 	}
@@ -82,7 +85,7 @@ class JsonPathUtilTest {
 
 		def testedJsonPath = '.jsonPath'
 		def parentJsonPath = '$.parentJsonPath'
-		def result = JsonPathUtil.buildCorrectJsonPath(testedJsonPath, parentJsonPath)
+		def result = factory.buildCorrectJsonPath(testedJsonPath, parentJsonPath)
 
 		assert '$.parentJsonPath.jsonPath' == result
 	}
