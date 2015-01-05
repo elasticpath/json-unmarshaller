@@ -3,13 +3,19 @@ package com.elasticpath.rest.json.unmarshalling.impl
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.InjectMocks
+import org.mockito.Mock
 import org.mockito.runners.MockitoJUnitRunner
+
+import static org.mockito.Mockito.when
 
 /**
  * Tests for {@link JsonPathUtil}
  */
 @RunWith(MockitoJUnitRunner)
 class JsonPathUtilTest {
+
+	@Mock
+	JsonAnnotationHandler jsonAnnotationHandler
 
 	@InjectMocks
 	JsonPathUtil factory
@@ -88,5 +94,44 @@ class JsonPathUtilTest {
 		def result = factory.buildCorrectJsonPath(testedJsonPath, parentJsonPath)
 
 		assert '$.parentJsonPath.jsonPath' == result
+	}
+
+	@Test
+	void 'Should return valid json path when list of paths is provided' () {
+		def result = factory.getJsonPath(Arrays.asList('$.path1', 'path2'))
+		assert '$.path1.path2' == result
+	}
+
+	@Test
+	void 'Should resolve to absolute path when annotation value contains absolute path and parent path exists' () {
+
+		when(jsonAnnotationHandler.getJsonPathFromField()).thenReturn('$.absolute.path')
+
+		final Iterable<String> parentJsonPath = Arrays.asList('$.path1', 'path2')
+
+		def result = factory.resolveRelativeJsonPaths(jsonAnnotationHandler, parentJsonPath)
+		assert '$.absolute.path' == result.toString().replaceAll('[\\[\\]]','')
+	}
+
+	@Test
+	void 'Should resolve to relative path when processing JsonProperty annotation and parent path exists' () {
+
+		when(jsonAnnotationHandler.getJsonPathFromField()).thenReturn('jsonPropertyValue')
+
+		final Iterable<String> parentJsonPath = Arrays.asList('$.path1', 'path2')
+
+		def result = factory.resolveRelativeJsonPaths(jsonAnnotationHandler, parentJsonPath)
+		assert '$.path1.path2.jsonPropertyValue' == result.toString().replaceAll('[\\[\\]\\s]','').replaceAll(',','.')
+	}
+
+	@Test
+	void 'Should resolve to absolute path when processing JsonProperty annotation and parent is empty' () {
+
+		when(jsonAnnotationHandler.getJsonPathFromField()).thenReturn('jsonPropertyValue')
+
+		final Iterable<String> parentJsonPath = new ArrayList<>()
+
+		def result = factory.resolveRelativeJsonPaths(jsonAnnotationHandler, parentJsonPath)
+		assert '$.jsonPropertyValue' == result.toString().replaceAll('[\\[\\]]','')
 	}
 }

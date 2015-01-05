@@ -195,7 +195,7 @@ class DefaultJsonUnmarshallerTest {
 		assert secondLevelArrayJPath as Collection == secondLevelIterableJPath as Collection
 
 		//regardless of annotation, result must be the same
-		assert secondLevelIterableJProperty.asCollection() == secondLevelIterableJPath.asCollection()
+		assert secondLevelIterableJProperty as Collection == secondLevelIterableJPath as Collection
 	}
 
 	@Test
@@ -356,7 +356,7 @@ class DefaultJsonUnmarshallerTest {
 		assert 'First String' == nonAnnotatedField.field1
 		assert null == nonAnnotatedField.field2
 		assert 'non-annotated, matches Json node' == nonAnnotatedField.field4
-		assert 'non-annotated, doesn\'t match Json node' == nonAnnotatedField.anythingElse
+		assert 'will never be set' == nonAnnotatedField.anythingElse
 	}
 
 	@Test
@@ -434,6 +434,21 @@ class DefaultJsonUnmarshallerTest {
 		assert result.countryMap.size() == 2
 		assert result.mapOfCountries != null
 		assert result.mapOfCountries.size() == 2
+	}
+
+	@Test
+	void 'Should handle UTF8 characters correctly'() {
+
+		def returnObject = new TestUTF8()
+
+		given(classInstantiator.newInstance(TestUTF8))
+				.willReturn(returnObject)
+
+		def result = factory.unmarshall(TestUTF8, mixedContent)
+
+		assert result.utf8Greek == 'Γρεεκ'
+		assert result.utf8Cyrillic == 'Српски'
+		assert result.utf8Chinese == '中國'
 	}
 
 
@@ -666,4 +681,13 @@ class DefaultJsonUnmarshallerTest {
 		}
 	}
 	'''
+
+	def mixedContent = '''
+ 	{
+ 		"utf8_greek":"Γρεεκ",
+ 		"utf8_cyrillic":"Српски",
+ 		"utf8_chinese":"中國",
+ 		"title":"Some title"
+ 	}
+ 	'''
 }
