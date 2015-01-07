@@ -2,7 +2,7 @@
  * Copyright © 2014 Elastic Path Software Inc. All rights reserved.
  */
 
-package com.elasticpath.rest.json.unmarshalling.data.malformed;
+package com.elasticpath.rest.client.unmarshalling.annotations.malformed;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

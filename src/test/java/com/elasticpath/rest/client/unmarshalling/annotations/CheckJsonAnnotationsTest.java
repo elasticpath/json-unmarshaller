@@ -1,18 +1,21 @@
-package com.elasticpath.rest.json.unmarshalling.impl;
+package com.elasticpath.rest.client.unmarshalling.annotations;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
+
 import org.junit.Test;
+
 import com.jayway.jsonpath.InvalidPathException;
-import com.elasticpath.rest.client.unmarshalling.annotations.CheckJsonAnnotations;
 
 /**
- * Created by pmatich on 29/12/14.
+ * Tests for {@link CheckJsonAnnotations}
  */
 public class CheckJsonAnnotationsTest {
 
-	private String testDataDir = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/";
+	private String testDataDir = "src/test/java/com/elasticpath/rest/client/unmarshalling/annotations/";
+
 	private CheckJsonAnnotations testCheckJsonAnnotations = new CheckJsonAnnotations();
 
 	@Test
@@ -62,6 +65,7 @@ public class CheckJsonAnnotationsTest {
 	}
 
 	@Test
+	@SuppressWarnings("all")
 	public void whenJsonAnnotationIsBrokenJsonAnnotationsShouldFail() throws IOException {
 		//Arrange
 		Boolean checkPassed = true;

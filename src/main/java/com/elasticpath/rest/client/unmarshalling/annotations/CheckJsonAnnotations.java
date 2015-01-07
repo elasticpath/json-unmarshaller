@@ -6,10 +6,8 @@ import java.util.regex.Pattern;
 
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.internal.PathCompiler;
+import com.sun.javafx.beans.annotations.NonNull;
 
-/**
- * Tests for {@link CheckJsonAnnotations}
- */
 public class CheckJsonAnnotations {
 
 	private static final String TEXT = ".*?";
@@ -56,9 +54,13 @@ public class CheckJsonAnnotations {
 	}
 
 	//visible for testing
+	@NonNull
 	protected void checkJsonAnnotationsRecursivelyFromFileOrDirectory(File fileOrDirectory) throws IOException {
 		if (fileOrDirectory.isDirectory()) {
 			File[] files = fileOrDirectory.listFiles();
+			if (files == null) {
+				return;
+			}
 			for (File file : files) {
 					checkJsonAnnotationsRecursivelyFromFileOrDirectory(file);
 			}
@@ -66,9 +68,8 @@ public class CheckJsonAnnotations {
 			checkJsonAnnotationsInFile(fileOrDirectory);
 		}
 	}
-
 	public void checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(String[] fileOrDirectoryNames) throws IOException {
-	File directory;
+		File directory;
 		for (String fileDirectoryName : fileOrDirectoryNames) {
 			directory = new File(fileDirectoryName);
 			checkJsonAnnotationsRecursivelyFromFileOrDirectory(directory);
