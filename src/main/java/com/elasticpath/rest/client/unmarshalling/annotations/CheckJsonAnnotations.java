@@ -23,17 +23,11 @@ public class CheckJsonAnnotations {
 	public static void main(final String[] args) throws Exception {
 		CheckJsonAnnotations annotationChecker = new CheckJsonAnnotations();
 		annotationChecker.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(args);
-
-		for (String s:args) {
-			System.out.println(s);
-		}
-
 	}
 
 	//visible for testing
 	protected void checkJsonAnnotationsInFile(File file) throws IOException, InvalidPathException {
 		Pattern pattern = Pattern.compile(ANNOTATION_PATH_PATTERN);
-
 		try(InputStream fileIs = new FileInputStream(file)) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(fileIs));
 			for (String line; (line = br.readLine()) != null; ) {
