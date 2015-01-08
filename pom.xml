@@ -122,24 +122,6 @@
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.3.2</version>
-				<!--<executions>
-					<execution>
-						<id>check-json-annotations</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>java</executable>
-							<arguments>
-								<argument>-classpath</argument>
-								<classpath />
-								<argument>com.elasticpath.rest.client.unmarshalling.annotations.CheckJsonAnnotations</argument>
-								<argument>src/test/java/com/elasticpath/rest/json/unmarshalling/data/multi_level</argument>
-							</arguments>
-						</configuration>
-					</execution>
-				</executions>-->
 				<executions>
 					<execution>
 						<id>check-json-annotations</id>
