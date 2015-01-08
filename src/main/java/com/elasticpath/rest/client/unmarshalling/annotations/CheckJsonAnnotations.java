@@ -15,7 +15,6 @@ public class CheckJsonAnnotations {
 	private static final String CLOSING_BRACKET = "\\)";
 	private static final String MAKE_PRECEDING_TOKEN_OPTIONAL = "?";
 
-	//private static final String ANNOTATION_PATH_PATTERN = "@Json.*?\"(.*?)\"\\)?";
 	private static final String ANNOTATION_PATH_PATTERN =
 			"@Json" + TEXT + QUOTE + REFERABLE_TEXT + QUOTE + CLOSING_BRACKET + MAKE_PRECEDING_TOKEN_OPTIONAL;
 

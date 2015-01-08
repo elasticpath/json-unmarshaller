@@ -3,7 +3,6 @@ package com.elasticpath.rest.client.unmarshalling.annotations;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -78,7 +77,6 @@ public class CheckJsonAnnotationsTest {
 	}
 
 	@Test
-	@SuppressWarnings("all")
 	public void whenDirectoryIsEmptyJsonAnnotationsShouldPass() throws IOException {
 		Boolean checkPassed = true;
 		// make a temp dir because git doesn't like storing empty dirs
