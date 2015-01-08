@@ -12,18 +12,19 @@ import org.junit.Test;
 import com.jayway.jsonpath.InvalidPathException;
 
 /**
- * Tests for {@link CheckJsonAnnotations}
+ * Tests for {@link CheckJsonAnnotations}.
  */
 public class CheckJsonAnnotationsTest {
 
-	private String testDataDir = "src/test/java/com/elasticpath/rest/client/unmarshalling/annotations/";
+	private String malformedDataDir = "src/test/java/com/elasticpath/rest/client/unmarshalling/annotations/malformed/";
+	private String validDataDir = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/";
 
 	private CheckJsonAnnotations testCheckJsonAnnotations = new CheckJsonAnnotations();
 
 	@Test
 	public void whenAllFilesInDirHaveValidJsonAnnotationsCheckJsonAnnotationsShouldPass() throws IOException {
 		Boolean checkPassed = true;
-		String[] directoryNames = {testDataDir + "/multi_level/"};
+		String[] directoryNames = {validDataDir};
 
 		try {
 			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(directoryNames);
@@ -37,7 +38,7 @@ public class CheckJsonAnnotationsTest {
 	@Test
 	public void whenFilesInDirHaveInvalidJsonAnnotationsCheckJsonAnnotationsShouldFail() throws IOException {
 		Boolean checkPassed = true;
-		String[] directoryNames = {testDataDir + "malformed/"};
+		String[] directoryNames = {malformedDataDir};
 
 		try {
 			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(directoryNames);
@@ -51,7 +52,7 @@ public class CheckJsonAnnotationsTest {
 	@Test
 	public void whenJsonAnnotationIsEmptyCheckJsonAnnotationsShouldFail() throws IOException {
 		Boolean checkPassed = true;
-		String[] fileNames = {testDataDir + "malformed/Empty.java"};
+		String[] fileNames = {malformedDataDir + "Empty.java"};
 
 		try {
 			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
@@ -65,7 +66,7 @@ public class CheckJsonAnnotationsTest {
 	@Test
 	public void whenJsonAnnotationIsBrokenJsonAnnotationsShouldFail() throws IOException {
 		Boolean checkPassed = true;
-		String[] fileNames = {testDataDir + "malformed/BrokenNonAnnotatedField.java"};
+		String[] fileNames = {malformedDataDir + "BrokenNonAnnotatedField.java"};
 
 		try {
 			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
