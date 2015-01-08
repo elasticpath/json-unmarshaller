@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.internal.PathCompiler;
-import com.sun.javafx.beans.annotations.NonNull;
 
 public class CheckJsonAnnotations {
 
@@ -31,42 +30,47 @@ public class CheckJsonAnnotations {
 		try(InputStream fileIs = new FileInputStream(file)) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(fileIs));
 			for (String line; (line = br.readLine()) != null; ) {
-				line = line.replaceAll("\t", "");
-				line = line.trim();
-				if (line.startsWith("@JsonProperty") || line.startsWith("@JsonPath")) {
-					Matcher m = pattern.matcher(line);
-					if (m.find()) {
-						String path = m.group(1);
-						if (path.equals("")) {
-							throw new InvalidPathException("Json Annotation cannot be empty");
-						}
-						PathCompiler.compile(path);
-					}
-				}
+				checkJsonAnnotationInLine(pattern, line);
 			}
 		}
 	}
 
+	private void checkJsonAnnotationInLine(Pattern pattern, String line) {
+		line = line.replaceAll("\t", "");
+		line = line.trim();
+		if (!line.startsWith("@JsonProperty") && !line.startsWith("@JsonPath")) {
+			return;
+		}
+		Matcher m = pattern.matcher(line);
+		if (!m.find()) {
+			return;
+		}
+		String path = m.group(1);
+		if (path.equals("")) {
+			throw new InvalidPathException("Json Annotation cannot be empty");
+		}
+		PathCompiler.compile(path);
+	}
+
 	//visible for testing
-	@NonNull
 	protected void checkJsonAnnotationsRecursivelyFromFileOrDirectory(File fileOrDirectory) throws IOException {
-		if (fileOrDirectory.isDirectory()) {
-			File[] files = fileOrDirectory.listFiles();
-			if (files == null) {
-				return;
-			}
-			for (File file : files) {
-					checkJsonAnnotationsRecursivelyFromFileOrDirectory(file);
-			}
-		} else {
+		if (!fileOrDirectory.isDirectory()) {
 			checkJsonAnnotationsInFile(fileOrDirectory);
+			return;
+		}
+		File[] files = fileOrDirectory.listFiles();
+		if (files == null) {
+			return;
+		}
+		for (File file : files) {
+			checkJsonAnnotationsRecursivelyFromFileOrDirectory(file);
 		}
 	}
 	public void checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(String[] fileOrDirectoryNames) throws IOException {
-		File directory;
+		File fileOrDirectory;
 		for (String fileDirectoryName : fileOrDirectoryNames) {
-			directory = new File(fileDirectoryName);
-			checkJsonAnnotationsRecursivelyFromFileOrDirectory(directory);
+			fileOrDirectory = new File(fileDirectoryName);
+			checkJsonAnnotationsRecursivelyFromFileOrDirectory(fileOrDirectory);
 		}
 	}
 

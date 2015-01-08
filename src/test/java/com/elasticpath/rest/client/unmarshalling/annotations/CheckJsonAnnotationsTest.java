@@ -3,7 +3,10 @@ package com.elasticpath.rest.client.unmarshalling.annotations;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.Test;
 
@@ -33,7 +36,7 @@ public class CheckJsonAnnotationsTest {
 	}
 
 	@Test
-	public void whenAFileInDirHasAnInvalidJsonAnnotationCheckJsonAnnotationsShouldFail() throws IOException {
+	public void whenFilesInDirHaveInvalidJsonAnnotationsCheckJsonAnnotationsShouldFail() throws IOException {
 		Boolean checkPassed = true;
 		String[] directoryNames = {testDataDir + "malformed/"};
 
@@ -58,6 +61,37 @@ public class CheckJsonAnnotationsTest {
 		}
 
 		assertFalse("tests should throw exception when an annotation is empty", checkPassed);
+	}
+
+	@Test
+	public void whenJsonAnnotationIsBrokenJsonAnnotationsShouldFail() throws IOException {
+		Boolean checkPassed = true;
+		String[] fileNames = {testDataDir + "malformed/BrokenNonAnnotatedField.java"};
+
+		try {
+			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
+		} catch (InvalidPathException e) {
+			checkPassed = false;
+		}
+
+		assertFalse("tests should throw exception when an annotation is empty", checkPassed);
+	}
+
+	@Test
+	@SuppressWarnings("all")
+	public void whenDirectoryIsEmptyJsonAnnotationsShouldPass() throws IOException {
+		Boolean checkPassed = true;
+		// make a temp dir because git doesn't like storing empty dirs
+		Path emptyDIR = Files.createTempDirectory("emptyDIR");
+		String fileName = emptyDIR.toString();
+		String[] fileNames = {fileName};
+		try {
+			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
+		} catch (InvalidPathException e) {
+			checkPassed = false;
+		}
+
+		assertTrue("CheckJsonAnnotations tests should pass when dir is empty", checkPassed);
 	}
 
 }

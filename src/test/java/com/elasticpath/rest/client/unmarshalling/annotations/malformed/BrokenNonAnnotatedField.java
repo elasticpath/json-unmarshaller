@@ -14,7 +14,6 @@ import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
  * but contains JsonPath/Property annotations. Such field must be processed
  * and all annotated fields set correctly (if path has a match in Json structure)
  */
-//TODO use lombok
 public class BrokenNonAnnotatedField {
 
 	@JsonPath("$.brokenNonAn notatedField.field1")
