@@ -135,7 +135,6 @@
 					<includeProjectDependencies>true</includeProjectDependencies>
 					<mainClass>com.elasticpath.rest.client.unmarshalling.annotations.CheckJsonAnnotations</mainClass>
 					<arguments>
-						<!--<argument>src/test/java/com/elasticpath/rest/json/unmarshalling/data/malformed</argument>-->
 						<argument>src/main/java/com/elasticpath/</argument>
 					</arguments>
 				</configuration>
