@@ -1,8 +1,6 @@
 package com.elasticpath.rest.client.unmarshalling.annotations;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,81 +14,53 @@ import com.jayway.jsonpath.InvalidPathException;
  */
 public class CheckJsonAnnotationsTest {
 
-	private String malformedDataDir = "src/test/java/com/elasticpath/rest/client/unmarshalling/annotations/malformed/";
-	private String validDataDir = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/";
+	private static final String MALFORMED_DATA_DIR = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/malformed/";
+	private static final String VALID_DATA_DIR = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/multi_level/";
 
-	private CheckJsonAnnotations testCheckJsonAnnotations = new CheckJsonAnnotations();
+	private static final CheckJsonAnnotations TEST_CHECK_JSON_ANNOTATIONS = new CheckJsonAnnotations();
 
 	@Test
 	public void whenAllFilesInDirHaveValidJsonAnnotationsCheckJsonAnnotationsShouldPass() throws IOException {
-		Boolean checkPassed = true;
-		String[] directoryNames = {validDataDir};
+		String[] directoryNames = {VALID_DATA_DIR};
 
-		try {
-			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(directoryNames);
-		} catch (InvalidPathException e) {
-			checkPassed = false;
-		}
-
-		assertTrue("CheckJsonAnnotations tests should pass when all annotations in dir are correct", checkPassed);
-	}
-
-	@Test
-	public void whenFilesInDirHaveInvalidJsonAnnotationsCheckJsonAnnotationsShouldFail() throws IOException {
-		Boolean checkPassed = true;
-		String[] directoryNames = {malformedDataDir};
-
-		try {
-			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(directoryNames);
-		} catch (InvalidPathException e) {
-			checkPassed = false;
-		}
-
-		assertFalse("CheckJsonAnnotations should throw exception when an annotation in dir is invalid", checkPassed);
-	}
-
-	@Test
-	public void whenJsonAnnotationIsEmptyCheckJsonAnnotationsShouldFail() throws IOException {
-		Boolean checkPassed = true;
-		String[] fileNames = {malformedDataDir + "Empty.java"};
-
-		try {
-			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
-		} catch (InvalidPathException e) {
-			checkPassed = false;
-		}
-
-		assertFalse("tests should throw exception when an annotation is empty", checkPassed);
-	}
-
-	@Test
-	public void whenJsonAnnotationIsBrokenJsonAnnotationsShouldFail() throws IOException {
-		Boolean checkPassed = true;
-		String[] fileNames = {malformedDataDir + "BrokenNonAnnotatedField.java"};
-
-		try {
-			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
-		} catch (InvalidPathException e) {
-			checkPassed = false;
-		}
-
-		assertFalse("tests should throw exception when an annotation is empty", checkPassed);
+		TEST_CHECK_JSON_ANNOTATIONS.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(directoryNames);
 	}
 
 	@Test
 	public void whenDirectoryIsEmptyJsonAnnotationsShouldPass() throws IOException {
-		Boolean checkPassed = true;
 		// make a temp dir because git doesn't like storing empty dirs
 		Path emptyDIR = Files.createTempDirectory("emptyDIR");
 		String fileName = emptyDIR.toString();
 		String[] fileNames = {fileName};
-		try {
-			testCheckJsonAnnotations.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
-		} catch (InvalidPathException e) {
-			checkPassed = false;
-		}
+		TEST_CHECK_JSON_ANNOTATIONS.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
+	}
 
-		assertTrue("CheckJsonAnnotations tests should pass when dir is empty", checkPassed);
+	@Test(expected = InvalidPathException.class)
+	public void whenFilesInDirHaveInvalidJsonAnnotationsCheckJsonAnnotationsShouldFail() throws IOException {
+		String[] directoryNames = {MALFORMED_DATA_DIR};
+
+		TEST_CHECK_JSON_ANNOTATIONS.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(directoryNames);
+	}
+
+	@Test(expected = InvalidPathException.class)
+	public void whenJsonAnnotationIsEmptyCheckJsonAnnotationsShouldFail() throws IOException {
+		String[] fileNames = {MALFORMED_DATA_DIR + "EmptyAnnotation.java"};
+
+		TEST_CHECK_JSON_ANNOTATIONS.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
+	}
+
+	@Test(expected = InvalidPathException.class)
+	public void whenJsonAnnotationIsBrokenJsonAnnotationsShouldFail() throws IOException {
+		String[] fileNames = {MALFORMED_DATA_DIR + "BrokenAnnotation.java"};
+
+		TEST_CHECK_JSON_ANNOTATIONS.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
+	}
+
+	@Test(expected = FileNotFoundException.class)
+	public void whenFilePathIsInvalidJsonAnnotationsShouldFail() throws IOException {
+		String[] fileNames = {MALFORMED_DATA_DIR + "noSuchFile"};
+
+		TEST_CHECK_JSON_ANNOTATIONS.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(fileNames);
 	}
 
 }

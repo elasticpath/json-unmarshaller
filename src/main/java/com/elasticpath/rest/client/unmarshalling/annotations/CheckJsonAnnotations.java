@@ -1,12 +1,20 @@
 package com.elasticpath.rest.client.unmarshalling.annotations;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.internal.PathCompiler;
 
+/**
+ *
+ */
 public class CheckJsonAnnotations {
 
 	private static final String PATH_OR_PROPERTY = ".*?";
@@ -20,7 +28,16 @@ public class CheckJsonAnnotations {
 			"@Json" + PATH_OR_PROPERTY + OPENING_BRACKET +
 					QUOTE + REFERABLE_TEXT + QUOTE + CLOSING_BRACKET + MAKE_PRECEDING_TOKEN_OPTIONAL;
 
-	public static void main(final String[] args) throws Exception {
+	/**
+	 * Checks that all {@link com.elasticpath.rest.client.unmarshalling.annotations.JsonPath} and
+	 * {@link com.elasticpath.rest.client.unmarshalling.annotations.JsonPath} annotations are compilable by
+	 * {@link com.elasticpath.rest.client.unmarshalling.annotations.JsonPath} in the provided files, and recursively
+	 * through the provided directories.
+	 *
+	 * @param args the files or directories to be checked
+	 * @throws IOException if file is not found or annotation is invalid
+	 */
+	public static void main(final String[] args) throws IOException {
 		CheckJsonAnnotations annotationChecker = new CheckJsonAnnotations();
 		annotationChecker.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(args);
 	}
@@ -30,7 +47,8 @@ public class CheckJsonAnnotations {
 		Pattern pattern = Pattern.compile(ANNOTATION_PATH_PATTERN);
 		try(InputStream fileInputStream = new FileInputStream(file)) {
 			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fileInputStream));
-			for (String line; (line = bufferedReader.readLine()) != null; ) {
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
 				checkJsonAnnotationInLine(pattern, line);
 			}
 		}
@@ -47,7 +65,8 @@ public class CheckJsonAnnotations {
 			return;
 		}
 		String path = annotationPatternMatcher.group(1);
-		if (path.equals("")) {
+		String emptyString = "";
+		if (path.equals(emptyString)) {
 			throw new InvalidPathException("Json Annotation cannot be empty");
 		}
 		PathCompiler.compile(path);
@@ -67,7 +86,17 @@ public class CheckJsonAnnotations {
 			checkJsonAnnotationsRecursivelyFromFileOrDirectory(file);
 		}
 	}
-	public void checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(final String[] fileOrDirectoryNames) throws IOException {
+
+	/**
+	 * Checks that all {@link com.elasticpath.rest.client.unmarshalling.annotations.JsonPath} and
+	 * {@link com.elasticpath.rest.client.unmarshalling.annotations.JsonPath} annotations are compilable by
+	 * {@link com.elasticpath.rest.client.unmarshalling.annotations.JsonPath} in the provided files, and recursively
+	 * through the provided directories.
+	 *
+	 * @param fileOrDirectoryNames the files or directories to checked
+	 * @throws IOException if file is not found or annotation is invalid
+	 */
+	void checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(final String[] fileOrDirectoryNames) throws IOException {
 		File fileOrDirectory;
 		for (String fileDirectoryName : fileOrDirectoryNames) {
 			fileOrDirectory = new File(fileDirectoryName);
