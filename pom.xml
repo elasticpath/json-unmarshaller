@@ -133,6 +133,7 @@
 				</executions>
 				<configuration>
 					<includeProjectDependencies>true</includeProjectDependencies>
+					<killAfter>-1</killAfter>
 					<mainClass>com.elasticpath.rest.client.unmarshalling.annotations.CheckJsonAnnotations</mainClass>
 					<arguments>
 						<argument>src/main/java/com/elasticpath/</argument>

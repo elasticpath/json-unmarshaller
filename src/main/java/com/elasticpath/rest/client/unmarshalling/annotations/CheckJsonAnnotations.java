@@ -17,7 +17,7 @@ import com.jayway.jsonpath.internal.PathCompiler;
  */
 public class CheckJsonAnnotations {
 
-	private static final String PATH_OR_PROPERTY = ".*?";
+	private static final String PATH_OR_PROPERTY = "(?:Path|Property)";
 	private static final String REFERABLE_TEXT = "(.*?)";
 	private static final String QUOTE = "\"";
 	private static final String OPENING_BRACKET = "\\(";
@@ -25,8 +25,9 @@ public class CheckJsonAnnotations {
 	private static final String MAKE_PRECEDING_TOKEN_OPTIONAL = "?";
 
 	private static final String ANNOTATION_PATH_PATTERN =
-			"@Json" + PATH_OR_PROPERTY + OPENING_BRACKET +
-					QUOTE + REFERABLE_TEXT + QUOTE + CLOSING_BRACKET + MAKE_PRECEDING_TOKEN_OPTIONAL;
+			"@Json" + PATH_OR_PROPERTY + OPENING_BRACKET
+					+ QUOTE + REFERABLE_TEXT + QUOTE
+					+ CLOSING_BRACKET + MAKE_PRECEDING_TOKEN_OPTIONAL;
 
 	/**
 	 * Checks that all {@link com.elasticpath.rest.client.unmarshalling.annotations.JsonPath} and
@@ -57,9 +58,6 @@ public class CheckJsonAnnotations {
 	private void checkJsonAnnotationInLine(final Pattern pattern, String line) {
 		line = line.replaceAll("\t", "");
 		line = line.trim();
-		if (!line.startsWith("@JsonProperty") && !line.startsWith("@JsonPath")) {
-			return;
-		}
 		Matcher annotationPatternMatcher = pattern.matcher(line);
 		if (!annotationPatternMatcher.find()) {
 			return;
