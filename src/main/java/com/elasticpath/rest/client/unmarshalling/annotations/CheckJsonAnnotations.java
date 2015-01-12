@@ -57,7 +57,6 @@ public class CheckJsonAnnotations {
 		}
 	}
 
-	//visible for testing
 	private void checkJsonAnnotationsInFile(final File file) throws IOException, InvalidPathException {
 		Pattern pattern = Pattern.compile(ANNOTATION_PATH_PATTERN);
 		try (InputStream fileInputStream = new FileInputStream(file)) {
@@ -83,7 +82,6 @@ public class CheckJsonAnnotations {
 		PathCompiler.compile(path);
 	}
 
-	//visible for testing
 	private void checkJsonAnnotationsRecursivelyFromFileOrDirectory(final File fileOrDirectory) throws IOException {
 		if (!fileOrDirectory.isDirectory()) {
 			checkJsonAnnotationsInFile(fileOrDirectory);
