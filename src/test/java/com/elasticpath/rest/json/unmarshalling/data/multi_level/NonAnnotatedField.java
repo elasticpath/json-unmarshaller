@@ -41,7 +41,7 @@ public class NonAnnotatedField {
 	@JsonPath("$.firstString")
 	private String field1;
 
-	@JsonPath("@.lastString")
+	@JsonPath("@.lastString") //@JsonPath("@.this is a comment so it should be fine")
 	private String field2; //will be null because the path will be resolved as relative to field name in TestNonAnnotatedField i.e. nonAnnotatedField
 
 	//matches json node
