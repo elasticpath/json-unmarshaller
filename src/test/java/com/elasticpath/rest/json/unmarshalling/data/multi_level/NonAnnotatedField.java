@@ -6,7 +6,7 @@ package com.elasticpath.rest.json.unmarshalling.data.multi_level;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
 /**
  * This test-data class will not be annotated in a testing class.

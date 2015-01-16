@@ -4,13 +4,13 @@ import java.io.IOException;
 
 /**
  * Unmarshalls Json using a class annotated with
- * {@link com.elasticpath.rest.client.unmarshalling.annotations.JsonPath} and
+ * {@link com.elasticpath.rest.json.unmarshalling.annotations.JsonPath} and
  * {@link com.fasterxml.jackson.annotation.JsonProperty} annotations.
  */
 public interface JsonUnmarshaller {
 
 	/**
-	 * Unmarshalls Json according to the {@link com.elasticpath.rest.client.unmarshalling.annotations.JsonPath} and
+	 * Unmarshalls Json according to the {@link com.elasticpath.rest.json.unmarshalling.annotations.JsonPath} and
 	 * {@link com.fasterxml.jackson.annotation.JsonProperty} annotations in the provided class.
 	 *
 	 * @param resultClass the class to instantiate and populate with result data.

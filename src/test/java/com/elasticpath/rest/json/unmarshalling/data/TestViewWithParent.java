@@ -1,6 +1,6 @@
 package com.elasticpath.rest.json.unmarshalling.data;
 
-import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
 /**
  * Test data class.

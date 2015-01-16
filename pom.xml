@@ -106,8 +106,7 @@
 						<Embed-Directory>OSGI-INF/lib</Embed-Directory>
 						<Embed-Transitive>true</Embed-Transitive>
 						<Export-Package>
-							com.elasticpath.rest.json.unmarshalling.*,
-							com.elasticpath.rest.client.unmarshalling.annotations
+							com.elasticpath.rest.json.unmarshalling.*
 						</Export-Package>
 						<Import-Package>
 							com.fasterxml.jackson.annotation,
@@ -134,7 +133,7 @@
 				<configuration>
 					<includeProjectDependencies>true</includeProjectDependencies>
 					<killAfter>-1</killAfter>
-					<mainClass>com.elasticpath.rest.client.unmarshalling.annotations.CheckJsonAnnotations</mainClass>
+					<mainClass>com.elasticpath.rest.json.unmarshalling.annotations.CheckJsonAnnotations</mainClass>
 					<arguments>
 						<argument>src/main/java/com/elasticpath/</argument>
 					</arguments>

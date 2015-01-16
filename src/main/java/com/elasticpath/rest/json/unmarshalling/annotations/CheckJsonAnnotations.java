@@ -1,4 +1,4 @@
-package com.elasticpath.rest.client.unmarshalling.annotations;
+package com.elasticpath.rest.json.unmarshalling.annotations;
 
 import java.io.BufferedReader;
 import java.io.File;

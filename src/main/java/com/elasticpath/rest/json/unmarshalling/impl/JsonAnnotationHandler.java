@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
 /**
  * Wraps given field and its annotations (if any) into a more convenient structure.

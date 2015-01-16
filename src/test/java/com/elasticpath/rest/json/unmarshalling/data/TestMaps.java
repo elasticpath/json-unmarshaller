@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import com.elasticpath.rest.client.unmarshalling.annotations.JsonPath;
+import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 
 /**
  * Test data class for multiple Json levels.
