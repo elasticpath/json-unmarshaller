@@ -17,9 +17,9 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 public class TestMaps {
 
 	@JsonPath("$.countryMap")
-	private Map<String, List<String>> mapOfCountries;
+	public Map<String, List<String>> mapOfCountries;
 
-	private Hashtable<String, List<String>> countryMap;
+	public Hashtable<String, List<String>> countryMap;
 }
 
 

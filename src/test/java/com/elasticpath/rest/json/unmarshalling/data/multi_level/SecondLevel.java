@@ -14,31 +14,31 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 @SuppressWarnings("PMD")
 public final class SecondLevel {
 	
-	private static final int PRIME_NUMBER = 31;
+	public static final int PRIME_NUMBER = 31;
 	
 	//absolute path
 	@JsonPath("$.second_level.field1")
-	private String field1;
+	public String field1;
 
 	//relative path
 	@JsonPath("@.field2") //must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
-	private String field2;
+	public String field2;
 
 	@JsonProperty("field3") //must resolve as relative path to @JsonPath/Property annotation on ThirdLevel class
-	private String field3;
+	public String field3;
 
-	private String field4; //matches JSON field in "third-level" JSON node; must be set
+	public String field4; //matches JSON field in "third-level" JSON node; must be set
 
-	private String field5 = "default 2nd field5"; //doesn't match any Json node; will not be set nor affected
+	public String field5 = "default 2nd field5"; //doesn't match any Json node; will not be set nor affected
 
 	@JsonProperty("third_level")
-	private ThirdLevel thirdLevelJsonProperty;
+	public ThirdLevel thirdLevelJsonProperty;
 
 	@JsonPath("$.second_level.third_level")
-	private ThirdLevel thirdLevelAbsoluteJPath;
+	public ThirdLevel thirdLevelAbsoluteJPath;
 
 	@JsonPath("@.third_level")
-	private ThirdLevel thirdLevelRelativeJPath;
+	public ThirdLevel thirdLevelRelativeJPath;
 
 	@Override
 	public boolean equals(final Object o) {

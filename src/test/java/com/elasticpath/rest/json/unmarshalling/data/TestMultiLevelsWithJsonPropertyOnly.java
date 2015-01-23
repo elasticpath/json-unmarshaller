@@ -15,7 +15,7 @@ import com.elasticpath.rest.json.unmarshalling.data.multi_level.ThirdLevelWithJs
 public class TestMultiLevelsWithJsonPropertyOnly {
 
 	@JsonProperty("second_level")
-	private SecondLevelWithJsonPropertyOnly secondLevelJProperty;
+	public SecondLevelWithJsonPropertyOnly secondLevelJProperty;
 
 	/**
 	 * Test class.
@@ -23,7 +23,7 @@ public class TestMultiLevelsWithJsonPropertyOnly {
 	public static final class SecondLevelWithJsonPropertyOnly {
 
 		@JsonProperty("third_level")
-		private ThirdLevelWithJsonPath thirdLevelWithJsonPath;
+		public ThirdLevelWithJsonPath thirdLevelWithJsonPath;
 	}
 }
 

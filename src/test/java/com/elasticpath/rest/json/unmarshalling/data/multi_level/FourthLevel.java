@@ -14,19 +14,19 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 @SuppressWarnings("PMD")
 public class FourthLevel {
 
-	private static final int PRIME_NUMBER = 31;
+	public static final int PRIME_NUMBER = 31;
 	@JsonPath("@.field1")//must resolve as relative
-	private String field1;
+	public String field1;
 
 	@JsonPath("$.second_level.third_level.fourth_level.field2")
-	private String field2;
+	public String field2;
 
 	@JsonProperty("field3") //must resolve as relative to class JsonPath/Property annotation
-	private String field3;
+	public String field3;
 
-	private String field4; //matches JSON field in "fourth-level" JSON node; must be set
+	public String field4; //matches JSON field in "fourth-level" JSON node; must be set
 
-	private String field5 = "default 4th field5"; //doesn't match any Json node; will not be set nor affected
+	public String field5 = "default 4th field5"; //doesn't match any Json node; will not be set nor affected
 
 	@Override
 	public boolean equals(final Object o) {

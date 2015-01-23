@@ -18,17 +18,17 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 public class NonAnnotatedField {
 
 	@JsonPath("$.nonAnnotatedField.field1")
-	private String absJsonPathField;
+	public String absJsonPathField;
 
 	@JsonPath("@.field2")
-	private String relJsonPathField;
+	public String relJsonPathField;
 
 	/*
 	it is not allowed to have 2 fields with JsonProp pointing to a same field
 	even if field names are different (thus, setter methods will be different as well)
 	 */
 	@JsonProperty("field3")
-	private int jsonProp;
+	public int jsonProp;
 
 	/*fields field1, field2, field3 have matching JSon nodes
 		when Jakson ObjectMapper resolves the values,
@@ -39,13 +39,13 @@ public class NonAnnotatedField {
 
 	*/
 	@JsonPath("$.firstString")
-	private String field1;
+	public String field1;
 
 	@JsonPath("@.lastString") //@JsonPath("@.this is a comment so it should be fine")
-	private String field2; //will be null because the path will be resolved as relative to field name in TestNonAnnotatedField i.e. nonAnnotatedField
+	public String field2; //will be null because the path will be resolved as relative to field name in TestNonAnnotatedField i.e. nonAnnotatedField
 
 	//matches json node
-	private String field4;
+	public String field4;
 
-	private String anythingElse = "will never be set";
+	public String anythingElse = "will never be set";
 }

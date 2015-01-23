@@ -13,5 +13,5 @@ public class ThirdLevelWithJsonPath {
 
 	//absolute path
 	@JsonPath("$.second_level_array[1].third_level.field1")
-	private String absoluteJsonPath;
+	public String absoluteJsonPath;
 }

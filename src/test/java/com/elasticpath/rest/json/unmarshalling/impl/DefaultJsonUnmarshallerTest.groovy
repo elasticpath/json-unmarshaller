@@ -310,15 +310,15 @@ class DefaultJsonUnmarshallerTest {
 		assert null == result.string
 		assert null == result.strArray
 		assert null == result.intArray
-		assert false == result.primitiveBoolean
+		assert !result.primitiveBoolean
 		assert 12345 == result.firstInt
 		assert 678901 == result.lastInt
 		assert 'First String' == result.firstString
 		assert 'Last String' == result.lastString
-		assert true == result.firstBoolean
+		assert result.firstBoolean
 		assert 3 == result.stringArray.length
 		assert 3 == result.integerArray.length
-		assert true == result.lastBoolean
+		assert result.lastBoolean
 
 		def nonAnnotatedField = result.nonAnnotatedField
 		assert null != nonAnnotatedField
