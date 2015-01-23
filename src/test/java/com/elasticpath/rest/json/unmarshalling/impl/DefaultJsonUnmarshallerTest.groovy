@@ -39,7 +39,6 @@ class DefaultJsonUnmarshallerTest {
 	@InjectMocks
 	DefaultJsonUnmarshaller factory
 
-	static String cartTotalZoomedJson
 	static String multiLevelJson
 	static String nonAnnotatedFields
 	static String ignoredClasses
@@ -48,59 +47,11 @@ class DefaultJsonUnmarshallerTest {
 
 	@BeforeClass
 	public static void readData() {
-		cartTotalZoomedJson = new File(TEST_DATA_FILE_PATH + 'cartTotalZoomed.json').text
 		multiLevelJson = new File(TEST_DATA_FILE_PATH + 'multiLevel.json').text
 		nonAnnotatedFields = new File(TEST_DATA_FILE_PATH + 'nonAnnotatedFields.json').text
 		ignoredClasses = new File(TEST_DATA_FILE_PATH + 'ignoredClasses.json').text
 		jsonWithMap = new File(TEST_DATA_FILE_PATH + 'jsonWithMap.json').text
 		mixedContent = new File(TEST_DATA_FILE_PATH + 'mixedContent.json').text
-	}
-
-	@Test
-	void 'Given object with non-annotated fields, when unmarshalling, then should only unmarshal into annotated fields'() {
-		def protectTheString = 'do not delete me!'
-		def returnObject = new TestViewWithOtherFields(
-				notForDeserialization: protectTheString
-		)
-		given(classInstantiator.newInstance(TestViewWithOtherFields))
-				.willReturn(returnObject)
-
-		factory.unmarshall(TestViewWithOtherFields, cartTotalZoomedJson)
-
-		assert protectTheString == returnObject.notForDeserialization
-	}
-
-	@Test
-	void 'Given object with superclass fields, when unmarshalling, then should unmarshal superclass fields'() {
-		def returnObject = new TestViewWithParent()
-		given(classInstantiator.newInstance(TestViewWithParent))
-				.willReturn(returnObject)
-
-		def result = factory.unmarshall(TestViewWithParent, cartTotalZoomedJson)
-
-		assert '/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=?zoom=total' == result.self.uri
-	}
-
-
-	@Test
-	void 'Given multiple rels to choose from, select the correct one based on a query'() {
-		def returnObject = new TestViewWithJsonPath()
-		given(classInstantiator.newInstance(TestViewWithJsonPath))
-				.willReturn(returnObject)
-
-		def result = factory.unmarshall(TestViewWithJsonPath, cartTotalZoomedJson)
-
-		assert 'elasticpath.discounts.discount' == result.type
-	}
-
-
-	@Test(expected = IllegalStateException)
-	void 'Given bad usage of JsonPath and JsonProperty, expect an error'() {
-		def returnObject = new TestViewWithBadAnnotations()
-		given(classInstantiator.newInstance(TestViewWithBadAnnotations))
-				.willReturn(returnObject)
-
-		factory.unmarshall(TestViewWithBadAnnotations, cartTotalZoomedJson)
 	}
 
 	@Test
