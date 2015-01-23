@@ -2,18 +2,18 @@
  * Copyright © 2014 Elastic Path Software Inc. All rights reserved.
  */
 
-package com.elasticpath.rest.json.unmarshalling.data;
+package com.elasticpath.rest.json.unmarshalling.data.multilevel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
-import com.elasticpath.rest.json.unmarshalling.data.multi_level.SecondLevel;
+import com.elasticpath.rest.json.unmarshalling.data.multilevel.levels.SecondLevel;
 
 /**
  * Test data class for multiple Json levels.
  */
 @SuppressWarnings("PMD")
-public class TestMultiLevels {
+public class TestMultiLevelsAnnotatedFields {
 
 	//these 5 fields will not be processed because they don't match any Json node nor they are annotated
 	public int int1;

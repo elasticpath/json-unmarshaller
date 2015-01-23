@@ -4,7 +4,7 @@
 
 package com.elasticpath.rest.json.unmarshalling.data;
 
-import com.elasticpath.rest.json.unmarshalling.data.multi_level.NonAnnotatedField;
+import com.elasticpath.rest.json.unmarshalling.data.multilevel.levels.NonAnnotatedField;
 
 /**
  * Test data class.

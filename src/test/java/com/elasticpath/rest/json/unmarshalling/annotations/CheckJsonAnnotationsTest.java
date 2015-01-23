@@ -15,7 +15,7 @@ import com.jayway.jsonpath.InvalidPathException;
 public class CheckJsonAnnotationsTest {
 
 	private static final String MALFORMED_DATA_DIR = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/malformed/";
-	private static final String VALID_DATA_DIR = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/multi_level/";
+	private static final String VALID_DATA_DIR = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/multilevel/levels/";
 
 	private static final CheckJsonAnnotations TEST_CHECK_JSON_ANNOTATIONS = new CheckJsonAnnotations();
 

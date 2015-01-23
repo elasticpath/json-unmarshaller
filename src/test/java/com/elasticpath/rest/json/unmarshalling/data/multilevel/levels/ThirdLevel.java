@@ -2,7 +2,7 @@
  * Copyright © 2014 Elastic Path Software Inc. All rights reserved.
  */
 
-package com.elasticpath.rest.json.unmarshalling.data.multi_level;
+package com.elasticpath.rest.json.unmarshalling.data.multilevel.levels;
 
 import java.util.Arrays;
 
