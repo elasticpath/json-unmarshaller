@@ -3,13 +3,6 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-<!--	<parent>
-		<groupId>com.elasticpath</groupId>
-		<artifactId>grandparent</artifactId>
-		<version>80</version>
-		<relativePath/>
-	</parent>-->
-
 	<groupId>com.elasticpath.rest</groupId>
 	<artifactId>json-unmarshaller</artifactId>
 	<version>0-SNAPSHOT</version>
@@ -139,41 +132,6 @@
 					</arguments>
 				</configuration>
 			</plugin>
-
-			<!-- ElasticPath configured code-quality-enforcement plugins can be found below
-						<plugin>
-							<groupId>org.jacoco</groupId>
-							<artifactId>jacoco-maven-plugin</artifactId>
-							<version>0.7.2.201409121644</version>
-							<executions>
-								<execution>
-									<id>default-prepare-agent</id>
-									<goals>
-										<goal>prepare-agent</goal>
-									</goals>
-								</execution>
-								<execution>
-									<id>default-report</id>
-									<phase>prepare-package</phase>
-									<goals>
-										<goal>report</goal>
-									</goals>
-								</execution>
-							</executions>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-checkstyle-plugin</artifactId>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-pmd-plugin</artifactId>
-						</plugin>
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>findbugs-maven-plugin</artifactId>
-						</plugin>
-			-->
 		</plugins>
 
 		<pluginManagement>
