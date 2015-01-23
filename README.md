@@ -30,3 +30,16 @@ private String countryName;
 private String postalCode;
 }
 ```
+
+## Building
+
+Checkout
+Uses java 7
+
+run `mvn clean install` to build
+
+##Unit Tests
+Test json data can be found in `src/test/resources`
+Test pojo classes are in `com.elasticpath.rest.json.unmarshalling.data`
+
+
