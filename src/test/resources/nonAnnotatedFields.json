@@ -1,0 +1,21 @@
+{
+  "firstInt":12345,
+  "firstString":"First String",
+  "firstBoolean":true,
+  "nonAnnotatedField":{
+    "field1": "absolute JSon path",
+    "field2": "relative JSon path",
+    "field3": 112233,
+    "field4": "non-annotated, matches Json node",
+    "field5": "will never be set"
+  },
+  "stringArray":[
+    "string1","string2","string3"
+  ],
+  "integerArray":[
+    1,2,3
+  ],
+  "lastInt":678901,
+  "lastString":"Last String",
+  "lastBoolean":true
+}

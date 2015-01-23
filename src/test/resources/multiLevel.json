@@ -1,0 +1,107 @@
+{
+  "field1": "1st field1",
+  "field2": "1st field2",
+  "field3": "1st field3",
+  "field4": "1st field4",
+  "field5": 12345,
+
+  "second_level": {
+    "field1": "2nd field1",
+    "field2": "2nd field2",
+    "field3": "2nd field3",
+    "field4": "2nd field4",
+
+    "third_level": {
+      "field1": "3rd field1",
+      "field2": "3rd field2",
+      "field3": "3rd field3",
+      "field4": "3rd field4",
+
+      "fourth_level":{
+        "field1": "4th field1",
+        "field2": "4th field2",
+        "field3": "4th field3",
+        "field4": "4th field4"
+      },
+
+      "fourth_level_array":[
+        {
+          "field1": "4th field1 [0]",
+          "field2": "4th field2 [0]",
+          "field3": "4th field3 [0]",
+          "field4": "4th field4 [0]"
+        },
+        {
+          "field1": "4th field1 [1]",
+          "field2": "4th field2 [1]",
+          "field3": "4th field3 [1]",
+          "field4": "4th field4 [1]"
+        }
+      ]
+    }
+  },
+  "second_level_array": [
+    {
+      "field1": "2nd field1[0]",
+      "field2": "2nd field2[0]",
+      "field3": "2nd field3[0]",
+      "field4": "2nd field4[0]",
+
+      "third_level": {
+        "field1": "3rd field1[0]",
+        "field2": "3rd field2[0]",
+        "field3": "3rd field3[0]",
+        "field4": "3rd field4[0]",
+
+        "fourth_level":{
+          "field1": "4th field1[0]",
+          "field2": "4th field2[0]",
+          "field3": "4th field3[0]",
+          "field4": "4th field4[0]"
+        }
+      }
+    },
+    {
+      "field1": "2nd field1[1]",
+      "field2": "2nd field2[1]",
+      "field3": "2nd field3[1]",
+      "field4": "2nd field4[1]",
+
+      "third_level": {
+        "field1": "3rd field1[1]",
+        "field2": "3rd field2[1]",
+        "field3": "3rd field3[1]",
+        "field4": "3rd field4[1]",
+
+        "fourth_level":{
+          "field1": "4th field1[1]",
+          "field2": "4th field2[1]",
+          "field3": "4th field3[1]",
+          "field4": "4th field4[1]"
+        }
+      }
+    },
+    {
+      "field1": "2nd field1[2]",
+      "field2": "2nd field2[2]",
+      "field3": "2nd field3[2]",
+      "field4": "2nd field4[2]",
+
+      "third_level": {
+        "field1": "3rd field1[2]",
+        "field2": "3rd field2[2]",
+        "field3": "3rd field3[2]",
+        "field4": "3rd field4[2]",
+
+        "fourth_level":{
+          "field1": "4th field1[2]",
+          "field2": "4th field2[2]",
+          "field3": "4th field3[2]",
+          "field4": "4th field4[2]"
+        }
+      }
+    }
+  ],
+  "simple-field-1":12345,
+  "simple-field-2":"last field"
+}
