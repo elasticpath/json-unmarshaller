@@ -14,17 +14,17 @@ import com.jayway.jsonpath.InvalidPathException;
  * Tests for {@link CheckJsonAnnotations}.
  */
 public class CheckJsonAnnotationsTest {
-	private static final String TEST_DATA_DIR = "src" + File.pathSeparator +
-			"test" + File.pathSeparator +
-			"java" + File.pathSeparator +
-			"com" + File.pathSeparator +
-			"elasticpath" + File.pathSeparator +
-			"rest" + File.pathSeparator +
-			"json" + File.pathSeparator +
-			"unmarshalling" + File.pathSeparator +
-			"data" + File.pathSeparator;
-	private static final String MALFORMED_DATA_DIR = TEST_DATA_DIR + "malformed" + File.pathSeparator;
-	private static final String VALID_DATA_DIR = TEST_DATA_DIR + "multilevel" + File.pathSeparator + "levels" + File.pathSeparator;
+	private static final String TEST_DATA_DIR = "src" + File.separator +
+			"test" + File.separator +
+			"java" + File.separator +
+			"com" + File.separator +
+			"elasticpath" + File.separator +
+			"rest" + File.separator +
+			"json" + File.separator +
+			"unmarshalling" + File.separator +
+			"data" + File.separator;
+	private static final String MALFORMED_DATA_DIR = TEST_DATA_DIR + "malformed" + File.separator;
+	private static final String VALID_DATA_DIR = TEST_DATA_DIR + "multilevel" + File.separator + "levels" + File.separator;
 
 	private static final CheckJsonAnnotations TEST_CHECK_JSON_ANNOTATIONS = new CheckJsonAnnotations();
 
