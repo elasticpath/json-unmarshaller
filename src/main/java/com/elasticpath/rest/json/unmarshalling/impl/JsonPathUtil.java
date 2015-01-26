@@ -40,7 +40,7 @@ public class JsonPathUtil {
 	 * @return the relative json path of the passed field.
 	 */
 	public Collection<String> resolveRelativeJsonPaths(final JsonAnnotationHandler jsonAnnotationHandler,
-															final Collection<String> parentJsonPath) {
+			final Collection<String> parentJsonPath) {
 
 		String fieldJsonPath = jsonAnnotationHandler.getJsonPathFromField();
 
@@ -61,9 +61,9 @@ public class JsonPathUtil {
 		String sanitizedJsonPathValue = jsonPathVal.replaceFirst(jsonPathPrefixRegex, "");
 
 		if (currentJsonPath.isEmpty()) { //transform first Jakson property into JsonPath root
-				currentJsonPath.add("$." + sanitizedJsonPathValue);
+			currentJsonPath.add("$." + sanitizedJsonPathValue);
 		} else {
-				currentJsonPath.add(sanitizedJsonPathValue); //all other jakson props will be simply appended
+			currentJsonPath.add(sanitizedJsonPathValue); //all other jakson props will be simply appended
 		}
 		return currentJsonPath;
 	}

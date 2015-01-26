@@ -56,7 +56,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * @param jsonPathUtil json path util
 	 */
 	DefaultJsonUnmarshaller(final ClassInstantiator classInstantiator, final ObjectMapper objectMapper, final ReflectionUtil reflectionUtil,
-								   final JsonPathUtil jsonPathUtil) {
+			final JsonPathUtil jsonPathUtil) {
 
 		this.classInstantiator = classInstantiator;
 		this.objectMapper = objectMapper;
@@ -131,8 +131,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 *
 	 */
 	private void processMultiLevelAnnotations(final JsonAnnotationHandler jsonAnnotationHandler, final Object resultObject,
-											  final ReadContext jsonContext, final Collection<String> parentJsonPath)
-			throws IOException, IllegalAccessException {
+			final ReadContext jsonContext, final Collection<String> parentJsonPath)	throws IOException, IllegalAccessException {
 
 		final Field field = jsonAnnotationHandler.getField();
 		if (reflectionUtil.canUnmarshallClass(field.getType())) {
@@ -173,7 +172,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		}
 
 		if (canUnmarshallMemberInstance(fieldValueInstanceMembers)) {
-				return;
+			return;
 		}
 
 		for (int i = 0; i < fieldValueInstanceMembers.length; i++) {
@@ -187,7 +186,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	private boolean canUnmarshallMemberInstance(final Object[] fieldValueInstanceMembers) {
 
 		return fieldValueInstanceMembers.length > 0
-					   && !reflectionUtil.canUnmarshallClass(fieldValueInstanceMembers[0].getClass());
+				&& !reflectionUtil.canUnmarshallClass(fieldValueInstanceMembers[0].getClass());
 	}
 
 	/*
@@ -210,12 +209,12 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		final boolean shouldUnmarshallJsonPathAnnotation = jsonAnnotationHandler.getJsonPathAnnotation() != null;
 
 		return shouldUnmarshallJsonPathAnnotation
-					   || shouldUnmarshallJsonPropertyAnnotation(jsonAnnotationHandler.getJsonPropertyAnnotation(), isFieldPrimitive, fieldValue)
-					   || shouldUnmarshallNonAnnotatedField(isFieldPrimitive, fieldValue);
+				|| shouldUnmarshallJsonPropertyAnnotation(jsonAnnotationHandler.getJsonPropertyAnnotation(), isFieldPrimitive, fieldValue)
+				|| shouldUnmarshallNonAnnotatedField(isFieldPrimitive, fieldValue);
 	}
 
 	private boolean shouldUnmarshallJsonPropertyAnnotation(final JsonProperty jsonPropertyAnnotation, final boolean isFieldPrimitive,
-														   final Object fieldValue) {
+			final Object fieldValue) {
 
 		return jsonPropertyAnnotation != null && shouldUnmarshallNonAnnotatedField(isFieldPrimitive, fieldValue);
 	}
@@ -238,7 +237,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 		if (jsonAnnotationHandler.areAnnotationsPresent()) {
 			String errorMessage = format("JsonProperty and JsonPath annotations both detected on field [%s] in class [%s]",
-												jsonAnnotationHandler.getField().getName(), resultClassName);
+					jsonAnnotationHandler.getField().getName(), resultClassName);
 
 			LOG.error(errorMessage);
 			throw new IllegalStateException(errorMessage);
@@ -258,8 +257,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * @throws IOException
 	 */
 	private <T> void performJsonPathUnmarshalling(final ReadContext jsonContext, final T resultObject, final Field field,
-												  final String fieldJsonPath, final String parentJsonPath)
-			throws IllegalAccessException, IOException {
+			final String fieldJsonPath, final String parentJsonPath) throws IllegalAccessException, IOException {
 
 		final Class<?> fieldType = field.getType();
 		final String currentJsonPath = jsonPathUtil.buildCorrectJsonPath(fieldJsonPath, parentJsonPath);

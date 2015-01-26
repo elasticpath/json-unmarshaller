@@ -116,7 +116,7 @@ public class ReflectionUtil {
 	public boolean canUnmarshallClass(final Class<?> clazz) {
 
 		return !(clazz.isPrimitive() || isNonInterfaceFromIgnoredPackage(clazz) || isArrayOfPrimitiveTypes(clazz)
-						 || Map.class.isAssignableFrom(clazz));
+				|| Map.class.isAssignableFrom(clazz));
 	}
 
 	private boolean isNonInterfaceFromIgnoredPackage(final Class<?> clazz) {
