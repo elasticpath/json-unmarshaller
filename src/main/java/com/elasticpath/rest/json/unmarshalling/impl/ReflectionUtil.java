@@ -5,6 +5,7 @@ import static java.util.Arrays.asList;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -12,11 +13,12 @@ import java.util.Map;
 
 
 /**
- * This class provides set of reflection call methods.
+ * This class provides set of reflection call methods for the result pojo.
  */
 public class ReflectionUtil {
 
 	private static final List<String> IGNORED_PACKAGES = asList("java.lang", "java.math", "java.util");
+
 	/**
 	 * Checks if field is primitive.
 	 *
@@ -45,7 +47,6 @@ public class ReflectionUtil {
 	 * @param genericType the generic type to insect.
 	 * @return the array of generic types
 	 */
-	@SuppressWarnings("PMD")
 	public Class<?>[] geClassArgumentsFromGeneric(final Type genericType) {
 		final Type[] actualTypeArguments = ((ParameterizedType) genericType).getActualTypeArguments();
 		final List<Class<?>> actualClassArguments = new ArrayList<>();
@@ -103,7 +104,7 @@ public class ReflectionUtil {
 	}
 
 	/**
-	 * Checks if given class can be unmarshalled by checking following conditions:
+	 * Checks if given class can be used for unmarshalling by checking following conditions:
 	 * 1. class can't be primitive.
 	 * 2. class can't be interface and can't come from java.lang pkg, java.util
 	 * 		(eliminates recursive calls in classes like String, Integer, Long..).
@@ -111,7 +112,7 @@ public class ReflectionUtil {
 	 * 4. class can't be a map
 	 *
 	 * @param clazz a class to check.
-	 * @return true if class can be un
+	 * @return true if class can be used for unmarshalling
 	 */
 	public boolean canUnmarshallClass(final Class<?> clazz) {
 
@@ -133,6 +134,7 @@ public class ReflectionUtil {
 
 		return false;
 	}
+
 	private boolean isArrayOfPrimitiveTypes(final Class<?> clazz) {
 		return  clazz.isArray() && clazz.getComponentType().isPrimitive();
 	}
@@ -155,24 +157,13 @@ public class ReflectionUtil {
 	}
 
 	/*
-	 * Retrieves all fields valid for injection from the given iterable of classes.
-	 * <p/>
-	 * Fields are valid if they are annotated @JsonPath.
-	 *
-	 * @param classes any iterable collection of classes
-	 * @return an iterable collection of fields
+	 * Retrieves all fields valid for injection from the given collection of classes.
 	 */
 	private Iterable<Field> getInjectableFields(final Collection<Class<?>> classes) {
 		List<Field> injectableFields = new ArrayList<>();
 		for (Class<?> clazz : classes) {
-			for (Field potentialField : clazz.getDeclaredFields()) {
-				injectableFields.add(potentialField);
-			}
+			Collections.addAll(injectableFields, clazz.getDeclaredFields());
 		}
 		return injectableFields;
-		/* In Java 8 the perfomance of above can massively be improved using Streams as below:
-		return classes.stream()
-				.flatMap(clazz -> Arrays.stream(clazz.getDeclaredFields()))
-				.collect(Collectors.toList());*/
 	}
 }

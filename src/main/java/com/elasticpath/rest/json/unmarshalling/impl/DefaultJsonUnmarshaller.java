@@ -227,11 +227,6 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	/*
 	 * Ensure that field cannot have both JsonPath and JsonProperty annotations
-	  *
-	 * @param resultClassName target class's name
-	 * @param field target class's field
-	 * @param jsonPathAnnotation
-	 * @param jsonPropertyAnnotation
 	 */
 	private void sanityCheck(final JsonAnnotationHandler jsonAnnotationHandler, final String resultClassName) {
 
@@ -246,15 +241,6 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	/*
 	 * Unmarshalls Json value using Jway ReadContext and Jakson ObjectMapper into proper Java structure
-	 *
-	 * @param jsonContext Jway Json context
-	 * @param resultObject target object, field owner
-	 * @param field the field to be set with Json value
-	 * @param jsonAnnotationValue Json path
-	 * @param pathBuilder Contains full Json path
-	 * @param <T>
-	 * @throws IllegalAccessException
-	 * @throws IOException
 	 */
 	private <T> void performJsonPathUnmarshalling(final ReadContext jsonContext, final T resultObject, final Field field,
 			final String fieldJsonPath, final String parentJsonPath) throws IllegalAccessException, IOException {
@@ -274,11 +260,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 *
 	 * @param resultObject target object, field owner
 	 * @param field the field to be set with found Json value
-	 * @param fieldType field type; method checks if field is primitive, List or none of these
 	 * @param unmarshalledValue Json value
-	 * @param <T>
-	 * @throws IllegalAccessException
-	 * @throws IOException
 	 */
 	private <T> void setField(final T resultObject, final Field field, final Object unmarshalledValue)
 			throws IllegalAccessException, IOException {
@@ -308,11 +290,6 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	/*
 	 * Read value from Json tree for given JsonPath
-	 *
-	 * @param jsonContext Jway Json Context object that resolves fields for given path
-	 * @param jsonPath Json path
-	 * @param fieldType field type, used to determine whether field is Iterable or not
-	 * @return
 	 */
 	private Object unmarshallField(final ReadContext jsonContext, final String jsonPath, final Class<?> fieldType) {
 

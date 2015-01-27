@@ -76,7 +76,6 @@ public class JsonPathUtil {
 	 * @param parentJsonPath parent json path.
 	 * @return the correct json path for the current field.
 	 */
-	@SuppressWarnings("PMD.NPathComplexity")
 	public String buildCorrectJsonPath(final String jsonPath, final String parentJsonPath) {
 
 		final String correctParentJsonPath = "".equals(parentJsonPath) ? "$" : parentJsonPath;
