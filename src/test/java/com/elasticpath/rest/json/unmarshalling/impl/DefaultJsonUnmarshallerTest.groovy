@@ -1,6 +1,10 @@
 package com.elasticpath.rest.json.unmarshalling.impl
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
+
+import org.junit.BeforeClass
+import org.junit.Ignore
+
 import com.elasticpath.rest.json.unmarshalling.data.*
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.Test
@@ -14,11 +18,17 @@ import static org.mockito.BDDMockito.given
 import static org.mockito.Mockito.never
 import static org.mockito.Mockito.verify
 
+import com.elasticpath.rest.json.unmarshalling.data.multilevel.TestMultiLevelsAnnotatedFields
+import com.elasticpath.rest.json.unmarshalling.data.multilevel.TestMultiLevelsWithAnnotatedAccessors
+import com.elasticpath.rest.json.unmarshalling.data.multilevel.TestMultiLevelsWithJsonPropertyOnly
+import com.elasticpath.rest.json.unmarshalling.data.multilevel.TestMultiLevelsWithNonAnnotatedField
+
 /**
  * Tests for {@link DefaultJsonUnmarshaller}
  */
 @RunWith(MockitoJUnitRunner)
 class DefaultJsonUnmarshallerTest {
+	public static final String TEST_DATA_FILE_PATH = 'src' + File.separator + 'test' + File.separator + 'resources' + File.separator
 
 	@Mock
 	ClassInstantiator classInstantiator
@@ -35,61 +45,29 @@ class DefaultJsonUnmarshallerTest {
 	@InjectMocks
 	DefaultJsonUnmarshaller factory
 
-	@Test
-	void 'Given object with non-annotated fields, when unmarshalling, then should only unmarshal into annotated fields'() {
-		def protectTheString = 'do not delete me!'
-		def returnObject = new TestViewWithOtherFields(
-				notForDeserialization: protectTheString
-		)
-		given(classInstantiator.newInstance(TestViewWithOtherFields))
-				.willReturn(returnObject)
+	static String multiLevelJson
+	static String nonAnnotatedFields
+	static String ignoredClasses
+	static String jsonWithMap
+	static String mixedContent
 
-		factory.unmarshall(TestViewWithOtherFields, cartTotalZoomedJson)
-
-		assert protectTheString == returnObject.notForDeserialization
-	}
-
-	@Test
-	void 'Given object with superclass fields, when unmarshalling, then should unmarshal superclass fields'() {
-		def returnObject = new TestViewWithParent()
-		given(classInstantiator.newInstance(TestViewWithParent))
-				.willReturn(returnObject)
-
-		def result = factory.unmarshall(TestViewWithParent, cartTotalZoomedJson)
-
-		assert '/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=?zoom=total' == result.self.uri
-	}
-
-
-	@Test
-	void 'Given multiple rels to choose from, select the correct one based on a query'() {
-		def returnObject = new TestViewWithJsonPath()
-		given(classInstantiator.newInstance(TestViewWithJsonPath))
-				.willReturn(returnObject)
-
-		def result = factory.unmarshall(TestViewWithJsonPath, cartTotalZoomedJson)
-
-		assert 'elasticpath.discounts.discount' == result.type
-	}
-
-
-	@Test(expected = IllegalStateException)
-	void 'Given bad usage of JsonPath and JsonProperty, expect an error'() {
-		def returnObject = new TestViewWithBadAnnotations()
-		given(classInstantiator.newInstance(TestViewWithBadAnnotations))
-				.willReturn(returnObject)
-
-		factory.unmarshall(TestViewWithBadAnnotations, cartTotalZoomedJson)
+	@BeforeClass
+	public static void readData() {
+		multiLevelJson = new File(TEST_DATA_FILE_PATH + 'multiLevel.json').text
+		nonAnnotatedFields = new File(TEST_DATA_FILE_PATH + 'nonAnnotatedFields.json').text
+		ignoredClasses = new File(TEST_DATA_FILE_PATH + 'ignoredClasses.json').text
+		jsonWithMap = new File(TEST_DATA_FILE_PATH + 'jsonWithMap.json').text
+		mixedContent = new File(TEST_DATA_FILE_PATH + 'mixedContent.json').text
 	}
 
 	@Test
 	void 'Given object with complex structure (multiple levels) should unmarshall fields without any Json annotation to type default values'() {
-		def returnObject = new TestMultiLevels()
+		def returnObject = new TestMultiLevelsAnnotatedFields()
 
-		given(classInstantiator.newInstance(TestMultiLevels))
+		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
 				.willReturn(returnObject)
 
-		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
+		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		assert 0 == result.int1;
 		assert 0 == result.char5
@@ -100,12 +78,12 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'Given object with complex structure (multiple levels) should unmarshall all second-level annotated fields properly'() {
-		def returnObject = new TestMultiLevels()
+		def returnObject = new TestMultiLevelsAnnotatedFields()
 
-		given(classInstantiator.newInstance(TestMultiLevels))
+		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
 				.willReturn(returnObject)
 
-		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
+		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
 		def secondLevelJProperty = result.secondLevelJProperty
@@ -121,12 +99,12 @@ class DefaultJsonUnmarshallerTest {
 	@Test
 //testing 3 fields, using JsonProperty, absolute and relative JsonPath paths - all fields must be identical
 	void 'In multi-level structure, unmarshalled fields of the same type should be identical if Json path resolves to a same path'() {
-		def returnObject = new TestMultiLevels()
+		def returnObject = new TestMultiLevelsAnnotatedFields()
 
-		given(classInstantiator.newInstance(TestMultiLevels))
+		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
 				.willReturn(returnObject)
 
-		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
+		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
 		def secondLevelJProperty = result.secondLevelJProperty
@@ -145,12 +123,12 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure array and iterable objects should be the same when annotated with same JsonProperty'() {
-		def returnObject = new TestMultiLevels()
+		def returnObject = new TestMultiLevelsAnnotatedFields()
 
-		given(classInstantiator.newInstance(TestMultiLevels))
+		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
 				.willReturn(returnObject)
 
-		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
+		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// @@@@@@ assert second level arrays/iterables annotated with JsonProperty
 		def secondLevelArrayJProperty = result.secondLevelArrayJProperty
@@ -168,12 +146,12 @@ class DefaultJsonUnmarshallerTest {
 	@Test
 //regardless of the annotations, if they all resolve to same path, arrays/iterables should contain same data
 	void 'In multi-level structure array and iterable objects should be the same when annotated with same JsonPath and JsonProperty'() {
-		def returnObject = new TestMultiLevels()
+		def returnObject = new TestMultiLevelsAnnotatedFields()
 
-		given(classInstantiator.newInstance(TestMultiLevels))
+		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
 				.willReturn(returnObject)
 
-		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
+		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
 		def secondLevelJProperty = result.secondLevelJProperty
@@ -200,12 +178,12 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, second level fields should be unmarshalled correctly'() {
-		def returnObject = new TestMultiLevels()
+		def returnObject = new TestMultiLevelsAnnotatedFields()
 
-		given(classInstantiator.newInstance(TestMultiLevels))
+		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
 				.willReturn(returnObject)
 
-		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
+		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// @@@@@@ assert second level arrays/iterables annotated with JsonPath
 		def secondLevelArrayJPath = result.secondLevelArrayJPath
@@ -230,12 +208,12 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, third-level fields should be unmarshalled correctly'() {
-		def returnObject = new TestMultiLevels()
+		def returnObject = new TestMultiLevelsAnnotatedFields()
 
-		given(classInstantiator.newInstance(TestMultiLevels))
+		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
 				.willReturn(returnObject)
 
-		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
+		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
 		def secondLevelJProperty = result.secondLevelJProperty
@@ -264,12 +242,12 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, fourth-level fields should be unmarshalled correctly'() {
-		def returnObject = new TestMultiLevels()
+		def returnObject = new TestMultiLevelsAnnotatedFields()
 
-		given(classInstantiator.newInstance(TestMultiLevels))
+		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
 				.willReturn(returnObject)
 
-		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
+		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
 		def secondLevelJProperty = result.secondLevelJProperty
@@ -302,12 +280,12 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, annotated and non-annotated fields matching Json node should unmarshall properly'() {
-		def returnObject = new TestMultiLevels()
+		def returnObject = new TestMultiLevelsAnnotatedFields()
 
-		given(classInstantiator.newInstance(TestMultiLevels))
+		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
 				.willReturn(returnObject)
 
-		def result = factory.unmarshall(TestMultiLevels, multiLevelJson)
+		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ====== assert simple fields ================
 		assert '1st field3' == result.field3
@@ -338,15 +316,15 @@ class DefaultJsonUnmarshallerTest {
 		assert null == result.string
 		assert null == result.strArray
 		assert null == result.intArray
-		assert false == result.primitiveBoolean
+		assert !result.primitiveBoolean
 		assert 12345 == result.firstInt
 		assert 678901 == result.lastInt
 		assert 'First String' == result.firstString
 		assert 'Last String' == result.lastString
-		assert true == result.firstBoolean
+		assert result.firstBoolean
 		assert 3 == result.stringArray.length
 		assert 3 == result.integerArray.length
-		assert true == result.lastBoolean
+		assert result.lastBoolean
 
 		def nonAnnotatedField = result.nonAnnotatedField
 		assert null != nonAnnotatedField
@@ -391,6 +369,26 @@ class DefaultJsonUnmarshallerTest {
 		assert null != secondLevelNonAnnotated
 		// ============ assert third level =======================
 		def thirdLevelJProperty = secondLevelNonAnnotated.third_level
+
+		assert null != thirdLevelJProperty
+
+		assert '3rd field1[1]' == thirdLevelJProperty.absoluteJsonPath
+	}
+
+	@Test
+	@Ignore('This test should verify PB-454')
+	void 'In multi-level structure, with annotated setters must be unmarshalled correctly'() {
+		def returnObject = new TestMultiLevelsWithAnnotatedAccessors()
+
+		given(classInstantiator.newInstance(TestMultiLevelsWithAnnotatedAccessors))
+				.willReturn(returnObject)
+
+		def result = factory.unmarshall(TestMultiLevelsWithAnnotatedAccessors, multiLevelJson)
+
+		def secondLevelNonAnnotated = result.getSecondLevelNonAnnotated()
+		assert null != secondLevelNonAnnotated
+		// ============ assert third level =======================
+		def thirdLevelJProperty = secondLevelNonAnnotated.getThird_level()
 
 		assert null != thirdLevelJProperty
 
@@ -450,242 +448,4 @@ class DefaultJsonUnmarshallerTest {
 		assert result.utf8Cyrillic == 'Српски'
 		assert result.utf8Chinese == '中國'
 	}
-
-
-	def cartTotalZoomedJson = '''
-{
-  "self": {
-    "type": "elasticpath.carts.cart",
-    "uri": "/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=?zoom=total",
-    "href": "http://localhost:9080/cortex/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=?zoom=total",
-    "max-age": 0
-  },
-  "links": [
-    {
-      "rel": "lineitems",
-      "rev": "cart",
-      "type": "elasticpath.collections.links",
-      "uri": "/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=/lineitems",
-      "href": "http://localhost:9080/cortex/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=/lineitems"
-    },
-    {
-      "rel": "discount",
-      "type": "elasticpath.discounts.discount",
-      "uri": "/discounts/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=",
-      "href": "http://localhost:9080/cortex/discounts/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu="
-    },
-    {
-      "rel": "order",
-      "rev": "cart",
-      "type": "elasticpath.orders.order",
-      "uri": "/orders/geometrixx/gy2tgm3fmy4tsljzhezdkljugmytqllbg5tdeljxgaywembzmfsgezdegi=",
-      "href": "http://localhost:9080/cortex/orders/geometrixx/gy2tgm3fmy4tsljzhezdkljugmytqllbg5tdeljxgaywembzmfsgezdegi="
-    },
-    {
-      "rel": "appliedpromotions",
-      "type": "elasticpath.collections.links",
-      "uri": "/promotions/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=/applied",
-      "href": "http://localhost:9080/cortex/promotions/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=/applied"
-    },
-    {
-      "rel": "total",
-      "rev": "cart",
-      "type": "elasticpath.totals.total",
-      "uri": "/totals/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=",
-      "href": "http://localhost:9080/cortex/totals/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu="
-    }
-  ],
-  "_total": [
-    {
-      "self": {
-        "type": "elasticpath.totals.total",
-        "uri": "/totals/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=",
-        "href": "http://localhost:9080/cortex/totals/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=",
-        "max-age": 0
-      },
-      "links": [
-        {
-          "rel": "cart",
-          "rev": "total",
-          "type": "elasticpath.carts.cart",
-          "uri": "/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu=",
-          "href": "http://localhost:9080/cortex/carts/geometrixx/gy4gemzsgzqwkllggyygcljumvstsllbga2dgllbgm4dgmjygftdiztemu="
-        }
-      ],
-      "cost": [
-        {
-          "amount": 0,
-          "currency": "USD",
-          "display": "$0.00"
-        }
-      ]
-    }
-  ],
-  "total-quantity": 0
-}
-'''
-
-	def multiLevelJson = '''
-
-  {
-      "field1": "1st field1",
-      "field2": "1st field2",
-      "field3": "1st field3",
-      "field4": "1st field4",
-      "field5": 12345,
-
-      "second_level": {
-        "field1": "2nd field1",
-        "field2": "2nd field2",
-        "field3": "2nd field3",
-        "field4": "2nd field4",
-
-        "third_level": {
-            "field1": "3rd field1",
-            "field2": "3rd field2",
-            "field3": "3rd field3",
-            "field4": "3rd field4",
-
-            "fourth_level":{
-                "field1": "4th field1",
-                "field2": "4th field2",
-                "field3": "4th field3",
-                "field4": "4th field4"
-            },
-
-            "fourth_level_array":[
-              {
-                "field1": "4th field1 [0]",
-                "field2": "4th field2 [0]",
-                "field3": "4th field3 [0]",
-                "field4": "4th field4 [0]"
-              },
-              {
-                "field1": "4th field1 [1]",
-                "field2": "4th field2 [1]",
-                "field3": "4th field3 [1]",
-                "field4": "4th field4 [1]"
-              }
-            ]
-         }
-      },
-      "second_level_array": [
-        {
-          "field1": "2nd field1[0]",
-          "field2": "2nd field2[0]",
-          "field3": "2nd field3[0]",
-          "field4": "2nd field4[0]",
-
-          "third_level": {
-              "field1": "3rd field1[0]",
-              "field2": "3rd field2[0]",
-              "field3": "3rd field3[0]",
-              "field4": "3rd field4[0]",
-
-              "fourth_level":{
-                  "field1": "4th field1[0]",
-                  "field2": "4th field2[0]",
-                  "field3": "4th field3[0]",
-                  "field4": "4th field4[0]"
-              }
-           }
-        },
-        {
-          "field1": "2nd field1[1]",
-          "field2": "2nd field2[1]",
-          "field3": "2nd field3[1]",
-          "field4": "2nd field4[1]",
-
-          "third_level": {
-              "field1": "3rd field1[1]",
-              "field2": "3rd field2[1]",
-              "field3": "3rd field3[1]",
-              "field4": "3rd field4[1]",
-
-              "fourth_level":{
-                  "field1": "4th field1[1]",
-                  "field2": "4th field2[1]",
-                  "field3": "4th field3[1]",
-                  "field4": "4th field4[1]"
-              }
-           }
-        },
-        {
-          "field1": "2nd field1[2]",
-          "field2": "2nd field2[2]",
-          "field3": "2nd field3[2]",
-          "field4": "2nd field4[2]",
-
-          "third_level": {
-              "field1": "3rd field1[2]",
-              "field2": "3rd field2[2]",
-              "field3": "3rd field3[2]",
-              "field4": "3rd field4[2]",
-
-              "fourth_level":{
-                  "field1": "4th field1[2]",
-                  "field2": "4th field2[2]",
-                  "field3": "4th field3[2]",
-                  "field4": "4th field4[2]"
-              }
-           }
-        }
-      ],
-      "simple-field-1":12345,
-      "simple-field-2":"last field"
-  }
-  '''
-
-	def nonAnnotatedFields = '''
-    {
-     "firstInt":12345,
-     "firstString":"First String",
-     "firstBoolean":true,
-     "nonAnnotatedField":{
-        "field1": "absolute JSon path",
-        "field2": "relative JSon path",
-        "field3": 112233,
-        "field4": "non-annotated, matches Json node",
-        "field5": "will never be set"
-      },
-      "stringArray":[
-        "string1","string2","string3"
-      ],
-      "integerArray":[
-        1,2,3
-      ],
-      "lastInt":678901,
-      "lastString":"Last String",
-      "lastBoolean":true
-    }
-
-    '''
-
-	def ignoredClasses = '''
-	{
-		"price":789.45,
-		"items":[
-			"item1","item2","item3"
-		],
-		"date": 1419028953000
-	}
-	'''
-
-	def jsonWithMap = '''
-	{
-		"countryMap" :{
-			"country1" : ["region11","region12"],
-			"country2" : ["region21","region22"]
-		}
-	}
-	'''
-
-	def mixedContent = '''
- 	{
- 		"utf8_greek":"Γρεεκ",
- 		"utf8_cyrillic":"Српски",
- 		"utf8_chinese":"中國",
- 		"title":"Some title"
- 	}
- 	'''
 }

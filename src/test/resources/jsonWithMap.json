@@ -1,0 +1,6 @@
+{
+  "countryMap" :{
+    "country1" : ["region11","region12"],
+    "country2" : ["region21","region22"]
+  }
+}

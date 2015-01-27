@@ -1,5 +1,6 @@
 package com.elasticpath.rest.json.unmarshalling.annotations;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,9 +14,17 @@ import com.jayway.jsonpath.InvalidPathException;
  * Tests for {@link CheckJsonAnnotations}.
  */
 public class CheckJsonAnnotationsTest {
-
-	private static final String MALFORMED_DATA_DIR = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/malformed/";
-	private static final String VALID_DATA_DIR = "src/test/java/com/elasticpath/rest/json/unmarshalling/data/multi_level/";
+	private static final String TEST_DATA_DIR = "src" + File.separator +
+			"test" + File.separator +
+			"java" + File.separator +
+			"com" + File.separator +
+			"elasticpath" + File.separator +
+			"rest" + File.separator +
+			"json" + File.separator +
+			"unmarshalling" + File.separator +
+			"data" + File.separator;
+	private static final String MALFORMED_DATA_DIR = TEST_DATA_DIR + "malformed" + File.separator;
+	private static final String VALID_DATA_DIR = TEST_DATA_DIR + "multilevel" + File.separator + "levels" + File.separator;
 
 	private static final CheckJsonAnnotations TEST_CHECK_JSON_ANNOTATIONS = new CheckJsonAnnotations();
 

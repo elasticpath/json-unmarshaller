@@ -2,7 +2,7 @@
  * Copyright © 2014 Elastic Path Software Inc. All rights reserved.
  */
 
-package com.elasticpath.rest.json.unmarshalling.data.multi_level;
+package com.elasticpath.rest.json.unmarshalling.data.multilevel.levels;
 
 import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 /**
@@ -13,5 +13,5 @@ public class ThirdLevelWithJsonPath {
 
 	//absolute path
 	@JsonPath("$.second_level_array[1].third_level.field1")
-	private String absoluteJsonPath;
+	public String absoluteJsonPath;
 }

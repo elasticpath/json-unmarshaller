@@ -2,11 +2,11 @@
  * Copyright © 2014 Elastic Path Software Inc. All rights reserved.
  */
 
-package com.elasticpath.rest.json.unmarshalling.data;
+package com.elasticpath.rest.json.unmarshalling.data.multilevel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.elasticpath.rest.json.unmarshalling.data.multi_level.ThirdLevelWithJsonPath;
+import com.elasticpath.rest.json.unmarshalling.data.multilevel.levels.ThirdLevelWithJsonPath;
 
 /**
  * Test data class for multiple Json levels.
@@ -15,7 +15,7 @@ import com.elasticpath.rest.json.unmarshalling.data.multi_level.ThirdLevelWithJs
 public class TestMultiLevelsWithJsonPropertyOnly {
 
 	@JsonProperty("second_level")
-	private SecondLevelWithJsonPropertyOnly secondLevelJProperty;
+	public SecondLevelWithJsonPropertyOnly secondLevelJProperty;
 
 	/**
 	 * Test class.
@@ -23,7 +23,7 @@ public class TestMultiLevelsWithJsonPropertyOnly {
 	public static final class SecondLevelWithJsonPropertyOnly {
 
 		@JsonProperty("third_level")
-		private ThirdLevelWithJsonPath thirdLevelWithJsonPath;
+		public ThirdLevelWithJsonPath thirdLevelWithJsonPath;
 	}
 }
 

@@ -4,7 +4,7 @@
 
 package com.elasticpath.rest.json.unmarshalling.data;
 
-import com.elasticpath.rest.json.unmarshalling.data.multi_level.NonAnnotatedField;
+import com.elasticpath.rest.json.unmarshalling.data.multilevel.levels.NonAnnotatedField;
 
 /**
  * Test data class.
@@ -13,24 +13,24 @@ import com.elasticpath.rest.json.unmarshalling.data.multi_level.NonAnnotatedFiel
 public class TestNonAnnotatedFields {
 
 	//these fields should be ignored; don't match any Json node
-	private int primitive;
-	private Integer integer;
-	private String string;
-	private String[] strArray;
-	private int[] intArray;
-	private boolean primitiveBoolean;
+	public int primitive;
+	public Integer integer;
+	public String string;
+	public String[] strArray;
+	public int[] intArray;
+	public boolean primitiveBoolean;
 
 	//these fields should be set, because they match Json nodes
-	private int firstInt;
-	private Integer lastInt;
-	private String firstString;
-	private String lastString;
-	private Boolean firstBoolean;
-	private String[] stringArray;
-	private int[] integerArray;
-	private boolean lastBoolean;
+	public int firstInt;
+	public Integer lastInt;
+	public String firstString;
+	public String lastString;
+	public Boolean firstBoolean;
+	public String[] stringArray;
+	public int[] integerArray;
+	public boolean lastBoolean;
 
-	private NonAnnotatedField nonAnnotatedField;
+	public NonAnnotatedField nonAnnotatedField;
 }
 
 

@@ -13,11 +13,11 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 public class TestUTF8 {
 
 	@JsonPath("$.utf8_greek")
-	private String utf8Greek;
+	public String utf8Greek;
 
 	@JsonPath("$.utf8_cyrillic")
-	private String utf8Cyrillic;
+	public String utf8Cyrillic;
 
 	@JsonPath("$.utf8_chinese")
-	private String utf8Chinese;
+	public String utf8Chinese;
 }

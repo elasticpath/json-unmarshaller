@@ -19,13 +19,13 @@ import com.elasticpath.rest.json.unmarshalling.annotations.JsonPath;
 public class TestUnmarshallingClassesFromIgnoredPackages {
 
 	@JsonPath("$.price")
-	private BigDecimal price;
+	public BigDecimal price;
 
 	@JsonProperty("items")
-	private List<String> items;
+	public List<String> items;
 
 	@JsonProperty("date")
-	private Date aDate;
+	public Date aDate;
 }
 
 
