@@ -46,29 +46,11 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		this.jsonPathUtil = new JsonPathUtil();
 	}
 
-	/**
-	 *
-	 * Custom constructor used in JUnits.
-	 *
-	 * @param classInstantiator class instantiator
-	 * @param objectMapper Jakson ObjectMapper
-	 * @param reflectionUtil reflection util
-	 * @param jsonPathUtil json path util
-	 */
-	DefaultJsonUnmarshaller(final ClassInstantiator classInstantiator, final ObjectMapper objectMapper, final ReflectionUtil reflectionUtil,
-			final JsonPathUtil jsonPathUtil) {
-
-		this.classInstantiator = classInstantiator;
-		this.objectMapper = objectMapper;
-		this.reflectionUtil = reflectionUtil;
-		this.jsonPathUtil = jsonPathUtil;
-	}
-
 	@Override
-	public <T> T unmarshall(final Class<T> resultClass, final String jsonResult) throws IOException {
+	public <T> T unmarshall(final Class<T> resultClass, final String json) throws IOException {
 
 		final Configuration configuration = Configuration.defaultConfiguration().jsonProvider(new JacksonJsonProvider());
-		final ReadContext jsonContext = using(configuration).parse(jsonResult); //for JSONPath
+		final ReadContext jsonContext = using(configuration).parse(json); //for JSONPath
 
 		try {
 			return unmarshall(classInstantiator.newInstance(resultClass), jsonContext, new ArrayList<String>());
@@ -116,9 +98,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			}
 			return resultObject;
 		} catch (IllegalAccessException e) {
-			LOG.error(format(
-					"[%s] failed JsonPath parsing for with error: ", resultClassName
-			), e);
+			LOG.error(format("[%s] failed JsonPath parsing for with error: ", resultClassName), e);
 			throw new IllegalArgumentException(e);
 		}
 	}

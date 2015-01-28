@@ -1,28 +1,20 @@
 package com.elasticpath.rest.json.unmarshalling.impl
 
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-
 import org.junit.BeforeClass
 import org.junit.Ignore
-
-import com.elasticpath.rest.json.unmarshalling.data.*
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Spy
+
 import org.mockito.runners.MockitoJUnitRunner
 
-import static org.mockito.BDDMockito.given
-import static org.mockito.Mockito.never
-import static org.mockito.Mockito.verify
-
+import com.elasticpath.rest.json.unmarshalling.data.TestMaps
+import com.elasticpath.rest.json.unmarshalling.data.TestNonAnnotatedFields
+import com.elasticpath.rest.json.unmarshalling.data.TestUTF8
+import com.elasticpath.rest.json.unmarshalling.data.TestUnmarshallingClassesFromIgnoredPackages
 import com.elasticpath.rest.json.unmarshalling.data.multilevel.TestMultiLevelsAnnotatedFields
 import com.elasticpath.rest.json.unmarshalling.data.multilevel.TestMultiLevelsWithAnnotatedAccessors
 import com.elasticpath.rest.json.unmarshalling.data.multilevel.TestMultiLevelsWithJsonPropertyOnly
 import com.elasticpath.rest.json.unmarshalling.data.multilevel.TestMultiLevelsWithNonAnnotatedField
-
 /**
  * Tests for {@link DefaultJsonUnmarshaller}
  */
@@ -30,20 +22,9 @@ import com.elasticpath.rest.json.unmarshalling.data.multilevel.TestMultiLevelsWi
 class DefaultJsonUnmarshallerTest {
 	public static final String TEST_DATA_FILE_PATH = 'src' + File.separator + 'test' + File.separator + 'resources' + File.separator
 
-	@Mock
-	ClassInstantiator classInstantiator
 
-	@Spy
-	ReflectionUtil reflectionUtil;
 
-	@Spy
-	JsonPathUtil jsonPathUtil
-
-	@Spy
-	ObjectMapper objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES)
-
-	@InjectMocks
-	DefaultJsonUnmarshaller factory
+	DefaultJsonUnmarshaller factory = new DefaultJsonUnmarshaller();
 
 	static String multiLevelJson
 	static String nonAnnotatedFields
@@ -62,11 +43,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'Given object with complex structure (multiple levels) should unmarshall fields without any Json annotation to type default values'() {
-		def returnObject = new TestMultiLevelsAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		assert 0 == result.int1;
@@ -78,11 +54,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'Given object with complex structure (multiple levels) should unmarshall all second-level annotated fields properly'() {
-		def returnObject = new TestMultiLevelsAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
@@ -99,11 +70,6 @@ class DefaultJsonUnmarshallerTest {
 	@Test
 //testing 3 fields, using JsonProperty, absolute and relative JsonPath paths - all fields must be identical
 	void 'In multi-level structure, unmarshalled fields of the same type should be identical if Json path resolves to a same path'() {
-		def returnObject = new TestMultiLevelsAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
@@ -123,11 +89,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure array and iterable objects should be the same when annotated with same JsonProperty'() {
-		def returnObject = new TestMultiLevelsAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// @@@@@@ assert second level arrays/iterables annotated with JsonProperty
@@ -146,11 +107,6 @@ class DefaultJsonUnmarshallerTest {
 	@Test
 //regardless of the annotations, if they all resolve to same path, arrays/iterables should contain same data
 	void 'In multi-level structure array and iterable objects should be the same when annotated with same JsonPath and JsonProperty'() {
-		def returnObject = new TestMultiLevelsAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
@@ -178,11 +134,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, second level fields should be unmarshalled correctly'() {
-		def returnObject = new TestMultiLevelsAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// @@@@@@ assert second level arrays/iterables annotated with JsonPath
@@ -208,11 +159,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, third-level fields should be unmarshalled correctly'() {
-		def returnObject = new TestMultiLevelsAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
@@ -242,11 +188,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, fourth-level fields should be unmarshalled correctly'() {
-		def returnObject = new TestMultiLevelsAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ============ assert second level ===================
@@ -280,11 +221,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, annotated and non-annotated fields matching Json node should unmarshall properly'() {
-		def returnObject = new TestMultiLevelsAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestMultiLevelsAnnotatedFields))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsAnnotatedFields, multiLevelJson)
 
 		// ====== assert simple fields ================
@@ -296,27 +232,24 @@ class DefaultJsonUnmarshallerTest {
 	}
 
 	/**
-	 * TestNonAnnotatedField class has only one field without Json annotation.
-	 * However, the field contains annotated fields using both JsonPath and JsonProperty annotations.
+	 * TestNonAnnotatedField class contains a non-primitive field with no Json annotations.
+	 * However, this field contains annotated fields using both JsonPath and JsonProperty annotations.
 	 *
 	 * Expected behavior: Field must be processed and all inner fields must be set.
-	 * Practically, every non-annotated, non-primitive and non-Java-lang (or similar package) class must be processed like it is annotated with
-	 * Json annotations.
+	 * Every non-annotated, non-primitive and non-Java-lang (or similar package) class must be processed for Jackson based unmarshalling.
 	 */
 	@Test
 	void 'Non-annotated, non-primitive and non-Java-lang field must be processed and all inner fields must be set'() {
-		def returnObject = new TestNonAnnotatedFields()
-
-		given(classInstantiator.newInstance(TestNonAnnotatedFields)).willReturn(returnObject)
-
 		def result = factory.unmarshall(TestNonAnnotatedFields, nonAnnotatedFields)
 
+		// Assert fields not set
 		assert 0 == result.primitive
 		assert null == result.integer
 		assert null == result.string
 		assert null == result.strArray
 		assert null == result.intArray
 		assert !result.primitiveBoolean
+		// Assert expected fields are set
 		assert 12345 == result.firstInt
 		assert 678901 == result.lastInt
 		assert 'First String' == result.firstString
@@ -339,11 +272,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, field annotated with JsonProperty on second and JsonPath on third level must be unmarshalled correctly'() {
-		def returnObject = new TestMultiLevelsWithJsonPropertyOnly()
-
-		given(classInstantiator.newInstance(TestMultiLevelsWithJsonPropertyOnly))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsWithJsonPropertyOnly, multiLevelJson)
 
 		def secondLevelJProperty = result.secondLevelJProperty
@@ -358,11 +286,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'In multi-level structure, non-annotated field on second and annotated with JsonPath on third level must be unmarshalled correctly'() {
-		def returnObject = new TestMultiLevelsWithNonAnnotatedField()
-
-		given(classInstantiator.newInstance(TestMultiLevelsWithNonAnnotatedField))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsWithNonAnnotatedField, multiLevelJson)
 
 		def secondLevelNonAnnotated = result.secondLevelNonAnnotated
@@ -378,11 +301,6 @@ class DefaultJsonUnmarshallerTest {
 	@Test
 	@Ignore('This test should verify PB-454')
 	void 'In multi-level structure, with annotated setters must be unmarshalled correctly'() {
-		def returnObject = new TestMultiLevelsWithAnnotatedAccessors()
-
-		given(classInstantiator.newInstance(TestMultiLevelsWithAnnotatedAccessors))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMultiLevelsWithAnnotatedAccessors, multiLevelJson)
 
 		def secondLevelNonAnnotated = result.getSecondLevelNonAnnotated()
@@ -397,37 +315,18 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'Classes from ignored packages must not trigger recursive calls'() {
-
-		def returnObject = new TestUnmarshallingClassesFromIgnoredPackages()
-
-		given(classInstantiator.newInstance(TestUnmarshallingClassesFromIgnoredPackages))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestUnmarshallingClassesFromIgnoredPackages, ignoredClasses)
 
 		assert result.price == 789.45
 		assert result.items != null
 		assert result.items.size() == 3
 		assert result.aDate.equals(new Date(1419028953000))
-
-		verify(reflectionUtil).canUnmarshallClass(String.class)
-
-		/*
-		 verifies that ReflectionUtil.isFieldArrayOrList method
-		 works correctly; here, verification is against
-		 long serialVersionID field in List class, which shouldn't
-		 be processed ever.
-		 */
-		verify(reflectionUtil, never()).canUnmarshallClass(long.class)
 	}
 
 	@Test//if map/table is unmarshalled, an exception would be thrown
 	void 'Maps and tables shouldn\'t be further unmarshalled'(){
-		def returnObject = new TestMaps()
-
-		given(classInstantiator.newInstance(TestMaps)).willReturn(returnObject)
-
 		def result = factory.unmarshall(TestMaps.class, jsonWithMap)
+
 		assert result.countryMap != null
 		assert result.countryMap.size() == 2
 		assert result.mapOfCountries != null
@@ -436,12 +335,6 @@ class DefaultJsonUnmarshallerTest {
 
 	@Test
 	void 'Should handle UTF8 characters correctly'() {
-
-		def returnObject = new TestUTF8()
-
-		given(classInstantiator.newInstance(TestUTF8))
-				.willReturn(returnObject)
-
 		def result = factory.unmarshall(TestUTF8, mixedContent)
 
 		assert result.utf8Greek == 'Γρεεκ'
