@@ -14,10 +14,39 @@ import com.jayway.jsonpath.InvalidPathException;
 import com.jayway.jsonpath.internal.PathCompiler;
 
 /**
- * Checks that Json annotations are compilable in the provided files, and recursively
- * through the provided directories.
+ * Checks that Json annotations are compilable in the provided files, and recursively through the provided directories.
+ *
+ * <p>
+ * Can be configured for compile time verification in a maven build using the exec-maven-plugin as follows:
+ * 	<pre>{@code
+ * 	<plugin>
+ * 		 <groupId>org.codehaus.mojo</groupId>
+ * 		 <artifactId>exec-maven-plugin</artifactId>
+ * 		 <version>1.3.2</version>
+ * 		 <executions>
+ * 			 <execution>
+ * 				 <id>check-json-annotations</id>
+ * 				 <phase>compile</phase>
+ * 				 <goals>
+ * 					 <goal>java</goal>
+ * 				 </goals>
+ * 			 </execution>
+ * 		 </executions>
+ * 		 <configuration>
+ * 			 <includeProjectDependencies>true</includeProjectDependencies>
+ * 			 <includePluginDependencies>true</includePluginDependencies>
+ * 			 <mainClass>com.elasticpath.rest.json.unmarshalling.annotations.AnnotationVerifier</mainClass>
+ * 			 <killAfter>-1</killAfter>
+ * 			 <arguments>
+ * 			 	<argument>${project.basedir}/src/main/java/com/elasticpath/</argument>
+ * 			 </arguments>
+ * 		 </configuration>
+ * 	 </plugin>
+ * }</pre>
+ * </p>
+ *
  */
-public class CheckJsonAnnotations {
+public class AnnotationVerifier {
 
 	private static final String PATH_OR_PROPERTY = "(?:Path|Property)";
 	private static final String REFERABLE_TEXT = "(.*?)";
@@ -40,7 +69,7 @@ public class CheckJsonAnnotations {
 	 * @throws IOException if file is not found or annotation is invalid
 	 */
 	public static void main(final String[] args) throws IOException {
-		CheckJsonAnnotations annotationChecker = new CheckJsonAnnotations();
+		AnnotationVerifier annotationChecker = new AnnotationVerifier();
 		annotationChecker.checkJsonAnnotationsRecursivelyFromFileOrDirectoryNames(args);
 	}
 

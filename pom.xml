@@ -126,7 +126,7 @@
 				<configuration>
 					<includeProjectDependencies>true</includeProjectDependencies>
 					<killAfter>-1</killAfter>
-					<mainClass>com.elasticpath.rest.json.unmarshalling.annotations.CheckJsonAnnotations</mainClass>
+					<mainClass>com.elasticpath.rest.json.unmarshalling.annotations.AnnotationVerifier</mainClass>
 					<arguments>
 						<argument>src/main/java/com/elasticpath/</argument>
 					</arguments>
