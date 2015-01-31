@@ -31,7 +31,6 @@ import com.elasticpath.rest.json.unmarshalling.JsonUnmarshaller;
 public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultJsonUnmarshaller.class);
-	private final ClassInstantiator classInstantiator;
 	private final ObjectMapper objectMapper;
 	private final ReflectionUtil reflectionUtil;
 	private final JsonPathUtil jsonPathUtil;
@@ -40,7 +39,6 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * Default constructor.
 	 */
 	public DefaultJsonUnmarshaller() {
-		this.classInstantiator = new ClassInstantiator();
 		this.objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES);
 		this.reflectionUtil = new ReflectionUtil();
 		this.jsonPathUtil = new JsonPathUtil();
@@ -53,7 +51,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		final ReadContext jsonContext = using(configuration).parse(json); //for JSONPath
 
 		try {
-			return unmarshall(classInstantiator.newInstance(resultClass), jsonContext, new ArrayList<String>());
+			return unmarshall(resultClass.newInstance(), jsonContext, new ArrayList<String>());
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -64,7 +62,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	  *
 	 * @param resultObject an object currently being processed
 	 * @param jsonContext Jway Json context
-	 * @param parentJsonPath Deque for storing Json paths
+	 * @param parentJsonPath for storing Json paths
 	 * @return unmarshalled POJO
 	 */
 	private <T> T unmarshall(final T resultObject, final ReadContext jsonContext, final Collection<String> parentJsonPath) throws IOException {
