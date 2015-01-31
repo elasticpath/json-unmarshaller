@@ -15,7 +15,7 @@ import static org.mockito.Mockito.when
 class JsonPathUtilTest {
 
 	@Mock
-	JsonAnnotationHandler jsonAnnotationHandler
+	CandidateField candidateField
 
 	@InjectMocks
 	JsonPathUtil factory
@@ -105,33 +105,33 @@ class JsonPathUtilTest {
 	@Test
 	void 'Should resolve to absolute path when annotation value contains absolute path and parent path exists' () {
 
-		when(jsonAnnotationHandler.getJsonPathFromField()).thenReturn('$.absolute.path')
+		when(candidateField.getJsonPathFromField()).thenReturn('$.absolute.path')
 
 		final Iterable<String> parentJsonPath = Arrays.asList('$.path1', 'path2')
 
-		def result = factory.resolveRelativeJsonPaths(jsonAnnotationHandler, parentJsonPath)
+		def result = factory.resolveRelativeJsonPaths(candidateField, parentJsonPath)
 		assert '$.absolute.path' == result.toString().replaceAll('[\\[\\]]','')
 	}
 
 	@Test
 	void 'Should resolve to relative path when processing JsonProperty annotation and parent path exists' () {
 
-		when(jsonAnnotationHandler.getJsonPathFromField()).thenReturn('jsonPropertyValue')
+		when(candidateField.getJsonPathFromField()).thenReturn('jsonPropertyValue')
 
 		final Iterable<String> parentJsonPath = Arrays.asList('$.path1', 'path2')
 
-		def result = factory.resolveRelativeJsonPaths(jsonAnnotationHandler, parentJsonPath)
+		def result = factory.resolveRelativeJsonPaths(candidateField, parentJsonPath)
 		assert '$.path1.path2.jsonPropertyValue' == result.toString().replaceAll('[\\[\\]\\s]','').replaceAll(',','.')
 	}
 
 	@Test
 	void 'Should resolve to absolute path when processing JsonProperty annotation and parent is empty' () {
 
-		when(jsonAnnotationHandler.getJsonPathFromField()).thenReturn('jsonPropertyValue')
+		when(candidateField.getJsonPathFromField()).thenReturn('jsonPropertyValue')
 
 		final Iterable<String> parentJsonPath = new ArrayList<>()
 
-		def result = factory.resolveRelativeJsonPaths(jsonAnnotationHandler, parentJsonPath)
+		def result = factory.resolveRelativeJsonPaths(candidateField, parentJsonPath)
 		assert '$.jsonPropertyValue' == result.toString().replaceAll('[\\[\\]]','')
 	}
 }

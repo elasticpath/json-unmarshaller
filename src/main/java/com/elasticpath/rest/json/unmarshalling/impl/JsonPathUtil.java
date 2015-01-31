@@ -35,14 +35,14 @@ public class JsonPathUtil {
 	 * If parentJsonPath is empty then first JsonProperty/JsonPath will be resolved as absolute;
 	 * all subsequent annotation values will be resolved as relative
 	 *
-	 * @param jsonAnnotationHandler wraps Json annotations.
+	 * @param candidateField wraps Json annotations.
 	 * @param parentJsonPath the current relative json path.
 	 * @return the relative json path of the passed field.
 	 */
-	public Collection<String> resolveRelativeJsonPaths(final JsonAnnotationHandler jsonAnnotationHandler,
+	public Collection<String> resolveRelativeJsonPaths(final CandidateField candidateField,
 			final Collection<String> parentJsonPath) {
 
-		String fieldJsonPath = jsonAnnotationHandler.getJsonPathFromField();
+		String fieldJsonPath = candidateField.getJsonPathFromField();
 
 		if (fieldJsonPath.charAt(0) == '$' && !parentJsonPath.isEmpty()) { //Handle new absolute json path defined on field
 			return makeNewRootRelativePath(fieldJsonPath);

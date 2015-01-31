@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
@@ -78,20 +77,17 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 				final String parentJsonPathString = jsonPathUtil.getJsonPath(parentJsonPath);
 				final boolean isAbsolutePath = "".equals(parentJsonPathString);
 
-				JsonAnnotationHandler jsonAnnotationHandler;
+				CandidateField candidateField;
 				for (Field field : declaredFields) {
 
-					jsonAnnotationHandler = new JsonAnnotationHandler(field);
+					candidateField = new CandidateField(field, resultObject);
 
-					sanityCheck(jsonAnnotationHandler, resultClassName);
-
-					final String jsonPathOnField = jsonAnnotationHandler.getJsonAnnotationValue(isAbsolutePath);
-
-					if (shouldPerformJsonPathUnmarshalling(jsonAnnotationHandler, resultObject)) {
+					if (candidateField.isAppropriateForJsonPathUnmarshalling()) {
+						final String jsonPathOnField = candidateField.getJsonAnnotationValue(isAbsolutePath);
 						performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonPathOnField, parentJsonPathString);
 					}
 
-					processMultiLevelAnnotations(jsonAnnotationHandler, resultObject, jsonContext, parentJsonPath);
+					processMultiLevelAnnotations(candidateField, resultObject, jsonContext, parentJsonPath);
 				}
 			}
 			return resultObject;
@@ -108,18 +104,18 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * field name matches Json node name
 	 *
 	 */
-	private void processMultiLevelAnnotations(final JsonAnnotationHandler jsonAnnotationHandler, final Object resultObject,
+	private void processMultiLevelAnnotations(final CandidateField candidateField, final Object resultObject,
 			final ReadContext jsonContext, final Collection<String> parentJsonPath)	throws IOException, IllegalAccessException {
 
-		final Field field = jsonAnnotationHandler.getField();
+		final Field field = candidateField.getField();
 		if (reflectionUtil.canUnmarshallClass(field.getType())) {
 
-			final Object fieldValue = jsonAnnotationHandler.getFieldValue(resultObject);
+			final Object fieldValue = candidateField.getFieldValue(resultObject);
 			if (fieldValue == null) {
 				return;
 			}
 
-			final Collection<String> currentJsonPath = jsonPathUtil.resolveRelativeJsonPaths(jsonAnnotationHandler, parentJsonPath);
+			final Collection<String> currentJsonPath = jsonPathUtil.resolveRelativeJsonPaths(candidateField, parentJsonPath);
 
 			//handles arrays/Lists
 			if (reflectionUtil.isFieldArrayOrList(field)) {
@@ -141,20 +137,20 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	private void unmarshalArrayOrList(final Object fieldValue, final ReadContext jsonContext, final Collection<String> parentJsonPath)
 			throws IOException {
 
-		Object[] fieldValueInstanceMembers;
+		Object[] fieldValues;
 
 		if (fieldValue instanceof List) {
-			fieldValueInstanceMembers = ((List) fieldValue).toArray();
+			fieldValues = ((List) fieldValue).toArray();
 		} else {
-			fieldValueInstanceMembers = (Object[]) fieldValue;
+			fieldValues = (Object[]) fieldValue;
 		}
 
-		if (canUnmarshallMemberInstance(fieldValueInstanceMembers)) {
+		if (canUnmarshallMemberInstance(fieldValues)) {
 			return;
 		}
 
-		for (int i = 0; i < fieldValueInstanceMembers.length; i++) {
-			Object member = fieldValueInstanceMembers[i];
+		for (int i = 0; i < fieldValues.length; i++) {
+			Object member = fieldValues[i];
 			List<String> currentJsonPath = new ArrayList<>(parentJsonPath);
 			currentJsonPath.add("[" + i + "]");
 			unmarshall(member, jsonContext, currentJsonPath);
@@ -167,55 +163,6 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 				&& !reflectionUtil.canUnmarshallClass(fieldValueInstanceMembers[0].getClass());
 	}
 
-	/*
-	 *
-	   Rules to perform Json unmarshalling:
-	   1. Field must be annotated with JsonPath or
-	   2. Field is annotated with JsonProperty; it is primitive or (non-primitive and null)
-	   3. if both annotations are missing, then check if field is non-primitive and null
-
-	   Note:
-			getFieldValue(resultObject,field) can't be resolved into var because in very first loop, returned value is null
-			while after performing unmarshalling may be non-null
-	 */
-	private boolean shouldPerformJsonPathUnmarshalling(final JsonAnnotationHandler jsonAnnotationHandler, final Object resultObject)
-			throws IllegalAccessException {
-
-		final boolean isFieldPrimitive = reflectionUtil.isFieldPrimitive(jsonAnnotationHandler.getField());
-		final Object fieldValue = jsonAnnotationHandler.getFieldValue(resultObject);
-
-		final boolean shouldUnmarshallJsonPathAnnotation = jsonAnnotationHandler.getJsonPathAnnotation() != null;
-
-		return shouldUnmarshallJsonPathAnnotation
-				|| shouldUnmarshallJsonPropertyAnnotation(jsonAnnotationHandler.getJsonPropertyAnnotation(), isFieldPrimitive, fieldValue)
-				|| shouldUnmarshallNonAnnotatedField(isFieldPrimitive, fieldValue);
-	}
-
-	private boolean shouldUnmarshallJsonPropertyAnnotation(final JsonProperty jsonPropertyAnnotation, final boolean isFieldPrimitive,
-			final Object fieldValue) {
-
-		return jsonPropertyAnnotation != null && shouldUnmarshallNonAnnotatedField(isFieldPrimitive, fieldValue);
-	}
-
-	private boolean shouldUnmarshallNonAnnotatedField(final boolean isFieldPrimitive, final Object fieldValue) {
-
-		return isFieldPrimitive || fieldValue == null;
-	}
-
-
-	/*
-	 * Ensure that field cannot have both JsonPath and JsonProperty annotations
-	 */
-	private void sanityCheck(final JsonAnnotationHandler jsonAnnotationHandler, final String resultClassName) {
-
-		if (jsonAnnotationHandler.areAnnotationsPresent()) {
-			String errorMessage = format("JsonProperty and JsonPath annotations both detected on field [%s] in class [%s]",
-					jsonAnnotationHandler.getField().getName(), resultClassName);
-
-			LOG.error(errorMessage);
-			throw new IllegalStateException(errorMessage);
-		}
-	}
 
 	/*
 	 * Unmarshalls Json value using Jway ReadContext and Jakson ObjectMapper into proper Java structure
