@@ -50,7 +50,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		final ReadContext jsonContext = using(configuration).parse(json); //for JSONPath
 
 		try {
-			return unmarshall(resultClass.newInstance(), jsonContext, new ArrayList<String>());
+			return recursivelyProcessAllFields(resultClass.newInstance(), jsonContext, new ArrayList<String>());
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -59,14 +59,14 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	/*
 	 * Unmarshall Json tree to POJOs, taking care of JsonPath and JsonProperty annotations on multiple levels
 	  *
-	 * @param resultObject an object currently being processed
+	 * @param currentObject an object currently being processed
 	 * @param jsonContext Jway Json context
 	 * @param parentJsonPath for storing Json paths
 	 * @return unmarshalled POJO
 	 */
-	private <T> T unmarshall(final T resultObject, final ReadContext jsonContext, final Collection<String> parentJsonPath) throws IOException {
+	private <T> T recursivelyProcessAllFields(final T currentObject, final ReadContext jsonContext, final Collection<String> parentJsonPath) throws IOException {
 
-		final Class<?> resultClass = resultObject.getClass();
+		final Class<?> resultClass = currentObject.getClass();
 		final String resultClassName = resultClass.getName();
 
 		try {
@@ -80,17 +80,17 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 				CandidateField candidateField;
 				for (Field field : declaredFields) {
 
-					candidateField = new CandidateField(field, resultObject);
+					candidateField = new CandidateField(field, currentObject);
 
 					if (candidateField.isAppropriateForJsonPathUnmarshalling()) {
 						final String jsonPathOnField = candidateField.getJsonAnnotationValue(isAbsolutePath);
-						performJsonPathUnmarshalling(jsonContext, resultObject, field, jsonPathOnField, parentJsonPathString);
+						performJsonPathUnmarshalling(jsonContext, currentObject, field, jsonPathOnField, parentJsonPathString);
 					}
 
-					processMultiLevelAnnotations(candidateField, resultObject, jsonContext, parentJsonPath);
+					processChildFields(candidateField, currentObject, jsonContext, parentJsonPath);
 				}
 			}
-			return resultObject;
+			return currentObject;
 		} catch (IllegalAccessException e) {
 			LOG.error(format("[%s] failed JsonPath parsing for with error: ", resultClassName), e);
 			throw new IllegalArgumentException(e);
@@ -104,11 +104,11 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * field name matches Json node name
 	 *
 	 */
-	private void processMultiLevelAnnotations(final CandidateField candidateField, final Object resultObject,
+	private void processChildFields(final CandidateField candidateField, final Object resultObject,
 			final ReadContext jsonContext, final Collection<String> parentJsonPath)	throws IOException, IllegalAccessException {
 
 		final Field field = candidateField.getField();
-		if (reflectionUtil.canUnmarshallClass(field.getType())) {
+		if (reflectionUtil.shouldConstituentMembersBeUnmarshalled(field.getType())) {
 
 			final Object fieldValue = candidateField.getFieldValue(resultObject);
 			if (fieldValue == null) {
@@ -123,7 +123,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 			} else {
 				//handles anything else
-				unmarshall(fieldValue, jsonContext, currentJsonPath);
+				recursivelyProcessAllFields(fieldValue, jsonContext, currentJsonPath);
 			}
 		}
 	}
@@ -145,7 +145,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			fieldValues = (Object[]) fieldValue;
 		}
 
-		if (canUnmarshallMemberInstance(fieldValues)) {
+		if (!shouldProcessArrayMembers(fieldValues)) {
 			return;
 		}
 
@@ -153,14 +153,14 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			Object member = fieldValues[i];
 			List<String> currentJsonPath = new ArrayList<>(parentJsonPath);
 			currentJsonPath.add("[" + i + "]");
-			unmarshall(member, jsonContext, currentJsonPath);
+			recursivelyProcessAllFields(member, jsonContext, currentJsonPath);
 		}
 	}
 
-	private boolean canUnmarshallMemberInstance(final Object[] fieldValueInstanceMembers) {
+	private boolean shouldProcessArrayMembers(final Object[] fieldValueInstanceMembers) {
 
 		return fieldValueInstanceMembers.length > 0
-				&& !reflectionUtil.canUnmarshallClass(fieldValueInstanceMembers[0].getClass());
+				&& reflectionUtil.shouldConstituentMembersBeUnmarshalled(fieldValueInstanceMembers[0].getClass());
 	}
 
 
@@ -173,7 +173,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		final Class<?> fieldType = field.getType();
 		final String currentJsonPath = jsonPathUtil.buildCorrectJsonPath(fieldJsonPath, parentJsonPath);
 
-		final Object unmarshalledValue = unmarshallField(jsonContext, currentJsonPath, fieldType);
+		final Object unmarshalledValue = readValueFromJsonTree(jsonContext, currentJsonPath, fieldType);
 		if (unmarshalledValue == null && fieldType.isPrimitive()) {
 			return;
 		}
@@ -181,7 +181,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	}
 
 	/*
-	 * Set Java field using value obtained from unmarshallField method
+	 * Set Java field using value obtained from readValueFromJsonTree method
 	 *
 	 * @param resultObject target object, field owner
 	 * @param field the field to be set with found Json value
@@ -216,7 +216,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	/*
 	 * Read value from Json tree for given JsonPath
 	 */
-	private Object unmarshallField(final ReadContext jsonContext, final String jsonPath, final Class<?> fieldType) {
+	private Object readValueFromJsonTree(final ReadContext jsonContext, final String jsonPath, final Class<?> fieldType) {
 
 		Object read = null;
 		try {

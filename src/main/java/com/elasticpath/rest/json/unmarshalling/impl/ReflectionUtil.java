@@ -104,7 +104,7 @@ public class ReflectionUtil {
 	}
 
 	/**
-	 * Checks if given class can be used for unmarshalling by checking following conditions:
+	 * Checks if given class should have its constituent members unmarshalled. by checking following conditions:
 	 * 1. class can't be primitive.
 	 * 2. class can't be interface and can't come from java.lang pkg, java.util
 	 * 		(eliminates recursive calls in classes like String, Integer, Long..).
@@ -114,7 +114,7 @@ public class ReflectionUtil {
 	 * @param clazz a class to check.
 	 * @return true if class can be used for unmarshalling
 	 */
-	public boolean canUnmarshallClass(final Class<?> clazz) {
+	public boolean shouldConstituentMembersBeUnmarshalled(final Class<?> clazz) {
 
 		return !(clazz.isPrimitive() || isNonInterfaceFromIgnoredPackage(clazz) || isArrayOfPrimitiveTypes(clazz)
 				|| Map.class.isAssignableFrom(clazz));
