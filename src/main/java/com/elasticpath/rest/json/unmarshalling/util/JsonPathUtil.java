@@ -1,4 +1,4 @@
-package com.elasticpath.rest.json.unmarshalling.impl;
+package com.elasticpath.rest.json.unmarshalling.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;

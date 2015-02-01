@@ -1,5 +1,4 @@
-package com.elasticpath.rest.json.unmarshalling.impl
-
+package com.elasticpath.rest.json.unmarshalling
 import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test

@@ -1,4 +1,4 @@
-package com.elasticpath.rest.json.unmarshalling.impl;
+package com.elasticpath.rest.json.unmarshalling;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.jayway.jsonpath.JsonPath.using;
@@ -22,7 +22,9 @@ import com.jayway.jsonpath.internal.spi.json.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.elasticpath.rest.json.unmarshalling.JsonUnmarshaller;
+import com.elasticpath.rest.json.unmarshalling.util.CandidateField;
+import com.elasticpath.rest.json.unmarshalling.util.JsonPathUtil;
+import com.elasticpath.rest.json.unmarshalling.util.ReflectionUtil;
 
 /**
  * The default implementation of {@link JsonUnmarshaller}.
@@ -56,14 +58,19 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		}
 	}
 
+	@Override
+	public <T> boolean isSuitableForUnmarshalling(final Class<T> resultClass) {
+		return reflectionUtil.shouldConstituentMembersBeUnmarshalled(resultClass);
+	}
+
 	/*
-	 * Unmarshall Json tree to POJOs, taking care of JsonPath and JsonProperty annotations on multiple levels
-	  *
-	 * @param currentObject an object currently being processed
-	 * @param jsonContext Jway Json context
-	 * @param parentJsonPath for storing Json paths
-	 * @return unmarshalled POJO
-	 */
+		 * Unmarshall Json tree to POJOs, taking care of JsonPath and JsonProperty annotations on multiple levels
+		  *
+		 * @param currentObject an object currently being processed
+		 * @param jsonContext Jway Json context
+		 * @param parentJsonPath for storing Json paths
+		 * @return unmarshalled POJO
+		 */
 	private <T> T recursivelyProcessAllFields(final T currentObject, final ReadContext jsonContext, final Collection<String> parentJsonPath) throws IOException {
 
 		final Class<?> resultClass = currentObject.getClass();

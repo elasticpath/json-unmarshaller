@@ -20,4 +20,13 @@ public interface JsonUnmarshaller {
 	 * @throws IOException if something goes wrong with unmarshalling.
 	 */
 	<T> T unmarshall(Class<T> resultClass, String json) throws IOException;
+
+	/**
+	 * Checks to see if a class is valid for json unmarshalling.
+	 *
+	 * @param resultClass the class to inspect.
+	 * @param <T> the class type.
+	 * @return true if class is valid for unmarshalling.
+	 */
+	<T> boolean isSuitableForUnmarshalling(Class<T> resultClass);
 }

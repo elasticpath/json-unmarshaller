@@ -99,7 +99,8 @@
 						<Embed-Directory>OSGI-INF/lib</Embed-Directory>
 						<Embed-Transitive>true</Embed-Transitive>
 						<Export-Package>
-							com.elasticpath.rest.json.unmarshalling.*
+							com.elasticpath.rest.json.unmarshalling,
+							com.elasticpath.rest.json.unmarshalling.annotations
 						</Export-Package>
 						<Import-Package>
 							com.fasterxml.jackson.annotation,
