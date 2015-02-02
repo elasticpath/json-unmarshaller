@@ -40,6 +40,6 @@ run `mvn clean install` to build
 
 ##Unit Tests
 Test json data can be found in `src/test/resources`
-Test pojo classes are in `com.elasticpath.rest.json.unmarshalling.data`
+Test pojo classes are in `com.fasterxml.jackson.contrib.unmarshalling.data`
 
 

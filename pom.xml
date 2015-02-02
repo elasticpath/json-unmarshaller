@@ -99,8 +99,8 @@
 						<Embed-Directory>OSGI-INF/lib</Embed-Directory>
 						<Embed-Transitive>true</Embed-Transitive>
 						<Export-Package>
-							com.elasticpath.rest.json.unmarshalling,
-							com.elasticpath.rest.json.unmarshalling.annotations
+							com.fasterxml.jackson.contrib.jsonpath,
+							com.fasterxml.jackson.contrib.jsonpath.annotation
 						</Export-Package>
 						<Import-Package>
 							com.fasterxml.jackson.annotation,
@@ -127,7 +127,7 @@
 				<configuration>
 					<includeProjectDependencies>true</includeProjectDependencies>
 					<killAfter>-1</killAfter>
-					<mainClass>com.elasticpath.rest.json.unmarshalling.annotations.AnnotationVerifier</mainClass>
+					<mainClass>com.fasterxml.jackson.contrib.jsonpath.annotation.AnnotationVerifier</mainClass>
 					<arguments>
 						<argument>src/main/java/com/elasticpath/</argument>
 					</arguments>
