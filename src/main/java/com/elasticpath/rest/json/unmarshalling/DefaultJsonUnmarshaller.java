@@ -32,7 +32,7 @@ import com.elasticpath.rest.json.unmarshalling.util.ReflectionUtil;
 public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultJsonUnmarshaller.class);
-	private final ObjectMapper objectMapper;
+	private ObjectMapper objectMapper;
 	private final ReflectionUtil reflectionUtil;
 	private final JsonPathUtil jsonPathUtil;
 
@@ -40,7 +40,15 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 * Default constructor.
 	 */
 	public DefaultJsonUnmarshaller() {
-		this.objectMapper = new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES);
+		this(new ObjectMapper().disable(FAIL_ON_UNKNOWN_PROPERTIES));
+	}
+
+	/**
+	 * Constructor that allows setting of a pre-configured object mapper.
+	 * @param objectMapper the object mapper to use.
+	 */
+	public DefaultJsonUnmarshaller(final ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
 		this.reflectionUtil = new ReflectionUtil();
 		this.jsonPathUtil = new JsonPathUtil();
 	}
@@ -48,11 +56,12 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	@Override
 	public <T> T unmarshall(final Class<T> resultClass, final String json) throws IOException {
 
-		final Configuration configuration = Configuration.defaultConfiguration().jsonProvider(new JacksonJsonProvider());
-		final ReadContext jsonContext = using(configuration).parse(json); //for JSONPath
+		final JacksonJsonProvider jacksonJsonProvider = new JacksonJsonProvider(objectMapper);
+		final Configuration jwayConfiguration = Configuration.defaultConfiguration().jsonProvider(jacksonJsonProvider);
+		final ReadContext jwayReadContext = using(jwayConfiguration).parse(json); //for JSONPath
 
 		try {
-			return recursivelyProcessAllFields(resultClass.newInstance(), jsonContext, new ArrayList<String>());
+			return recursivelyProcessAllFields(resultClass.newInstance(), jwayReadContext, new ArrayList<String>());
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new IllegalArgumentException(e);
 		}
@@ -63,14 +72,18 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		return reflectionUtil.shouldConstituentMembersBeUnmarshalled(resultClass);
 	}
 
-	/*
-		 * Unmarshall Json tree to POJOs, taking care of JsonPath and JsonProperty annotations on multiple levels
-		  *
-		 * @param currentObject an object currently being processed
-		 * @param jsonContext Jway Json context
-		 * @param parentJsonPath for storing Json paths
-		 * @return unmarshalled POJO
-		 */
+	@Override
+	public void setObjectMapper(final ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
+
+	/* Unmarshall Json tree to POJOs, taking care of JsonPath and JsonProperty annotations on multiple levels
+	 *
+	 * @param currentObject the object to process
+	 * @param jsonContext Jway Json context
+	 * @param parentJsonPath for storing Json paths
+	 * @return unmarshalled POJO
+	 */
 	private <T> T recursivelyProcessAllFields(final T currentObject, final ReadContext jsonContext, final Collection<String> parentJsonPath) throws IOException {
 
 		final Class<?> resultClass = currentObject.getClass();
@@ -137,8 +150,8 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 	/*
 	 * In case of arrays/lists, correct Json path must be created for accessing each Json node.
-	  * The path looks like e.g. $.parent.array_node[0], $.parent.array_node[1] etc
-	  *
+	 * The path looks like e.g. $.parent.array_node[0], $.parent.array_node[1] etc
+	 *
 	 * @param fieldValue used to determine whether a field is a list(iterable) or array
 	 */
 	private void unmarshalArrayOrList(final Object fieldValue, final ReadContext jsonContext, final Collection<String> parentJsonPath)

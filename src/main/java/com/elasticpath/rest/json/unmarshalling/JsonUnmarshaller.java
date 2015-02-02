@@ -2,6 +2,8 @@ package com.elasticpath.rest.json.unmarshalling;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Unmarshalls Json into a class annotated with
  * {@link com.elasticpath.rest.json.unmarshalling.annotations.JsonPath} and
@@ -29,4 +31,10 @@ public interface JsonUnmarshaller {
 	 * @return true if class is valid for unmarshalling.
 	 */
 	<T> boolean isSuitableForUnmarshalling(Class<T> resultClass);
+
+	/**
+	 * Set a custom ObjectMapper to use during unmarshalling.
+	 * @param objectMapper the object mapper.
+	 */
+	void setObjectMapper(ObjectMapper objectMapper);
 }
