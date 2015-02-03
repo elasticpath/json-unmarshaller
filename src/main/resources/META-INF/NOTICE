@@ -1,0 +1,9 @@
+# JSON Unmarshaller
+
+This json unmarshaller is an extension to Jackson Json unmarshalling. It allows
+the use of JsonPath annotations to flatten the object graph needed when unmarshalling deep Json Trees.
+See https://github.com/jayway/JsonPath for more details on JsonPath
+
+## Licensing
+
+To find the details that apply to this artifact see the accompanying LICENSE file.
