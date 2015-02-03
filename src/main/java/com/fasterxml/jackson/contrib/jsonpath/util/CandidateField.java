@@ -5,11 +5,10 @@ import static java.lang.String.format;
 import java.lang.reflect.Field;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.contrib.jsonpath.annotation.JsonPath;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.contrib.jsonpath.annotation.JsonPath;
 
 /**
  * Wraps given field and its annotations (if any) into a more convenient structure.
@@ -60,14 +59,6 @@ public class CandidateField {
 
 	public JsonPath getJsonPathAnnotation() {
 		return jsonPathAnnotation;
-	}
-
-	/**
-	 * Check if @JsonPath and @JsonProperty are present.
-	 * @return true if both annotations are present.
-	 */
-	public boolean areAnnotationsPresent() {
-		return jsonPropertyAnnotation != null &&  jsonPathAnnotation != null;
 	}
 
 	/**
@@ -128,7 +119,7 @@ public class CandidateField {
 	 */
 	private void sanityCheck() {
 
-		if (areAnnotationsPresent()) {
+		if (areConflictingAnnotationsPresent()) {
 			String errorMessage = format("JsonProperty and JsonPath annotations both detected on field [%s] in class [%s]",
 					getField().getName(), containingObject.getClass().getName());
 
@@ -138,15 +129,22 @@ public class CandidateField {
 	}
 
 	/*
-	 *
-	   Rules to perform Json unmarshalling:
-	   1. Field must be annotated with JsonPath or
-	   2. Field is annotated with JsonProperty; it is primitive or (non-primitive and null)
-	   3. if both annotations are missing, then check if field is non-primitive and null
+	 * Check if both @JsonPath and @JsonProperty are present.
+	 * @return true if both annotations are present.
+	 */
+	private boolean areConflictingAnnotationsPresent() {
+		return jsonPropertyAnnotation != null &&  jsonPathAnnotation != null;
+	}
 
-	   Note:
-			getFieldValue(resultObject,field) can't be resolved into var because in very first loop, returned value is null
-			while after performing unmarshalling may be non-null
+	/*
+	 *  Rules to perform Json unmarshalling:
+	 *  1. Field must be annotated with JsonPath or
+	 *  2. Field is annotated with JsonProperty; it is primitive or (non-primitive and null)
+	 *  3. if both annotations are missing, then check if field is non-primitive and null
+	 *
+	 * Note:
+	 *		getFieldValue(resultObject,field) can't be resolved into var because in very first loop, returned value is null
+	 *		while after performing unmarshalling may be non-null
 	 */
 	public boolean isAppropriateForJsonPathUnmarshalling()
 			throws IllegalAccessException {

@@ -5,14 +5,14 @@ import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * Unmarshalls Json into a class annotated with
+ * Unmarshals Json into a class annotated with
  * {@link com.fasterxml.jackson.contrib.jsonpath.annotation.JsonPath} and
  * {@link com.fasterxml.jackson.annotation.JsonProperty} annotations.
  */
 public interface JsonUnmarshaller {
 
 	/**
-	 * Unmarshalls Json according to the {@link com.fasterxml.jackson.contrib.jsonpath.annotation.JsonPath} and
+	 * Unmarshals Json according to the {@link com.fasterxml.jackson.contrib.jsonpath.annotation.JsonPath} and
 	 * {@link com.fasterxml.jackson.annotation.JsonProperty} annotations in the provided class.
 	 *
 	 * @param resultClass the class to instantiate and populate with result data.
@@ -21,7 +21,7 @@ public interface JsonUnmarshaller {
 	 * @return the resulting pojo.
 	 * @throws IOException if something goes wrong with unmarshalling.
 	 */
-	<T> T unmarshall(Class<T> resultClass, String json) throws IOException;
+	<T> T unmarshal(Class<T> resultClass, String json) throws IOException;
 
 	/**
 	 * Checks to see if a class is valid for json unmarshalling.

@@ -60,10 +60,10 @@ public class JsonPathUtil {
 		String jsonPathPrefixRegex = "^[^.]*\\.";
 		String sanitizedJsonPathValue = jsonPathVal.replaceFirst(jsonPathPrefixRegex, "");
 
-		if (currentJsonPath.isEmpty()) { //transform first Jakson property into JsonPath root
+		if (currentJsonPath.isEmpty()) { //transform first Jackson property into JsonPath root
 			currentJsonPath.add("$." + sanitizedJsonPathValue);
 		} else {
-			currentJsonPath.add(sanitizedJsonPathValue); //all other jakson props will be simply appended
+			currentJsonPath.add(sanitizedJsonPathValue); //all other jackson properties will be simply appended
 		}
 		return currentJsonPath;
 	}

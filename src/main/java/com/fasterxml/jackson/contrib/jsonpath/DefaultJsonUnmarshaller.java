@@ -53,7 +53,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	}
 
 	@Override
-	public <T> T unmarshall(final Class<T> resultClass, final String json) throws IOException {
+	public <T> T unmarshal(final Class<T> resultClass, final String json) throws IOException {
 
 		final JacksonJsonProvider jacksonJsonProvider = new JacksonJsonProvider(objectMapper);
 		final Configuration jwayConfiguration = Configuration.defaultConfiguration().jsonProvider(jacksonJsonProvider);
@@ -76,14 +76,14 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		this.objectMapper = objectMapper;
 	}
 
-	/* Unmarshall Json tree to POJOs, taking care of JsonPath and JsonProperty annotations on multiple levels
+	/* Unmarshal Json tree to POJOs, taking care of JsonPath and JsonProperty annotations on multiple levels
 	 *
 	 * @param currentObject the object to process
-	 * @param jsonContext Jway Json context
+	 * @param jwayReadContext Jway Json context
 	 * @param parentJsonPath for storing Json paths
 	 * @return unmarshalled POJO
 	 */
-	private <T> T recursivelyProcessAllFields(final T currentObject, final ReadContext jsonContext, final Collection<String> parentJsonPath) throws IOException {
+	private <T> T recursivelyProcessAllFields(final T currentObject, final ReadContext jwayReadContext, final Collection<String> parentJsonPath) throws IOException {
 
 		final Class<?> resultClass = currentObject.getClass();
 		final String resultClassName = resultClass.getName();
@@ -91,23 +91,22 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		try {
 			final Iterable<Field> declaredFields = reflectionUtil.retrieveAllFields(resultClass);
 
-			if (declaredFields.iterator().hasNext()) {
+			if (!declaredFields.iterator().hasNext()) {
+				return currentObject;
+			}
+			final String parentJsonPathString = jsonPathUtil.getJsonPath(parentJsonPath);
+			final boolean isAbsolutePath = "".equals(parentJsonPathString);
 
-				final String parentJsonPathString = jsonPathUtil.getJsonPath(parentJsonPath);
-				final boolean isAbsolutePath = "".equals(parentJsonPathString);
+			for (Field field : declaredFields) {
 
-				CandidateField candidateField;
-				for (Field field : declaredFields) {
+				final CandidateField candidateField = new CandidateField(field, currentObject);
 
-					candidateField = new CandidateField(field, currentObject);
-
-					if (candidateField.isAppropriateForJsonPathUnmarshalling()) {
-						final String jsonPathOnField = candidateField.getJsonAnnotationValue(isAbsolutePath);
-						performJsonPathUnmarshalling(jsonContext, currentObject, field, jsonPathOnField, parentJsonPathString);
-					}
-
-					processChildFields(candidateField, currentObject, jsonContext, parentJsonPath);
+				if (candidateField.isAppropriateForJsonPathUnmarshalling()) {
+					final String jsonPathOnField = candidateField.getJsonAnnotationValue(isAbsolutePath);
+					performJsonPathUnmarshalling(jwayReadContext, currentObject, field, jsonPathOnField, parentJsonPathString);
 				}
+
+				processChildFields(candidateField, currentObject, jwayReadContext, parentJsonPath);
 			}
 			return currentObject;
 		} catch (IllegalAccessException e) {
@@ -124,7 +123,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 *
 	 */
 	private void processChildFields(final CandidateField candidateField, final Object resultObject,
-			final ReadContext jsonContext, final Collection<String> parentJsonPath)	throws IOException, IllegalAccessException {
+			final ReadContext jwayReadContext, final Collection<String> parentJsonPath)	throws IOException, IllegalAccessException {
 
 		final Field field = candidateField.getField();
 		if (reflectionUtil.shouldConstituentMembersBeUnmarshalled(field.getType())) {
@@ -138,11 +137,11 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 			//handles arrays/Lists
 			if (reflectionUtil.isFieldArrayOrList(field)) {
-				unmarshalArrayOrList(fieldValue, jsonContext, currentJsonPath);
+				unmarshalArrayOrList(fieldValue, jwayReadContext, currentJsonPath);
 
 			} else {
 				//handles anything else
-				recursivelyProcessAllFields(fieldValue, jsonContext, currentJsonPath);
+				recursivelyProcessAllFields(fieldValue, jwayReadContext, currentJsonPath);
 			}
 		}
 	}
@@ -153,7 +152,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	 *
 	 * @param fieldValue used to determine whether a field is a list(iterable) or array
 	 */
-	private void unmarshalArrayOrList(final Object fieldValue, final ReadContext jsonContext, final Collection<String> parentJsonPath)
+	private void unmarshalArrayOrList(final Object fieldValue, final ReadContext jwayReadContext, final Collection<String> parentJsonPath)
 			throws IOException {
 
 		Object[] fieldValues;
@@ -172,7 +171,7 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 			Object member = fieldValues[i];
 			List<String> currentJsonPath = new ArrayList<>(parentJsonPath);
 			currentJsonPath.add("[" + i + "]");
-			recursivelyProcessAllFields(member, jsonContext, currentJsonPath);
+			recursivelyProcessAllFields(member, jwayReadContext, currentJsonPath);
 		}
 	}
 
@@ -184,15 +183,15 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 
 
 	/*
-	 * Unmarshalls Json value using Jway ReadContext and Jakson ObjectMapper into proper Java structure
+	 * Unmarshals Json value using Jway ReadContext and Jakson ObjectMapper into proper Java structure
 	 */
-	private <T> void performJsonPathUnmarshalling(final ReadContext jsonContext, final T resultObject, final Field field,
+	private <T> void performJsonPathUnmarshalling(final ReadContext jwayReadContext, final T resultObject, final Field field,
 			final String fieldJsonPath, final String parentJsonPath) throws IllegalAccessException, IOException {
 
 		final Class<?> fieldType = field.getType();
 		final String currentJsonPath = jsonPathUtil.buildCorrectJsonPath(fieldJsonPath, parentJsonPath);
 
-		final Object unmarshalledValue = readValueFromJsonTree(jsonContext, currentJsonPath, fieldType);
+		final Object unmarshalledValue = readValueFromJsonTree(jwayReadContext, currentJsonPath, fieldType);
 		if (unmarshalledValue == null && fieldType.isPrimitive()) {
 			return;
 		}
@@ -235,11 +234,11 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 	/*
 	 * Read value from Json tree for given JsonPath
 	 */
-	private Object readValueFromJsonTree(final ReadContext jsonContext, final String jsonPath, final Class<?> fieldType) {
+	private Object readValueFromJsonTree(final ReadContext jwayReadContext, final String jsonPath, final Class<?> fieldType) {
 
 		Object read = null;
 		try {
-			read = jsonContext.read(jsonPath);
+			read = jwayReadContext.read(jsonPath);
 		} catch (PathNotFoundException e) {
 			if (Iterable.class.isAssignableFrom(fieldType)) {
 				read = new ArrayList();
