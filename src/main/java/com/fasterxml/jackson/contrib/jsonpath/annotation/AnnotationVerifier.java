@@ -35,7 +35,7 @@ import com.jayway.jsonpath.internal.PathCompiler;
  * 		 <configuration>
  * 			 <includeProjectDependencies>true</includeProjectDependencies>
  * 			 <includePluginDependencies>true</includePluginDependencies>
- * 			 <mainClass>com.fasterxml.jackson.contrib.unmarshalling.annotations.AnnotationVerifier</mainClass>
+ * 			 <mainClass>com.fasterxml.jackson.contrib.jsonpath.annotation.AnnotationVerifier</mainClass>
  * 			 <killAfter>-1</killAfter>
  * 			 <arguments>
  * 			 	<argument>${project.basedir}/src/main/java/com/elasticpath/</argument>
