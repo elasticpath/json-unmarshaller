@@ -129,7 +129,7 @@
 					<killAfter>-1</killAfter>
 					<mainClass>com.fasterxml.jackson.contrib.jsonpath.annotation.AnnotationVerifier</mainClass>
 					<arguments>
-						<argument>src/main/java/com/elasticpath/</argument>
+						<argument>src/main/java/com/fasterxml/</argument>
 					</arguments>
 				</configuration>
 			</plugin>
