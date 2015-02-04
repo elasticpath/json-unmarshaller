@@ -1,4 +1,6 @@
-json-unmarshalling
+[![Build Status](https://api.travis-ci.org/elasticpath/json-unmarshaller.png)](https://travis-ci.org/elasticpath/json-unmarshaller)
+
+json-unmarshaller
 ===============
 
 ##Un-Marshalling
