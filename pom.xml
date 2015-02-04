@@ -3,7 +3,7 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.elasticpath.rest</groupId>
+	<groupId>com.elasticpath.json</groupId>
 	<artifactId>json-unmarshaller</artifactId>
 	<version>0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
@@ -13,7 +13,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 		<com.fasterxml.jackson.version>2.4.2</com.fasterxml.jackson.version>
 		<org.glassfish.jersey.version>2.12</org.glassfish.jersey.version>
 		<org.slf4j.version>1.7.6</org.slf4j.version>
