@@ -10,6 +10,7 @@
 
 	<name>EP ∷ Json Unmarshaller</name>
 	<description>Provides concise annotation based unmarshalling of Json using JsonPath and Jackson</description>
+	<url>https://github.com/elasticpath/json-unmarshaller</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
