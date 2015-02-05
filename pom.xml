@@ -23,6 +23,28 @@
 		<url>http://www.elasticpath.com</url>
 	</organization>
 
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<name>Conor Gallagher</name>
+			<email>conor.gallagher@elasticpath.com</email>
+			<organization>Elastic Path</organization>
+			<organizationUrl>http://www.elasticpath.com</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:elasticpath/json-unmarshaller.git</connection>
+		<developerConnection>scm:git:git@github.com:elasticpath/json-unmarshaller.git</developerConnection>
+		<url>git@github.com:elasticpath/json-unmarshaller.git</url>
+	</scm>
+
 	<dependencies>
 		<!--JsonPath for complex Json unmarshalling -->
 		<dependency>
@@ -97,7 +119,7 @@
 				<configuration>
 					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					<autoReleaseAfterClose>false</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
 
