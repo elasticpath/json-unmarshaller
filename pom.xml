@@ -117,6 +117,22 @@
 				</configuration>
 			</plugin>
 
+			<!-- For signing the artifacts. Relies on gpg being installed and the GPG credentials being available in settings.xml. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- For validating the annotations are correct in the test directory. Included mainly as an example -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
