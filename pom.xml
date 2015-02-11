@@ -63,8 +63,8 @@
 
 		<!-- Base Jackson library for Json unmarshalling -->
 		<dependency>
-			<groupId>com.fasterxml.jackson.jaxrs</groupId>
-			<artifactId>jackson-jaxrs-base</artifactId>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
 			<version>${com.fasterxml.jackson.version}</version>
 		</dependency>
 
