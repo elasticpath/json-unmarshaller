@@ -52,7 +52,7 @@ JsonUnmarshaller jsonUnmarshaller = new JsonUnmarshaller();
 Cart cartPojo = jsonUnmarshaller.unmarshal(Cart.class, jsonString) 
 ``` 
 
-See the both the test directory of this project for sample use cases, and the [Jway docs](https://github.com/jayway/JsonPath/blob/master/README.md#operators) 
+Please see the test directory of this project for sample use cases, and the [Jway docs](https://github.com/jayway/JsonPath/blob/master/README.md#operators) 
 for more complicated JsonPath arrangements.
 
 ## Error Handling
