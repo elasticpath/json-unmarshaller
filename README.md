@@ -6,7 +6,7 @@ Elastic Path's JSON Unmarshaller is an extension to the popular [Jackson library
 based unmarshalling of deep JSON object graphs into shallow POJOs using JsonPath. JsonPath is a very similar concept to XPath but for JSON. 
 This library makes use of [Jway's](https://github.com/jayway/JsonPath) Java implementation of JsonPath. 
 
-This library introduces a field annotation, @JsonPath, which can used to specify JsonPath unmarshalling instructions in Java classes. @JsonPath
+This library introduces a field annotation, @JsonPath, which can be used to specify JsonPath unmarshalling instructions in Java classes. @JsonPath
  annotations can be used exclusively, or in conjunction with Jackson's field-matching and @JsonProperty annotations. JsonPath annotations are in
  no-way mandatory and existing Jackson-annotated classes will function in this library without modification.
 
