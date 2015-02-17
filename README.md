@@ -55,6 +55,11 @@ Cart cartPojo = jsonUnmarshaller.unmarshal(Cart.class, jsonString)
 See the both the test directory of this project for sample use cases, and the [Jway docs](https://github.com/jayway/JsonPath/blob/master/README.md#operators) 
 for more complicated JsonPath arrangements.
 
+## Error Handling
+In the default implementation, unmarshalling is attempted for all fields in the class hierarchy regardless of errors. When no match is found 
+for a field, or the annotation on a field contains syntax errors, the error will be logged and that field is simply left unset. Validation of 
+ annotations should be done at compile time using the provided annotation verification class, which is described below.
+
 ## Annotation Verification
 This project provides a convenience class for testing the validity of all supplied field annotations in a directory. In a maven build, the
 exec-maven-plugin can easily be configured to verify all defined annotations at compile time as follows:
