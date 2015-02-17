@@ -10,7 +10,7 @@ This library introduces a field annotation, @JsonPath, which can used to specify
  annotations can be used exclusively, or in conjunction with Jackson's field-matching and @JsonProperty annotations. JsonPath annotations are in
  no-way mandatory and existing Jackson-annotated classes will function in this library without modification.
 
-The below image shows how Jackson's field-matching and @JsonProperty annotations can be combined with @JsonPath annotations to unmarshal  
+The below image shows how Jackson's field-matching and @JsonProperty annotations can be combined with @JsonPath annotations to unmarshal 
 a single JSON object graph into two very different POJO arrangements. 
  
 ![alt text](https://cloud.githubusercontent.com/assets/868640/6225115/ae7be7b2-b63a-11e4-9d76-a23227bf82d3.png "Sample Unmarshalling")
