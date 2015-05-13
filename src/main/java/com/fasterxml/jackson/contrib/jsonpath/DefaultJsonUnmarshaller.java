@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
-import com.jayway.jsonpath.internal.spi.json.JacksonJsonProvider;
+import com.jayway.jsonpath.spi.json.JacksonJsonProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
