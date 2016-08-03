@@ -212,7 +212,13 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		final Type genericType = field.getGenericType();
 
 		if (fieldType.isPrimitive()) {
-			reflectionUtil.setField(resultObject, field, unmarshalledValue);
+			if(!fieldType.isArray() && unmarshalledValue instanceof Collection) {
+				Collection cuv = (Collection) unmarshalledValue;
+				Object c = cuv.iterator().next();
+				reflectionUtil.setField(resultObject, field, objectMapper.convertValue(c, fieldType));
+			} else {
+				reflectionUtil.setField(resultObject, field, unmarshalledValue);
+			}
 
 		} else if (genericType instanceof ParameterizedType) {
 			final Class<?>[] actualTypeArguments = reflectionUtil.geClassArgumentsFromGeneric(genericType);
