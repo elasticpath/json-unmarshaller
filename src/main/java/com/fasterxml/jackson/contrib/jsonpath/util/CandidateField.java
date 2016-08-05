@@ -3,10 +3,14 @@ package com.fasterxml.jackson.contrib.jsonpath.util;
 import static java.lang.String.format;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.contrib.jsonpath.annotation.JsonPath;
 
+import com.fasterxml.jackson.contrib.jsonpath.annotation.JsonPathTemplate;
+import com.fasterxml.jackson.contrib.jsonpath.annotation.JsonPathTemplateReplace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +25,7 @@ public class CandidateField {
 	private final ReflectionUtil reflectionUtil;
 	private final JsonProperty jsonPropertyAnnotation;
 	private final JsonPath jsonPathAnnotation;
+	private final JsonPathTemplate jsonPathTemplate;
 	private final Field field;
 	private final Object containingObject;
 
@@ -33,6 +38,7 @@ public class CandidateField {
 		this.containingObject = containingObject;
 		this.field = field;
 		this.jsonPathAnnotation = field.getAnnotation(JsonPath.class);
+		this.jsonPathTemplate = field.getAnnotation(JsonPathTemplate.class);
 		this.jsonPropertyAnnotation = field.getAnnotation(JsonProperty.class);
 		sanityCheck();
 		this.reflectionUtil = new ReflectionUtil();
@@ -88,6 +94,13 @@ public class CandidateField {
 
 		if (jsonPathAnnotation != null) {
 			return jsonPathAnnotation.value();
+		} else if(jsonPathTemplate != null) {
+			String template = jsonPathTemplate.template();
+			String output = template;
+			for(JsonPathTemplateReplace r : jsonPathTemplate.replaces()) {
+				output = output.replaceAll("<"+r.key()+">", r.value());
+			}
+			return output;
 		}
 
 		String jsonPath;

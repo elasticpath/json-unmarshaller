@@ -10,6 +10,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import com.fasterxml.jackson.contrib.jsonpath.util.CandidateField;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.contrib.jsonpath.util.JsonPathUtil;
 import com.fasterxml.jackson.contrib.jsonpath.util.ReflectionUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.std.IterableSerializer;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.PathNotFoundException;
 import com.jayway.jsonpath.ReadContext;
@@ -214,8 +216,10 @@ public class DefaultJsonUnmarshaller implements JsonUnmarshaller {
 		if (fieldType.isPrimitive()) {
 			if(!fieldType.isArray() && unmarshalledValue instanceof Collection) {
 				Collection cuv = (Collection) unmarshalledValue;
-				Object c = cuv.iterator().next();
-				reflectionUtil.setField(resultObject, field, objectMapper.convertValue(c, fieldType));
+				Iterator it = cuv.iterator();
+				if(it.hasNext()) {
+					reflectionUtil.setField(resultObject, field, objectMapper.convertValue(it.next(), fieldType));
+				}
 			} else {
 				reflectionUtil.setField(resultObject, field, unmarshalledValue);
 			}
