@@ -91,7 +91,7 @@ public class CandidateField {
 		}
 
 		String jsonPath;
-		if (jsonPropertyAnnotation == null) {
+		if (jsonPropertyAnnotation == null || "".equals(jsonPropertyAnnotation.value())) {
 			jsonPath = field.getName();
 		} else {
 			jsonPath = jsonPropertyAnnotation.value();
