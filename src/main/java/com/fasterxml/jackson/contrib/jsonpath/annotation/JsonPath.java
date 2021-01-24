@@ -20,4 +20,6 @@ public @interface JsonPath {
 	 * The json path value.
 	 */
 	String value();
+
+
 }
