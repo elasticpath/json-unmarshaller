@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jayway.jsonpath.InvalidPathException;
-import com.jayway.jsonpath.internal.PathCompiler;
+import com.jayway.jsonpath.internal.path.PathCompiler;
 
 /**
  * Checks that Json annotations are compilable in the provided files, and recursively through the provided directories.
