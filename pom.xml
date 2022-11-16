@@ -14,7 +14,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<com.fasterxml.jackson.version>2.12.1</com.fasterxml.jackson.version>
+		<com.fasterxml.jackson.version>2.12.7.1</com.fasterxml.jackson.version>
 		<org.glassfish.jersey.version>2.12</org.glassfish.jersey.version>
 		<org.slf4j.version>1.7.6</org.slf4j.version>
 		<json-path.version>2.0.0</json-path.version>
